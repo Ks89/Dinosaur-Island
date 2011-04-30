@@ -1,0 +1,9 @@
+Alcune note:
+
+- potete modificare diverse parti del file POM a vostro piacimento;
+-- group id
+-- artifact id
+-- name
+-- ...
+
+- ricordatevi di modificare la <mainClass> nel plugin maven-jar-plugin

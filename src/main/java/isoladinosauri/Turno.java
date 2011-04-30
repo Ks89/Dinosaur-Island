@@ -3,6 +3,7 @@ package isoladinosauri;
 public class Turno {
 	
 	private Partita partita;
+	private int contatoreTurno;
 	
 	public Turno(Partita partita) {
 		this.partita = partita;
@@ -16,5 +17,15 @@ public class Turno {
 	public void muovi() {
 		//TODO
 	}
+
+    public int getContatoreTurno() {
+        return contatoreTurno;
+    }
+
+    public void setContatoreTurno(int contatoreTurno) {
+        this.contatoreTurno = contatoreTurno;
+    }
+	
+	
 
 }
