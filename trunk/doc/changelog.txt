@@ -1,0 +1,37 @@
+CHANGELOG DOCUMENTO DI SPECIFICA DEL PROGETTO "L'ISOLA DEI DINOSAURI"
+
+v1.1
+- sezione "I dinosauri", sottosezione "Movimento"
+-- specificato che l'azione di spostamento porta il dinosauro nella casella desiderata
+   (se possibile) senza alcuna interazione con le caselle che si trovano tra quella di
+   partenza e quella di arrivo
+
+- sezione "La vegetazione"
+-- riformulata la parte in cui si parla del consumo della vegetazione aggiungendo la 
+   possibilità che rimanga una parte della vegetazione se il dinosauro non può mangiarla
+   tutta (perché la sua energia raggiunge il massimo)
+
+- sezione "Le carogne"
+-- riformulata la parte in cui si parla del consumo della carogna aggiungendo la 
+   possibilità che rimanga una parte della vegetazione se il dinosauro non può mangiarla
+   tutta (perché la sua energia raggiunge il massimo)
+
+- sezione "L'ambiente di gioco"
+-- specificato che l'origine delle coordinate nella mappa è l'angolo in basso a sinistra
+   anche nelle specifiche di gioco, sezione "L'ambiente di gioco"
+
+- sezione "La partita", sottosezione "Turni"
+-- chiarito che l'azione di movimento eseguibile per ogni dinosauro in ogni turno è
+   unica e della lunghezza desiderata
+-- chiarito che l'azione di crescita e quella di deposizione uovo sono in alternativa
+
+- sezione "Protocollo standard di comunicazione"
+-- specificato che, nella creazione dell'utente, username e password devono essere
+   alfanumerici
+-- specificato che, nella mappa generale, le righe vengono restituite a partire da quella
+   più in basso e aggiunto un esempio
+-- specificato che, nella visuale dettagliata, le righe vengono restituite a partire da
+   quella più in basso
+
+v1.0
+- Prima versione del documento
