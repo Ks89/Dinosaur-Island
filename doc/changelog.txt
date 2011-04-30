@@ -1,5 +1,5 @@
 CHANGELOG DOCUMENTO DI SPECIFICA DEL PROGETTO "L'ISOLA DEI DINOSAURI"
-
+ 
 v1.1
 - sezione "I dinosauri", sottosezione "Movimento"
 -- specificato che l'azione di spostamento porta il dinosauro nella casella desiderata
