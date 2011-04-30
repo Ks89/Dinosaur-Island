@@ -5,10 +5,17 @@
 	<artifactId>isoladinosauri</artifactId>
 	<name>Isola dei Dinosauri</name>
 	<version>0.0.1-SNAPSHOT</version>
-	
+
 	<properties>
-    	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  	</properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>source.db4o</id>
+			<url>http://source.db4o.com/maven</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -20,8 +27,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.db4o</groupId>
-			<artifactId>db4o.java5</artifactId>
-			<version>7.4.121.14026</version>
+			<artifactId>db4o-java5</artifactId>
+			<version>7.4-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
 	</dependencies>
@@ -42,13 +49,13 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.1</version>
 				<configuration>
-          			<archive>
-            			<manifest>
-              				<addClasspath>true</addClasspath>
-              				<mainClass>isoladinosauri.Partita</mainClass>
-            			</manifest>
-          			</archive>
-        		</configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>isoladinosauri.Partita</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
