@@ -62,7 +62,7 @@ public class Partita {
     }
 
 
-
+    
     public static void main(String[] args) {
 	    Partita p = new Partita();
 	    Turno t = new Turno(p);
