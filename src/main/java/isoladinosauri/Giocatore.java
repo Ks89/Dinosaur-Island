@@ -16,7 +16,7 @@ public class Giocatore extends Utente {
 	
 	void niente() {
 		if (dinosauri.get(0) instanceof Carnivoro) {
-//			((Carnivoro)dinosauri.get(0)).
+//			((Carnivoro)dinosauri.get(0)). bla bla
 			//TODO
 		}
 	}
