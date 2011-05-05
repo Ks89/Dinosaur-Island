@@ -14,7 +14,7 @@ public class Turno {
 		return null;
 	}
 	
-	public void muovi() {
+	public void muovi() { //gestione movimento
 		//TODO
 	}
 
