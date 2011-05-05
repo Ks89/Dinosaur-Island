@@ -5,8 +5,8 @@ import isoladinosauri.modellodati.Occupante;
 
 public class Cella {
 	
-	private Occupante occupante;
-	private Dinosauro dinosauro;
+	private Occupante occupante; //puo essere vegetale o carogna
+	private Dinosauro dinosauro; //puo essere dinosauro o carogna
 	
 	 
 
