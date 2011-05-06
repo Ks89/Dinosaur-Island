@@ -9,7 +9,7 @@ public class Vegetale extends Organismo implements Occupante {
 		super.setEnergiaMax(random.nextInt(200) + 150);
 	}
 	
-	public void cresci(int energia) {
-		super.energia += energia;	
+	public void cresci() {
+		super.energia += super.energiaMax/10;
 	}	                                 
 }
