@@ -9,8 +9,8 @@ public class Carogna extends Organismo implements Occupante, Animale {
 		super.setEnergiaMax(random.nextInt(300) + 350);
 	}
 	
-	public void consuma(int energia) {
-		//TODO implementare	
+	public void consuma() {
+		super.energia += super.energiaMax/10;
 	}
 
 }
