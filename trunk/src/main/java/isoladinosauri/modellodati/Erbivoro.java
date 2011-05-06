@@ -19,15 +19,6 @@ public class Erbivoro extends Dinosauro {
 		/* manca la gestione del movimento con le coordinate e la verifica se la destinazione e' raggiungibile */
 	}
 
-	@Override
-	public void aumentaDimensione() { /* questa funzione e' uguale a quella del carnivoro,forse meglio spostarla nella superclasse */
-		if(super.dimensione < 5) {
-			super.dimensione++;
-			super.energia -= super.energiaMax / 2;
-		}
-		/* manca l'else */
-	}
-	
 	public void mangia(Vegetale vegetale) {
 		//TODO
 	}

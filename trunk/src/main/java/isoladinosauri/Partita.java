@@ -1,6 +1,7 @@
 package isoladinosauri;
 
 import isoladinosauri.modellodati.Carogna;
+import isoladinosauri.modellodati.Erbivoro;
 import isoladinosauri.modellodati.Vegetale;
 
 import java.io.BufferedReader;
@@ -26,7 +27,7 @@ public class Partita {
 	
 	
 	public Cella[][] getMappa() {
-        return mappa;
+        return mappa;        
     }
 
 
