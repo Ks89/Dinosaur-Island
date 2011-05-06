@@ -11,7 +11,8 @@ public class Giocatore extends Utente {
 	private int vitaTurni;
 	private int turnoNascita;
 	private String nomeSpecie;
-	private List<Dinosauro> dinosauri;
+	private List<Dinosauro> dinosauri; //squadra di dinosauri del giocatore
+	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se è false)
 	
 	
 	void niente() {
