@@ -10,6 +10,6 @@ public abstract class Dinosauro extends Organismo implements Animale {
 	
 	public abstract void deponi(); //toglie energia per deposizione
 	public abstract void muovi(int posX, int posY); //toglie energie per movimento
-	public abstract void aumentaDimensione(int dimensione); //...e toglie energia per dimensione
+	public abstract void aumentaDimensione(); //...e toglie energia per dimensione
 
 }
