@@ -28,15 +28,15 @@ public class Erbivoro extends Dinosauro {
 		//mangio tutto il vegetale
 		if(vegetale.getEnergia()<=(this.getEnergiaMax() - this.getEnergia())) {
 			this.setEnergia(this.getEnergia() + vegetale.getEnergia());
-			//rimuovo il vegetale perch mangiato tutto
+			//rimuovo il vegetale perche' mangiato tutto
 			cella.setOccupante(null);
 		}
 		//mangio solo una parte del vegetale	 
-		if(vegetale.getEnergia()>(this.getEnergiaMax() - this.getEnergia())) {
+		else {
+			// il vegetale sara consumato della diff dell'energia max e quella attuale del dino
+			vegetale.setEnergia(vegetale.getEnergia() - (this.getEnergiaMax() - this.getEnergia()));
 			//il dinosauro avra la sua energia al massimo
 			this.setEnergia(this.getEnergiaMax());
-			// il vegetale sara consumato della diff dell'energia max e quella attuale del dino
-			vegetale.setEnergia(vegetale.getEnergia() - this.getEnergiaMax() - this.getEnergia());
 		}		
 	}
 
