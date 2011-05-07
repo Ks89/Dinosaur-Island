@@ -10,7 +10,7 @@ public class Carogna extends Organismo implements Occupante, Animale {
 	}
 	
 	public void consuma() {
-		super.energia += super.energiaMax/10;
+		super.energia -= super.energiaMax/10;
 	}
 
 }
