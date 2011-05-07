@@ -21,16 +21,7 @@ public class Carnivoro extends Dinosauro {
 		/* manca la gestione del movimento con le coordinate e la verifica se la destinazione e' raggiungibile */
 
 	}
-
-	@Override
-	public void aumentaDimensione() { /* questa funzione e' uguale a quella dell'erbivoro,forse meglio spostarla nella superclasse */
-		if(super.dimensione < 5) {
-			super.dimensione++;
-			super.energia -= super.energiaMax / 2;
-		}
-		/* manca l'else */
-	}
-	
+		
 	public void mangia(Animale animale, Cella cella) {
 		// mangia un animale che puo essere Dinosauro o una carogna
 		//NB: passo anche la Cella per sapere dove si trova l'animale e la carogna
@@ -44,11 +35,11 @@ public class Carnivoro extends Dinosauro {
 				cella.setOccupante(null);
 			}
 			//mangio solo una parte della carogna	 
-			if(mangiato.getEnergia()>(this.getEnergiaMax() - this.getEnergia())) {
+			else {
+				// la carogna sara consumata della diff dell'energia max e quella attuale del dino
+				mangiato.setEnergia(mangiato.getEnergia() - (this.getEnergiaMax() - this.getEnergia()));
 				//il dinosauro avra la sua energia al massimo
 				this.setEnergia(this.getEnergiaMax());
-				// la carogna sara consumata della diff dell'energia max e quella attuale del dino
-				mangiato.setEnergia(mangiato.getEnergia() - this.getEnergiaMax() - this.getEnergia());
 			}		
 			
 		} else if (animale instanceof Dinosauro) {
