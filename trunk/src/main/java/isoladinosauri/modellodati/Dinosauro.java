@@ -1,10 +1,15 @@
 package isoladinosauri.modellodati;
 
+import java.util.Random;
+
 public abstract class Dinosauro extends Organismo implements Animale {
 	
 	protected int dimensione;
-	protected int vitaTurni;
+	protected int durataVita;
 	protected int turnoNascita;
+	
+	//ESISTONO I COSTRUTTORI IN CLASSI ASTRATTE CHE POI POSSONO IMPLEMENTARE
+	//LE SOTTOCLASSI? BOH, SE SI PUO' SAREBBE BELLO FARLO
 	
 	public abstract int calcolaForza();
 	
