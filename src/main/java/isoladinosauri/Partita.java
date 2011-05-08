@@ -30,48 +30,44 @@ public class Partita {
         return mappa;        
     }
 
-
-
-    public void setMappa(Cella[][] mappa) {
-        this.mappa = mappa;
-    }
-
-
-
     public Turno getTurnoCorrente() {
         return turnoCorrente;
     }
-
-
 
     public void setTurnoCorrente(Turno turnoCorrente) {
         this.turnoCorrente = turnoCorrente;
     }
 
 
-
     public List<Giocatore> getGiocatori() {
         return giocatori;
     }
 
-
-
-    public void setGiocatori(List<Giocatore> giocatori) {
-        this.giocatori = giocatori;
+    public void aggiungiGiocatore(Giocatore giocatore) {
+    	if(giocatori.size()<8) giocatori.add(giocatore);
+    	else { 
+    		//partita piena con 8 giocatori
+    	}
     }
+    
+    public void rimuoviGiocatore(Giocatore giocatore) {
+    	boolean stato = giocatori.remove(giocatore);
+    	if(stato==true) {
+    		//giocatore rimosso correttamente
+    	}
+    	else {
+    		//giocatore non trovato 
+    	}
 
-
+    }
 
     public int getContatoreTurni() {
         return contatoreTurni;
     }
 
-
-
     public void setContatoreTurni(int contatoreTurni) {
         this.contatoreTurni = contatoreTurni;
     }
-
 
     public void caricaMappa() {
     	//esegue il caricamento della Mappa come file di testo (.txt)
@@ -128,10 +124,10 @@ public class Partita {
 		}
 	}
     
-    
+
     public void stampaMappa() {
-    	//metodo che esiste solo per testare il caricamente
-    	//presto sarˆ rimosso e trasformato in test junit
+    	//metodo che esiste solo per testare il caricamento
+    	//presto sara' rimosso e trasformato in test junit
     	for(int i=0;i<40;i++) {
     		for(int j=0;j<40;j++) {
     			if (mappa[i][j] == null) { //e' acqua
