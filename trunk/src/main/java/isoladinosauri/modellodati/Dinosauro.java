@@ -1,5 +1,7 @@
 package isoladinosauri.modellodati;
 
+import isoladinosauri.Cella;
+
 import java.util.Random;
 
 public abstract class Dinosauro extends Organismo implements Animale {
@@ -14,7 +16,7 @@ public abstract class Dinosauro extends Organismo implements Animale {
 	public abstract int calcolaForza();
 	
 	public abstract void deponi(); //toglie energia per deposizione
-	public abstract void muovi(int posX, int posY); //toglie energie per movimento
+	public abstract boolean aggCordinate(int posX, int posY); //toglie energie per movimento
 	
 	public void aumentaDimensione() {
 		if(dimensione < 5) {
