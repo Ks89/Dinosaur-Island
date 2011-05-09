@@ -18,10 +18,19 @@ public class Carnivoro extends Dinosauro {
 	}
 
 	@Override
-	public void muovi(int posX, int posY) {
+	public boolean aggCordinate(int posX, int posY) {
 		super.energia -= 10 * (int)Math.pow(2, (double)super.dimensione);
-		/* manca la gestione del movimento con le coordinate e la verifica se la destinazione e' raggiungibile */
-
+		if(super.getEnergia()>0) { 
+			//eseguo movimento nelle coordinate specificate
+			super.setPosX(posX);
+			super.setPosY(posY);
+			return true;
+			//cella.setDinosauro(this);
+		} else {
+			//il dino deve essere cancellato dalla cella e dalla lista del giocatore
+			//dal metodo che chaiama aggCordinate
+			return false;
+		}
 	}
 		
 	public Carnivoro(int posX, int posY, int turnoNascita) {
