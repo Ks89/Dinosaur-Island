@@ -1,6 +1,53 @@
 CHANGELOG DOCUMENTO DI SPECIFICA DEL PROGETTO "L'ISOLA DEI DINOSAURI"
- 
-v1.1
+
+v1.5 (10/05/2011)
+- sezione "I dinosauri"
+-- aggiunto che ogni specie può avere da 1 a 5 dinosauri e se rimane senza dinosauri va
+   incontro a estinzione prematura
+
+- sezione "Protocollo standard di comunicazione"
+-- specificato che, nella lista dinosauri, gli identificatori restituiti sono stringhe
+   che possono contenere caratteri alfanumerici
+
+v1.4 (09/05/2011)
+- sezione "La vegetazione"
+-- dimezzato il tasso di crescita (1/20 al posto di 1/10 dell'energia massima)
+
+- sezione "Le carogne"
+-- dimezzato il tasso di deperimento (1/20 al posto di 1/10 dell'energia massima)
+
+- sezione "Protocollo standard di comunicazione"
+-- aggiunta, nella crescita del dinosauro, una risposta da parte del server nel caso
+   di esito negativo, ovvero @raggiuntaDimensioneMax se il dinosauro ha già raggiunto
+   la dimensione massima
+
+v1.3 (02/05/2011)
+- sezione "Protocollo standard di comunicazione"
+-- specificato che, nel login, il token restituito dal server è una stringa che può
+   contenere caratteri alfanumerici
+
+v1.2 (26/04/2011)
+- sezione "I dinosauri", sottosezione "Caratteristiche"
+-- specificato che l'energia di partenza di un qualsiasi dinosauro appena creato è pari
+   a 750
+
+- sezione "I dinosauri", sottosezione "Azioni"
+-- modificata la frase "...in una casella libera scelta a caso tra quelle più vicine al 
+   dinosauro che ha deposto l’uovo." in "in una casella libera scelta a caso più vicina 
+   possibile al luogo di deposizione dell’uovo.", in modo da evitare possibili 
+   fraintendimenti sul posizionamento dell'uovo
+
+- sezione "La partita", sottosezione "Giocatori"
+-- chiarito che ogni giocatore può creare e gestire una sola specie di dinosauri alla
+   volta
+
+- sezione "Protocollo standard di comunicazione"
+-- specificato che, nella creazione della razza, il server può anche segnalare che
+   l'esito negativo è dovuto al fatto che è già presente una razza (@razzaGiaCreata)
+-- specificato che, nell'accesso alla partita, il server può anche segnalare che l'esito
+   negativo è dovuto al fatto che non è ancora stata creata alcuna razza
+
+v1.1 (20/04/2011)
 - sezione "I dinosauri", sottosezione "Movimento"
 -- specificato che l'azione di spostamento porta il dinosauro nella casella desiderata
    (se possibile) senza alcuna interazione con le caselle che si trovano tra quella di
@@ -33,5 +80,5 @@ v1.1
 -- specificato che, nella visuale dettagliata, le righe vengono restituite a partire da
    quella più in basso
 
-v1.0
+v1.0 (15/04/2011)
 - Prima versione del documento
