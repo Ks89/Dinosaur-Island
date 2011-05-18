@@ -1,8 +1,5 @@
 package isoladinosauri;
 
-import isoladinosauri.modellodati.Dinosauro;
-
-import java.util.List;
 
 public class Test {
 	public static void main(String[] args) {
@@ -21,7 +18,7 @@ public class Test {
 		p.aggiungiGiocatore(giocatore);
 		giocatore.getDinosauri().get(0).aumentaDimensione();
 		giocatore.getDinosauri().get(0).setEnergia(2500);
-		t.illuminaMappa(giocatore.getDinosauri().get(0).getPosX(),giocatore.getDinosauri().get(0).getPosY());
+		giocatore.illuminaMappa(giocatore.getDinosauri().get(0).getPosX(),giocatore.getDinosauri().get(0).getPosY());
 		giocatore.stampaMappa();
 	    
 		
@@ -40,7 +37,7 @@ public class Test {
 
 		giocatore.getDinosauri().get(1).setEnergia(2500);
 
-		t.illuminaMappa(giocatore.getDinosauri().get(1).getPosX(),giocatore.getDinosauri().get(1).getPosY());
+		giocatore.illuminaMappa(giocatore.getDinosauri().get(1).getPosX(),giocatore.getDinosauri().get(1).getPosY());
 		
 		giocatore.stampaMappa();
 
@@ -61,16 +58,16 @@ public class Test {
 
 		p.aggiungiGiocatore(giocatore3);
 
-		t.illuminaMappa(giocatore2.getDinosauri().get(0).getPosX(),giocatore2.getDinosauri().get(0).getPosY());
-		t.illuminaMappa(giocatore3.getDinosauri().get(0).getPosX(),giocatore3.getDinosauri().get(0).getPosY());
+		giocatore2.illuminaMappa(giocatore2.getDinosauri().get(0).getPosX(),giocatore2.getDinosauri().get(0).getPosY());
+		giocatore3.illuminaMappa(giocatore3.getDinosauri().get(0).getPosX(),giocatore3.getDinosauri().get(0).getPosY());
 
 		giocatore2.getDinosauri().get(0).deponi(i.getMappa()[giocatore2.getDinosauri().get(0).getPosX()][giocatore2.getDinosauri().get(0).getPosY()], giocatore2);
 		giocatore3.getDinosauri().get(0).deponi(i.getMappa()[giocatore3.getDinosauri().get(0).getPosX()][giocatore3.getDinosauri().get(0).getPosY()], giocatore3);
 
 		p.nascitaDinosauro(4);
 
-		t.illuminaMappa(giocatore2.getDinosauri().get(1).getPosX(),giocatore2.getDinosauri().get(1).getPosY());
-		t.illuminaMappa(giocatore3.getDinosauri().get(1).getPosX(),giocatore3.getDinosauri().get(1).getPosY());
+		giocatore2.illuminaMappa(giocatore2.getDinosauri().get(1).getPosX(),giocatore2.getDinosauri().get(1).getPosY());
+		giocatore3.illuminaMappa(giocatore3.getDinosauri().get(1).getPosX(),giocatore3.getDinosauri().get(1).getPosY());
 
 		p.aggiornaClassifica();
 		p.stampaClassifica();

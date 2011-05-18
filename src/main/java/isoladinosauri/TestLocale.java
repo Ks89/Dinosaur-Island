@@ -58,8 +58,6 @@ public class TestLocale {
 				else tipoDinosauro = "erbivoro";
 
 				giocatore = new Giocatore(p, nickname, password, turnoCorrente, nomeSpecie, tipoDinosauro);
-				p.aggiungiGiocatore(giocatore);
-				t.illuminaMappa(giocatore.getDinosauri().get(0).getPosX(),giocatore.getDinosauri().get(0).getPosY());
 				break;
 			case 2 :
 				//rimuovo il giocatore
@@ -67,6 +65,7 @@ public class TestLocale {
 				String rimozione = input.nextLine();
 				rimozione = input.nextLine();
 				p.rimuoviGiocatore(cercaGiocatore(rimozione,p));
+				conteggioGiocatori=9999; //per far terminare i while e far ricominciare dall'inizio
 				break;
 			case 3 :
 				//usa il giocatore successivo
@@ -140,7 +139,10 @@ public class TestLocale {
 						}		
 						conteggioDinosauro++;
 					}while(p.getGiocatori().get(conteggioGiocatori).getDinosauri().size() > conteggioDinosauro); //chiudo while della scansione dei dinosauri
+					i.stampaMappa();
 					i.stampaMappaRidotta();
+					p.getGiocatori().get(conteggioGiocatori).stampaMappa();
+					i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
 					conteggioGiocatori++;
 				}while(p.getGiocatori().size() > conteggioGiocatori);
 				break;
