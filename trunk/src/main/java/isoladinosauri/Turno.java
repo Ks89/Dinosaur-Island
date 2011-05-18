@@ -144,9 +144,7 @@ public class Turno {
 	    	//9 = NON RAGGIUNGIBILE			
 	    
 	    	// copio l'acqua della mappa nella sottomappa e metto non raggiungibile altrove
-			// 8 = ACQUA
-	    	// 9 = NON RAGGIUNGIBILE
-	    	
+
 	    	for(i=0; i<maxR; i++) {
 	    		for(j=0; j<maxC; j++) {
 	    			if(this.partita.getIsola().getMappa()[origineMappaMovimento[1]+i][origineMappaMovimento[0]+j] == null)
