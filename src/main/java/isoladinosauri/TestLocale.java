@@ -6,9 +6,9 @@ import java.util.Scanner;
 
 public class TestLocale {
 
-	
-	//Questa classe e' estrememamente in beta e funziona ancora male, ci vorra' del tempo :)
-	
+
+
+
 	/**
 	 * @param args
 	 */
@@ -63,22 +63,49 @@ public class TestLocale {
 				break;
 			case 2 :
 				//rimuovo il giocatore
-				//TODO fare il coso che chiede il login del giocatore per cercarlo e toglierlo
-				p.rimuoviGiocatore(giocatore);
+				System.out.println("Inserisci il nickname del giocatore da rimuovere: ");
+				String rimozione = input.nextLine();
+				rimozione = input.nextLine();
+				p.rimuoviGiocatore(cercaGiocatore(rimozione,p));
 				break;
 			case 3 :
 				//usa il giocatore successivo
 				do {
 					conteggioDinosauro=0;
-					System.out.println("Giocatore: " + p.getGiocatori().get(conteggioGiocatori).getIdGiocatore() + ", login: " + p.getGiocatori().get(conteggioGiocatori).getNomeUtente() + ",numero: " + conteggioGiocatori);
+					System.out.println();
+					System.out.println("**********GIOCATORE************");
+					System.out.println("ID:\t\t" + p.getGiocatori().get(conteggioGiocatori).getIdGiocatore());
+					System.out.println("Nome:\t\t" + p.getGiocatori().get(conteggioGiocatori).getNomeUtente());
+					System.out.println("Specie:\t\t" + p.getGiocatori().get(conteggioGiocatori).getNomeSpecie());
+					System.out.println("Eta':\t\t" + p.getGiocatori().get(conteggioGiocatori).getEtaAttuale());
+					System.out.println("Turno nascita:\t" + p.getGiocatori().get(conteggioGiocatori).getTurnoNascita());
+					System.out.print("Dinosauri:\t");
+					for(int j=0;j<p.getGiocatori().get(conteggioGiocatori).getDinosauri().size();j++) {
+						System.out.print(p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(j).getId() + "; ");
+					}
+					System.out.println();
+					System.out.print("Uova:\t");
+					for(int j=0;j<p.getGiocatori().get(conteggioGiocatori).getUova().size();j++) {
+						System.out.print(p.getGiocatori().get(conteggioGiocatori).getUova().get(j) + "; ");
+					}
+					System.out.println();
+					System.out.println("->ConteggioGiocatore: " + conteggioGiocatori);
+					System.out.println("*******************************");
+					System.out.println();
 					do {
 						Dinosauro dino = p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro);
 						//gestisce le azioni del singolo dinosauro
-						System.out.println("contGioc: " + conteggioGiocatori);
-						System.out.println("contDino: " + conteggioDinosauro);
-
-						System.out.println("Dinosauro: " + p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).getId() + " numero: " + conteggioDinosauro);
 						System.out.println("Turno corrente: " + turnoCorrente);
+						System.out.println();
+						System.out.println("*********DINOSAURO*************");
+						System.out.println("ID:\t\t" + dino.getId());
+						System.out.println("Energia:\t" + dino.getEnergia());
+						System.out.println("En Max:\t\t" + dino.getEnergiaMax());
+						System.out.println("Eta':\t\t" + dino.getEtaDinosauro());
+						System.out.println("Pos:\t\t(" + dino.getPosX() + "," + dino.getPosY() + ")");
+						System.out.println("->ConteggioDinosauro: " + conteggioDinosauro);
+						System.out.println("*******************************");
+						System.out.println();
 						System.out.println("[1]: Muovi");
 						System.out.println("[2]: Cresci");
 						System.out.println("[3]: Deponi");
@@ -86,6 +113,18 @@ public class TestLocale {
 						switch(scelta)  {
 						case 1 :
 							//muovi
+							int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getPosX(), dino.getPosY());
+							int[] coordinate = trovaDinosauro(raggiungibile);
+
+							System.out.println("Coordinate: " +  coordinate[0] + " " + coordinate[1]);
+							//ottengo la X e la Y di dove si trova il dinosauro nella vista di raggiungibilitˆ
+							System.out.println("Posiz Dino: " + dino.getPosX() + "," + dino.getPosY());
+							int origineX = dino.getPosX() - coordinate[0];
+							int origineY = dino.getPosY() - coordinate[1];
+							int fineX = dino.getPosX() + (raggiungibile.length - coordinate[0] - 1);
+							int fineY = dino.getPosY() + (raggiungibile[0].length - coordinate[1] - 1) ;
+							System.out.println("CoordinateMappa: " +  origineX + "," + origineY + "   " + fineX + "," + fineY);
+							i.stampaMappaRaggiungibilita(origineX, origineY, fineX, fineY, raggiungibile);
 							break;
 						case 2 :
 							//cresci
@@ -101,12 +140,42 @@ public class TestLocale {
 						}		
 						conteggioDinosauro++;
 					}while(p.getGiocatori().get(conteggioGiocatori).getDinosauri().size() > conteggioDinosauro); //chiudo while della scansione dei dinosauri
-					i.stampaMappa();
+					i.stampaMappaRidotta();
 					conteggioGiocatori++;
 				}while(p.getGiocatori().size() > conteggioGiocatori);
 				break;
 			}
 			p.nascitaDinosauro(turnoCorrente);
 		} while(p.getGiocatori().size()>0); //se esco da qui ho il vincitore
+	}
+
+
+	private static Giocatore cercaGiocatore (String nickname, Partita p) {
+		for(int i=0;i<p.getGiocatori().size();i++) if((p.getGiocatori().get(i).getNomeUtente()).equals(nickname)) return p.getGiocatori().get(i);
+		return null;
+	}
+
+	private static int[] trovaDinosauro (int[][] raggiungibile) {
+		int j,w;
+		int[] uscita = {0,0};
+		for(j=0;j<raggiungibile.length;j++) {
+			for(w=0;w<raggiungibile[0].length;w++) {
+				System.out.print(raggiungibile[j][w] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
+
+		for(j=0;j<raggiungibile.length;j++) {
+			for(w=0;w<raggiungibile[0].length;w++) {
+				if(raggiungibile[j][w]==0) {
+					uscita[0] = j;
+					uscita[1] = w;
+					return uscita;
+				}
+			}
+		}
+		return uscita;
 	}
 }

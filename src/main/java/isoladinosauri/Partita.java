@@ -1,17 +1,11 @@
 package isoladinosauri;
 
 import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
 import isoladinosauri.modellodati.Erbivoro;
-import isoladinosauri.modellodati.Vegetale;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
