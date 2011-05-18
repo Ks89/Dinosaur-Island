@@ -154,6 +154,53 @@ public class Isola {
 		System.out.println();
 	}	
 
+	
+	public void stampaMappaRidottaVisibilita(Giocatore giocatore) {
+		//metodo che esiste solo per testare il caricamento
+		//presto sara' rimosso e trasformato in test junit
+		System.out.print("   ");
+		for(int j=0;j<40;j++) {
+			if(j<10) System.out.print("0" + j + " ");
+			else System.out.print(j + " ");
+		}
+		System.out.println();
+		for(int i=0;i<40;i++) {
+			if(i<10) System.out.print("0" + i + " ");
+			else System.out.print(i + " ");
+			for(int j=0;j<40;j++) {
+				if(giocatore.getMappaVisibile()[i][j]==true) {
+					if (mappa[i][j] == null) { //e' acqua
+						System.out.print("   ");
+					}
+					else { //se e' terra puo' essere carogna o vegetale
+						if (mappa[i][j] instanceof Cella) {
+							Cella cella = mappa[i][j];
+							if((cella.getDinosauro()!=null) && cella.getDinosauro() instanceof Dinosauro) {
+								System.out.print(cella.getDinosauro().getId() + " ");
+							} else {
+								if(cella.getOccupante() instanceof Carogna)
+								{
+									System.out.print(" c ");
+								}
+								if(cella.getOccupante() instanceof Vegetale)
+								{
+									System.out.print(" v ");
+								}
+								if(!(cella.getOccupante() instanceof Vegetale) &&
+										!(cella.getOccupante() instanceof Carogna)) {
+									System.out.print(" . ");
+								}
+							}
+						}
+					}
+				} else System.out.print("   ");
+				
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
+	}	
 
 	public void stampaMappaRaggiungibilita(int inizioX, int inizioY, int fineX, int fineY, int[][]raggiungibilita) {
 		System.out.print("   ");

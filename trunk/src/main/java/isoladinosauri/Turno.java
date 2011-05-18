@@ -115,132 +115,135 @@ public class Turno {
 	//*******************************************************************************************************************
 	//*****************************************GESTIONE MOVIMENTO********************************************************
 	//*******************************************************************************************************************
-	
-	  public int [][] ottieniRaggiungibilita(int sorgX, int sorgY) {
 
-	    	int i,j,riga,colonna,maxR,maxC,rigaSu,rigaGiu,colonnaSx,colonnaDx,passo,nPassi;
-	    	int[] origineMappaMovimento = new int [2];
-	    	int[] estremoMappaMovimento = new int [2];
-	    	
-	    	if(this.partita.getIsola().getMappa()[sorgX][sorgY].getDinosauro() instanceof Carnivoro){
-	    		origineMappaMovimento = this.ottieniOrigineVisuale(sorgX, sorgY, 3); //in questo caso 3 e' il numero di passi non la dimensione
-	    		estremoMappaMovimento = this.ottieniEstremoVisuale(sorgX, sorgY, 3);
-	    		nPassi=3;
-	    	}
-	    	else{ //erbivoro
-	    		origineMappaMovimento = this.ottieniOrigineVisuale(sorgX, sorgY, 2); //in questo caso 2 e' il numero di passi non la dimensione
-	    		estremoMappaMovimento = this.ottieniEstremoVisuale(sorgX, sorgY, 2);
-	    		nPassi=2;
-	    	}
+	public int [][] ottieniRaggiungibilita(int sorgX, int sorgY) {
 
-	    	//estremi del movimento del dinosauro
-	    	maxR = estremoMappaMovimento[1]-origineMappaMovimento[1]+1;
-	    	maxC = estremoMappaMovimento[0]-origineMappaMovimento[0]+1;
-	    	
-	    	int[][] mappaMovimento = new int[maxR][maxC];
-	    
-	    	// numeri convenzione: 
-	    	//8 = ACQUA
-	    	//9 = NON RAGGIUNGIBILE			
-	    
-	    	// copio l'acqua della mappa nella sottomappa e metto non raggiungibile altrove
+		int i,j,riga,colonna,maxR,maxC,rigaSu,rigaGiu,colonnaSx,colonnaDx,passo,nPassi;
+		int[] origineMappaMovimento = new int [2];
+		int[] estremoMappaMovimento = new int [2];
 
-	    	for(i=0; i<maxR; i++) {
-	    		for(j=0; j<maxC; j++) {
-	    			if(this.partita.getIsola().getMappa()[origineMappaMovimento[1]+i][origineMappaMovimento[0]+j] == null)
-	    				mappaMovimento[i][j] = 8; // ACQUA=8
-	    			else mappaMovimento[i][j] = 9; // NON RAGGIUNGIBILE = 9
-	    		}
-	    	}
-	    	mappaMovimento[sorgY-origineMappaMovimento[1]][sorgX-origineMappaMovimento[0]] = 0; // mi posiziono sul dinosauro e sono al passo 0
+		if(this.partita.getIsola().getMappa()[sorgX][sorgY].getDinosauro() instanceof Carnivoro){
+			origineMappaMovimento = this.ottieniOrigineVisuale(sorgX, sorgY, 3); //in questo caso 3 e' il numero di passi non la dimensione
+			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgX, sorgY, 3);
+			nPassi=3;
+		}
+		else{ //erbivoro
+			origineMappaMovimento = this.ottieniOrigineVisuale(sorgX, sorgY, 2); //in questo caso 2 e' il numero di passi non la dimensione
+			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgX, sorgY, 2);
+			nPassi=2;
+		}
+		
+		//solo per test
+		nPassi=3;
 
-	    	// scandisco ora la mappaMovimento e per ogni passo stabilisco se posso muovermi sulla cella
-	    	for(passo=1; passo<=nPassi; passo++) {
-	    		for(riga=0; riga<maxR; riga++) {
-	    			for(colonna=0; colonna<maxC; colonna++) {
-	    				if(mappaMovimento[riga][colonna] == passo-1) {
-	    					if(riga-1<0)rigaGiu=riga;
-	    					else rigaGiu=riga-1;
-	    					if(riga+1>=maxR) rigaSu=riga;
-	    					else rigaSu=riga+1;
-	    					
-	    					for(i=rigaGiu; i<=rigaSu; i++) {
-	    						if(colonna-1<0) colonnaSx=colonna;
-	    						else colonnaSx=colonna-1;
-	    						if(colonna+1>=maxC) colonnaDx=colonna;
-	    						else colonnaDx=colonna+1;
-	    						for(j=colonnaSx; j<=colonnaDx; j++) {
-	    							// non c'e' acqua e non c'e' un numero di passi inferiori che mi permettono di raggiungere la cella
-	    							if(mappaMovimento[i][j] == 9) mappaMovimento[i][j] = passo;
-	    						}
-	    					}
-	    				}
-	    			}
-	    		}
-	    	}
-	    	// ora tutte le celle che contengono numeri diversi da 8 (acqua) e diversi da 9 (non raggiungibile) sono raggiungibili dal dinosauro con percorso 0->1->2->3	
-	    	return mappaMovimento;
-	    }
+		//estremi del movimento del dinosauro
+		maxR = estremoMappaMovimento[1]-origineMappaMovimento[1]+1;
+		maxC = estremoMappaMovimento[0]-origineMappaMovimento[0]+1;
 
-	    public int [][] ottieniStradaPercorsa(int sorgX, int sorgY, int destX, int destY) {
-	    	
-	    	int[][] mappaMovimento = this.ottieniRaggiungibilita(sorgX,sorgY);
-	    	int i=0,j=0,maxR,maxC,x,y,trovato,partenzaDinoX,partenzaDinoY,arrivoDinoX,arrivoDinoY,deltaX,deltaY,distMin,cont=0;
-	    	int ySu,yGiu,xSx,xDx;
-	    	
-	    	deltaX = destX - sorgX;
-	    	deltaY = destY - sorgY;
-	    	
-	    	maxR = mappaMovimento.length;
-	    	maxC = mappaMovimento[0].length;
-	    	
-	    	//cerco le coordinate fittizie (partenzaDinoX,partenzaDinoY) del dinosauro nella sottomappa
-	    	for(i=0,trovato=0; i<maxR && trovato==0; i++)
-	    		for(j=0; j<maxC && trovato==0; j++)
-	    			if(mappaMovimento[i][j]==0) trovato = 1;
-	    	
-	    	if(trovato==1){    	
+		int[][] mappaMovimento = new int[maxR][maxC];
 
-	    		partenzaDinoX = j-1;
-	    		partenzaDinoY = i-1;
+		// numeri convenzione: 
+		//8 = ACQUA
+		//9 = NON RAGGIUNGIBILE			
 
-	    		arrivoDinoX = partenzaDinoX + deltaX;
-	    		arrivoDinoY = partenzaDinoY - deltaY;
+		// copio l'acqua della mappa nella sottomappa e metto non raggiungibile altrove
 
-	    		distMin = mappaMovimento[arrivoDinoY][arrivoDinoX];
-	    		
-	    		x = arrivoDinoX;
-	    		y = arrivoDinoY;
-	    		
-	    		mappaMovimento[y][x] -= 7;
-	        	
-	    		for(cont=distMin; cont>0; cont--) {
-	    			if(y-1<0) ySu=y;
-	    			else ySu=y-1;
-	    			if(y+1>=maxR) yGiu=y;
-	    			else yGiu=y+1;
-	    			for(i=ySu,trovato=0; i<=yGiu && trovato==0; i++) {
-	    				if(x-1<0) xSx=x;
-	    				else xSx=x-1;
-	    				if(x+1>=maxC) xDx=x;
-	    				else xDx=x+1;
-	    				for(j=xSx; j<=xDx && trovato==0; j++) {
-	    					if(mappaMovimento[i][j] == cont-1){
-	    						trovato=1;
-	    						mappaMovimento[i][j] -= 7;
-	    						x=j;
-	    						y=i;
-	    					}
-	    				}
-	    			}
-	    		}    					
-	    	}
-	    	return mappaMovimento;
-	    }
+		for(i=0; i<maxR; i++) {
+			for(j=0; j<maxC; j++) {
+				if(this.partita.getIsola().getMappa()[origineMappaMovimento[1]+i][origineMappaMovimento[0]+j] == null)
+					mappaMovimento[i][j] = 8; // ACQUA=8
+				else mappaMovimento[i][j] = 9; // NON RAGGIUNGIBILE = 9
+			}
+		}
+		mappaMovimento[sorgY-origineMappaMovimento[1]][sorgX-origineMappaMovimento[0]] = 0; // mi posiziono sul dinosauro e sono al passo 0
 
-	    
-	    
-	
+		// scandisco ora la mappaMovimento e per ogni passo stabilisco se posso muovermi sulla cella
+		for(passo=1; passo<=nPassi; passo++) {
+			for(riga=0; riga<maxR; riga++) {
+				for(colonna=0; colonna<maxC; colonna++) {
+					if(mappaMovimento[riga][colonna] == passo-1) {
+						if(riga-1<0)rigaGiu=riga;
+						else rigaGiu=riga-1;
+						if(riga+1>=maxR) rigaSu=riga;
+						else rigaSu=riga+1;
+
+						for(i=rigaGiu; i<=rigaSu; i++) {
+							if(colonna-1<0) colonnaSx=colonna;
+							else colonnaSx=colonna-1;
+							if(colonna+1>=maxC) colonnaDx=colonna;
+							else colonnaDx=colonna+1;
+							for(j=colonnaSx; j<=colonnaDx; j++) {
+								// non c'e' acqua e non c'e' un numero di passi inferiori che mi permettono di raggiungere la cella
+								if(mappaMovimento[i][j] == 9) mappaMovimento[i][j] = passo;
+							}
+						}
+					}
+				}
+			}
+		}
+		// ora tutte le celle che contengono numeri diversi da 8 (acqua) e diversi da 9 (non raggiungibile) sono raggiungibili dal dinosauro con percorso 0->1->2->3	
+		return mappaMovimento;
+	}
+
+	public int [][] ottieniStradaPercorsa(int sorgX, int sorgY, int destX, int destY) {
+
+		int[][] mappaMovimento = this.ottieniRaggiungibilita(sorgX,sorgY);
+		int i=0,j=0,maxR,maxC,x,y,trovato,partenzaDinoX,partenzaDinoY,arrivoDinoX,arrivoDinoY,deltaX,deltaY,distMin,cont=0;
+		int ySu,yGiu,xSx,xDx;
+
+		deltaX = destX - sorgX;
+		deltaY = destY - sorgY;
+
+		maxR = mappaMovimento.length;
+		maxC = mappaMovimento[0].length;
+
+		//cerco le coordinate fittizie (partenzaDinoX,partenzaDinoY) del dinosauro nella sottomappa
+		for(i=0,trovato=0; i<maxR && trovato==0; i++)
+			for(j=0; j<maxC && trovato==0; j++)
+				if(mappaMovimento[i][j]==0) trovato = 1;
+
+		if(trovato==1){    	
+
+			partenzaDinoX = j-1;
+			partenzaDinoY = i-1;
+
+			arrivoDinoX = partenzaDinoX + deltaX;
+			arrivoDinoY = partenzaDinoY - deltaY;
+
+			distMin = mappaMovimento[arrivoDinoY][arrivoDinoX];
+
+			x = arrivoDinoX;
+			y = arrivoDinoY;
+
+			mappaMovimento[y][x] -= 7;
+
+			for(cont=distMin; cont>0; cont--) {
+				if(y-1<0) ySu=y;
+				else ySu=y-1;
+				if(y+1>=maxR) yGiu=y;
+				else yGiu=y+1;
+				for(i=ySu,trovato=0; i<=yGiu && trovato==0; i++) {
+					if(x-1<0) xSx=x;
+					else xSx=x-1;
+					if(x+1>=maxC) xDx=x;
+					else xDx=x+1;
+					for(j=xSx; j<=xDx && trovato==0; j++) {
+						if(mappaMovimento[i][j] == cont-1){
+							trovato=1;
+							mappaMovimento[i][j] -= 7;
+							x=j;
+							y=i;
+						}
+					}
+				}
+			}    					
+		}
+		return mappaMovimento;
+	}
+
+
+
+
 	public int getContatoreTurno() {
 		return contatoreTurno;
 	}
