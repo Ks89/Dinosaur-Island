@@ -23,7 +23,7 @@ public class Turno {
 
 			int[] vista = this.ottieniVisuale(posizioneX, posizioneY);
 			//System.out.println("illumina -> " + "(" + vista[0] + "," + vista[1] + ")" + "(" + 
-			//cella.getDinosauro().getPosX() + "," + cella.getDinosauro().getPosY() + ")" + "(" + vista[2] + "," + vista[3] + ")");
+			//cella.getDinosauro().getriga() + "," + cella.getDinosauro().getcolonna() + ")" + "(" + vista[2] + "," + vista[3] + ")");
 
 			Giocatore giocatore = this.partita.identificaDinosauro(cella.getDinosauro());
 			boolean[][] mappaDaIlluminare = giocatore.getMappaVisibile();
@@ -39,9 +39,9 @@ public class Turno {
 		} else System.out.println("Eccezione: c'e' un problema perche' sto illuminando una zona in cui non c'e' un dinosauro");
 	}
 
-	public int[] ottieniVisuale (int posizioneX, int posizioneY) {
+	public int[] ottieniVisuale (int riga, int colonna) {
 		int[] vista = new int[4];
-		Cella cella = this.partita.getIsola().getMappa()[posizioneX][posizioneY];
+		Cella cella = this.partita.getIsola().getMappa()[riga][colonna];
 
 		//se e' terra con un dinosauro sopra...
 		//qui mi assicuro che il quella posizione ci sia davvero un dinosauro
@@ -53,8 +53,8 @@ public class Turno {
 
 			//ottengo posizione dinosauro
 
-			int[] origineVista = this.ottieniOrigineVisuale(posizioneX, posizioneY, dimensioneStabilita);
-			int[] fineVista = this.ottieniEstremoVisuale(posizioneX, posizioneY, dimensioneStabilita);
+			int[] origineVista = this.ottieniOrigineVisuale(riga, colonna, dimensioneStabilita);
+			int[] fineVista = this.ottieniEstremoVisuale(riga, colonna, dimensioneStabilita);
 
 			vista[0] = origineVista[0];
 			vista[1] = origineVista[1];
@@ -79,7 +79,7 @@ public class Turno {
 	//metodo public per ottenere le coordinate di origine della vista del Dinosauro
 	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
 	//e anche da quello per la gestione del movimento
-	public int[] ottieniOrigineVisuale (int posX, int posY, int raggio) {
+	public int[] ottieniOrigineVisuale (int riga, int colonna, int raggio) {
 		int[] coordinate = new int[2];
 		int i=0, j=0;
 
@@ -87,27 +87,27 @@ public class Turno {
 		//inizio con i=0 nella posizione del dinosauro, dopo lo incremeneto, cioe' mi sto spostando
 		//verso l'origine della dimensione del raggio
 		//se arrivo a 0 termino subito, se no termino quando
-		for(i=0;i<raggio;i++) if(posX - i <= 0) break;
-		for(j=0;j<raggio;j++) if(posY - j <= 0) break;
+		for(i=0;i<raggio;i++) if(riga - i <= 0) break;
+		for(j=0;j<raggio;j++) if(colonna - j <= 0) break;
 
-		coordinate[0] = posX - i;
-		coordinate[1] = posY - j;
+		coordinate[0] = riga - i;
+		coordinate[1] = colonna - j;
 		return coordinate;		
 	}
 
 	//metodo public per ottenere le coordinate dell'estremo della vista del Dinosauro
 	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
 	//e anche da quello per la gestione del movimento
-	public int[] ottieniEstremoVisuale (int posX, int posY, int raggio) {
+	public int[] ottieniEstremoVisuale (int riga, int colonna, int raggio) {
 		int[] coordinate = new int[2];
 		int i=0, j=0;
 
 		//calcolo in i e j il punto estremo in alto a sinistra della vista (fine)
-		for(i=0;i<raggio;i++) if(posX + i >=39) break;
-		for(j=0;j<raggio;j++) if(posY + j >=39) break;
+		for(i=0;i<raggio;i++) if(riga + i >=39) break;
+		for(j=0;j<raggio;j++) if(colonna + j >=39) break;
 
-		coordinate[0] = posX + i;
-		coordinate[1] = posY + j;
+		coordinate[0] = riga + i;
+		coordinate[1] = colonna + j;
 		return coordinate;
 	}
 
@@ -116,29 +116,29 @@ public class Turno {
 	//*****************************************GESTIONE MOVIMENTO********************************************************
 	//*******************************************************************************************************************
 
-	public int [][] ottieniRaggiungibilita(int sorgX, int sorgY) {
+	public int [][] ottieniRaggiungibilita(int sorgRiga, int sorgColonna) {
 
 		int i,j,riga,colonna,maxR,maxC,rigaSu,rigaGiu,colonnaSx,colonnaDx,passo,nPassi;
 		int[] origineMappaMovimento = new int [2];
 		int[] estremoMappaMovimento = new int [2];
 
-		if(this.partita.getIsola().getMappa()[sorgX][sorgY].getDinosauro() instanceof Carnivoro){
-			origineMappaMovimento = this.ottieniOrigineVisuale(sorgX, sorgY, 3); //in questo caso 3 e' il numero di passi non la dimensione
-			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgX, sorgY, 3);
+		if(this.partita.getIsola().getMappa()[sorgRiga][sorgColonna].getDinosauro() instanceof Carnivoro){
+			origineMappaMovimento = this.ottieniOrigineVisuale(sorgRiga, sorgColonna, 3); //in questo caso 3 e' il numero di passi non la dimensione
+			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgRiga, sorgColonna, 3);
 			nPassi=3;
 		}
 		else{ //erbivoro
-			origineMappaMovimento = this.ottieniOrigineVisuale(sorgX, sorgY, 2); //in questo caso 2 e' il numero di passi non la dimensione
-			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgX, sorgY, 2);
+			origineMappaMovimento = this.ottieniOrigineVisuale(sorgRiga, sorgColonna, 2); //in questo caso 2 e' il numero di passi non la dimensione
+			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgRiga, sorgColonna, 2);
 			nPassi=2;
 		}
 		
 		//solo per test
-		nPassi=3;
+//		nPassi=3;
 
 		//estremi del movimento del dinosauro
-		maxR = estremoMappaMovimento[1]-origineMappaMovimento[1]+1;
-		maxC = estremoMappaMovimento[0]-origineMappaMovimento[0]+1;
+		maxR = estremoMappaMovimento[0]-origineMappaMovimento[0]+1;
+		maxC = estremoMappaMovimento[1]-origineMappaMovimento[1]+1;
 
 		int[][] mappaMovimento = new int[maxR][maxC];
 
@@ -150,24 +150,24 @@ public class Turno {
 
 		for(i=0; i<maxR; i++) {
 			for(j=0; j<maxC; j++) {
-				if(this.partita.getIsola().getMappa()[origineMappaMovimento[1]+i][origineMappaMovimento[0]+j] == null)
+				if(this.partita.getIsola().getMappa()[origineMappaMovimento[0]+i][origineMappaMovimento[1]+j] == null)
 					mappaMovimento[i][j] = 8; // ACQUA=8
 				else mappaMovimento[i][j] = 9; // NON RAGGIUNGIBILE = 9
 			}
 		}
-		mappaMovimento[sorgY-origineMappaMovimento[1]][sorgX-origineMappaMovimento[0]] = 0; // mi posiziono sul dinosauro e sono al passo 0
+		mappaMovimento[sorgRiga-origineMappaMovimento[0]][sorgColonna-origineMappaMovimento[1]] = 0; // mi posiziono sul dinosauro e sono al passo 0
 
 		// scandisco ora la mappaMovimento e per ogni passo stabilisco se posso muovermi sulla cella
 		for(passo=1; passo<=nPassi; passo++) {
 			for(riga=0; riga<maxR; riga++) {
 				for(colonna=0; colonna<maxC; colonna++) {
 					if(mappaMovimento[riga][colonna] == passo-1) {
-						if(riga-1<0)rigaGiu=riga;
-						else rigaGiu=riga-1;
-						if(riga+1>=maxR) rigaSu=riga;
-						else rigaSu=riga+1;
+						if(riga-1<0)rigaSu=riga;
+						else rigaSu=riga-1;
+						if(riga+1>=maxR) rigaGiu=riga;
+						else rigaGiu=riga+1;
 
-						for(i=rigaGiu; i<=rigaSu; i++) {
+						for(i=rigaSu; i<=rigaGiu; i++) {
 							if(colonna-1<0) colonnaSx=colonna;
 							else colonnaSx=colonna-1;
 							if(colonna+1>=maxC) colonnaDx=colonna;
@@ -185,14 +185,14 @@ public class Turno {
 		return mappaMovimento;
 	}
 
-	public int [][] ottieniStradaPercorsa(int sorgX, int sorgY, int destX, int destY) {
+	public int [][] ottieniStradaPercorsa(int sorgRiga, int sorgColonna, int destRiga, int destColonna) {
 
-		int[][] mappaMovimento = this.ottieniRaggiungibilita(sorgX,sorgY);
-		int i=0,j=0,maxR,maxC,x,y,trovato,partenzaDinoX,partenzaDinoY,arrivoDinoX,arrivoDinoY,deltaX,deltaY,distMin,cont=0;
-		int ySu,yGiu,xSx,xDx;
+		int[][] mappaMovimento = this.ottieniRaggiungibilita(sorgRiga,sorgColonna);
+		int i=0,j=0,maxR,maxC,riga,colonna,trovato,partenzaDinoRiga,partenzaDinoColonna,arrivoDinoRiga,arrivoDinoColonna,deltaRiga,deltaColonna,distMin,cont=0;
+		int rigaSu,rigaGiu,colonnaSx,colonnaDx;
 
-		deltaX = destX - sorgX;
-		deltaY = destY - sorgY;
+		deltaRiga = destRiga - sorgRiga;
+		deltaColonna = destColonna - sorgColonna;
 
 		maxR = mappaMovimento.length;
 		maxC = mappaMovimento[0].length;
@@ -204,35 +204,35 @@ public class Turno {
 
 		if(trovato==1){    	
 
-			partenzaDinoX = j-1;
-			partenzaDinoY = i-1;
+			partenzaDinoRiga = i-1;
+			partenzaDinoColonna = j-1;
 
-			arrivoDinoX = partenzaDinoX + deltaX;
-			arrivoDinoY = partenzaDinoY - deltaY;
+			arrivoDinoRiga = partenzaDinoRiga + deltaRiga;
+			arrivoDinoColonna = partenzaDinoColonna + deltaColonna;
 
-			distMin = mappaMovimento[arrivoDinoY][arrivoDinoX];
+			distMin = mappaMovimento[arrivoDinoRiga][arrivoDinoColonna];
 
-			x = arrivoDinoX;
-			y = arrivoDinoY;
+			riga = arrivoDinoRiga;
+			colonna = arrivoDinoColonna;
 
-			mappaMovimento[y][x] -= 7;
+			mappaMovimento[riga][colonna] -= 7;
 
 			for(cont=distMin; cont>0; cont--) {
-				if(y-1<0) ySu=y;
-				else ySu=y-1;
-				if(y+1>=maxR) yGiu=y;
-				else yGiu=y+1;
-				for(i=ySu,trovato=0; i<=yGiu && trovato==0; i++) {
-					if(x-1<0) xSx=x;
-					else xSx=x-1;
-					if(x+1>=maxC) xDx=x;
-					else xDx=x+1;
-					for(j=xSx; j<=xDx && trovato==0; j++) {
+				if(riga-1<0) rigaSu=riga;
+				else rigaSu=riga-1;
+				if(riga+1>=maxR) rigaGiu=riga;
+				else rigaGiu=riga+1;
+				for(i=rigaSu,trovato=0; i<=rigaGiu && trovato==0; i++) {
+					if(colonna-1<0) colonnaSx=colonna;
+					else colonnaSx=colonna-1;
+					if(colonna+1>=maxC) colonnaDx=colonna;
+					else colonnaDx=colonna+1;
+					for(j=colonnaSx; j<=colonnaDx && trovato==0; j++) {
 						if(mappaMovimento[i][j] == cont-1){
 							trovato=1;
 							mappaMovimento[i][j] -= 7;
-							x=j;
-							y=i;
+							riga=i;
+							colonna=j;
 						}
 					}
 				}

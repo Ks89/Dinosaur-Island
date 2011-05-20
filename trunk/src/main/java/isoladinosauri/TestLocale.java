@@ -101,7 +101,7 @@ public class TestLocale {
 						System.out.println("Energia:\t" + dino.getEnergia());
 						System.out.println("En Max:\t\t" + dino.getEnergiaMax());
 						System.out.println("Eta':\t\t" + dino.getEtaDinosauro());
-						System.out.println("Pos:\t\t(" + dino.getPosX() + "," + dino.getPosY() + ")");
+						System.out.println("Pos:\t\t(" + dino.getRiga() + "," + dino.getColonna() + ")");
 						System.out.println("->ConteggioDinosauro: " + conteggioDinosauro);
 						System.out.println("*******************************");
 						System.out.println();
@@ -112,18 +112,20 @@ public class TestLocale {
 						switch(scelta)  {
 						case 1 :
 							//muovi
-							int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getPosX(), dino.getPosY());
+							int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getRiga(), dino.getColonna());
+							int[][] stradaPercorsa = t.ottieniStradaPercorsa(dino.getRiga(), dino.getColonna(),dino.getRiga()+3, dino.getColonna()+2);
 							int[] coordinate = trovaDinosauro(raggiungibile);
 
 							System.out.println("Coordinate: " +  coordinate[0] + " " + coordinate[1]);
-							//ottengo la X e la Y di dove si trova il dinosauro nella vista di raggiungibilitˆ
-							System.out.println("Posiz Dino: " + dino.getPosX() + "," + dino.getPosY());
-							int origineX = dino.getPosX() - coordinate[0];
-							int origineY = dino.getPosY() - coordinate[1];
-							int fineX = dino.getPosX() + (raggiungibile.length - coordinate[0] - 1);
-							int fineY = dino.getPosY() + (raggiungibile[0].length - coordinate[1] - 1) ;
-							System.out.println("CoordinateMappa: " +  origineX + "," + origineY + "   " + fineX + "," + fineY);
-							i.stampaMappaRaggiungibilita(origineX, origineY, fineX, fineY, raggiungibile);
+							//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita'
+							System.out.println("Posiz Dino: " + dino.getRiga() + "," + dino.getColonna());
+							int origineRiga = dino.getRiga() - coordinate[0];
+							int origineColonna = dino.getColonna() - coordinate[1];
+							int fineRiga = dino.getRiga() + (raggiungibile.length - coordinate[0] - 1);
+							int fineColonna = dino.getColonna() + (raggiungibile[0].length - coordinate[1] - 1) ;
+							System.out.println("CoordinateMappa: " +  origineRiga + "," + origineColonna + "   " + fineRiga + "," + fineColonna);
+							i.stampaMappaRaggiungibilita(origineRiga, origineColonna, fineRiga, fineColonna, raggiungibile);
+							i.stampaMappaStradaPercorsa(origineRiga, origineColonna, fineRiga, fineColonna, stradaPercorsa);
 							break;
 						case 2 :
 							//cresci
@@ -132,14 +134,14 @@ public class TestLocale {
 							break;
 						case 3 :
 							//deponi
-							dino.deponi(i.getMappa()[dino.getPosX()][dino.getPosY()], p.getGiocatori().get(conteggioGiocatori));
+							dino.deponi(i.getMappa()[dino.getRiga()][dino.getColonna()], p.getGiocatori().get(conteggioGiocatori));
 							break;
 						default : //passa l'azione per il dinosauro specificato
 							break;
 						}		
 						conteggioDinosauro++;
 					}while(p.getGiocatori().get(conteggioGiocatori).getDinosauri().size() > conteggioDinosauro); //chiudo while della scansione dei dinosauri
-					i.stampaMappa();
+//					i.stampaMappa();
 					i.stampaMappaRidotta();
 					p.getGiocatori().get(conteggioGiocatori).stampaMappa();
 					i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));

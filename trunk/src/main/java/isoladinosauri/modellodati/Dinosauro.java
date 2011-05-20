@@ -30,14 +30,14 @@ public abstract class Dinosauro extends Organismo implements Animale {
 		else return false; 
 	}
 
-	public boolean aggCordinate(int posX, int posY) {
+	public boolean aggCordinate(int riga, int colonna) {
 		//esegue il movimento nelle coordinate specificate ed e' chiamato dal metodo
 		//del movimento nella classe Turno
 		super.energia -= 10 * (int)Math.pow(2, (double)this.dimensione);
 		if(super.getEnergia()>0) { 
 			//eseguo movimento correttamente
-			super.setPosX(posX);
-			super.setPosY(posY);
+			super.setRiga(riga);
+			super.setColonna(colonna);
 			return true;
 		} else {
 			//TODO il dino deve essere cancellato dalla cella e dalla lista del giocatore
@@ -54,7 +54,7 @@ public abstract class Dinosauro extends Organismo implements Animale {
 
 		if(super.getEnergia()>0) {
 			//il dinosauro pu' compiere l'azione di deposizione
-			if(giocatore.getDinosauri().size()<5) giocatore.aggiungiUovo(super.getPosX(),super.getPosY());
+			if(giocatore.getDinosauri().size()<5) giocatore.aggiungiUovo(super.getRiga(),super.getColonna());
 			else {
 				System.out.println("Errore squadra completa");
 				//errore squadra completa e non posso creare altri dinosauri

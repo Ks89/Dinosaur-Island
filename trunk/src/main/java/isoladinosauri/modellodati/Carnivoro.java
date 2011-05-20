@@ -11,12 +11,12 @@ public class Carnivoro extends Dinosauro {
 		return (2 * super.energia * super.dimensione);
 	}
 		
-	public Carnivoro(String id, int posX, int posY, int turnoNascita) {
+	public Carnivoro(String id, int riga, int colonna, int turnoNascita) {
 		super.setId(id);
 		super.setEnergia(750);
 		super.energiaMax=1000;
-		super.posX = posX;
-		super.posY = posY;
+		super.riga = riga;
+		super.colonna = colonna;
 		super.dimensione=1;
 		Random random = new Random();
 		super.durataVita = random.nextInt(13) + 24;
@@ -25,7 +25,7 @@ public class Carnivoro extends Dinosauro {
 	}
 	
 	public void mangia(Animale animale, Cella cella) {
-		//questo metodo e' chiamato SOLO se this si è mosso su cella con un altro dino
+		//questo metodo e' chiamato SOLO se this si ÔøΩ mosso su cella con un altro dino
 		
 		//se e' un caragona
 		if (animale instanceof Carogna) {

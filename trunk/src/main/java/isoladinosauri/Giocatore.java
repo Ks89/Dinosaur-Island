@@ -18,7 +18,7 @@ public class Giocatore extends Utente {
 	
 	private String nomeSpecie;
 	private List<Dinosauro> dinosauri; //squadra di dinosauri del giocatore
-	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se è false)
+	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se ÔøΩ false)
 
 	private List<String> uova; //e' un array di uova del giocatore che viene svuotato alla fine di ogni giro dei giocatori
 
@@ -37,7 +37,7 @@ public class Giocatore extends Utente {
 		this.nomeSpecie = nomeSpecie;
 		dinosauri = new ArrayList<Dinosauro>();
 
-		//ottengo posX e posY in un vettore di interi di 2 elementi
+		//ottengo riga e colonna in un vettore di interi di 2 elementi
 		int[] pos = this.posizionaDinosauro();
 
 		this.idGiocatore = this.generaIdGiocatore();
@@ -63,7 +63,7 @@ public class Giocatore extends Utente {
 		//gestione mappa (buio e luce)
 		this.mappaVisibile = new boolean[40][40];
 		this.inizializzaMappaBuia();
-		this.illuminaMappa(dinosauro.getPosX(), dinosauro.getPosY());
+		this.illuminaMappa(dinosauro.getRiga(), dinosauro.getColonna());
 
 		//inizializzo l'array per le uova, ovviamente parte da vuoto perche' non ho uova all'inizio
 		this.uova = new ArrayList<String>();
@@ -77,15 +77,15 @@ public class Giocatore extends Utente {
 		//a mettere in dinosauro, stando attento a non
 		//metterlo dove c'e' gia' un altro o dove c'e'
 		//acqua. Il metodo mette in un array con 2 interi
-		//posX e posY e fa il return
+		//riga e colonna e fa il return
 		int[] coordinate = new int[2];
 		Cella cella;
 		Random random = new Random();
 		do {
-			coordinate[0] = random.nextInt(40);
-			coordinate[1] = random.nextInt(40);
-			//			coordX=23;
-			//			coordY=14;
+//			coordinate[0] = random.nextInt(40);
+//			coordinate[1] = random.nextInt(40);
+						coordinate[0]=8;
+						coordinate[1]=14;
 			cella = this.partita.getIsola().getMappa()[coordinate[0]][coordinate[1]];
 		} while(cella==null || cella.getDinosauro()!=null);
 		return coordinate;
@@ -211,8 +211,8 @@ public class Giocatore extends Utente {
 		return uova;
 	}
 
-	public void aggiungiUovo(int posX, int posY) {
-		this.uova.add(posX + "-" + posY);
+	public void aggiungiUovo(int riga, int colonna) {
+		this.uova.add(riga + "-" + colonna);
 		//System.out.println(uova.get(0));
 	}
 

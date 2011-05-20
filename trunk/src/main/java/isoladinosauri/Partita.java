@@ -7,9 +7,9 @@ import isoladinosauri.modellodati.Erbivoro;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.db4o.Db4o;
-import com.db4o.ObjectContainer;
-import com.db4o.ObjectSet;
+//import com.db4o.Db4o;
+//import com.db4o.ObjectContainer;
+//import com.db4o.ObjectSet;
 
 public class Partita {
 
@@ -23,7 +23,7 @@ public class Partita {
 	//aggiungere movimento dinosauro e richiamare illuminaMappa ogni passo fatto, sia la destinaz finale che i passi intermedi intrapresi per raggiungere
 	//la destinazione
 
-	//simulare tutto con aggiunta di più giocatori
+	//simulare tutto con aggiunta di piÔøΩ giocatori
 	//simulare tutto con JUNIT e mettere la Javadoc
 	//riordinare tutto il codice
 
@@ -116,8 +116,8 @@ public class Partita {
 		String[] coordinate; //array con dentro
 		int[] posizione = new int[2];
 		Dinosauro dinosauro = null;
-		Integer posX = null;
-		Integer posY = null;
+		Integer riga = null;
+		Integer colonna = null;
 		List<String> listaUova;
 
 		for(int i=0;i<this.getGiocatori().size();i++) {
@@ -129,10 +129,10 @@ public class Partita {
 
 				//ottengo le coordinate dell'uovo in questione
 				coordinate = listaUova.get(j).split("-");
-				posX = Integer.parseInt(coordinate[0]);
-				posY = Integer.parseInt(coordinate[1]);
+				riga = Integer.parseInt(coordinate[0]);
+				colonna = Integer.parseInt(coordinate[1]);
 
-				posizione = this.generaCoordinateNascituro(posX,posY);
+				posizione = this.generaCoordinateNascituro(riga,colonna);
 
 				String idDinosauro = this.getGiocatore(i).generaIdDinosauro();
 				System.out.println("id Dino:" + idDinosauro);
@@ -147,7 +147,7 @@ public class Partita {
 		}
 	}
 
-	private int[] generaCoordinateNascituro (int posX, int posY) {
+	private int[] generaCoordinateNascituro (int riga, int colonna) {
 		//passate le coordinate dell'uovo questo metodo genera le coordinate i cui POSSO
 		//far nascere il dinosauro
 
@@ -165,8 +165,8 @@ public class Partita {
 
 		//TODO COSA STUPIDA: for fino a 39 perche' la cornice della mappa e' tutta di acqua (sembra cmq stupido)
 		for(int i=1; i<39; i++) { //calcola il raggio della visuale
-			origine = this.turnoCorrente.ottieniOrigineVisuale(posX, posY, i);
-			estremo = this.turnoCorrente.ottieniEstremoVisuale(posX, posY, i);
+			origine = this.turnoCorrente.ottieniOrigineVisuale(riga, colonna, i);
+			estremo = this.turnoCorrente.ottieniEstremoVisuale(riga, colonna, i);
 			for(int w=origine[0]; w<estremo[0]+1; w++) { //mi muovo sulle righe 
 				for(int j=origine[1]; j<estremo[1]+1; j++) { //mi muovo sulle colonne
 					//					System.out.println(w + "," + j + " " + origine[0] + "," + origine[1] + " " + estremo[0] + "," + estremo[1]);
