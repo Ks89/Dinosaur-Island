@@ -1,6 +1,8 @@
 package isoladinosauri;
 
 import isoladinosauri.modellodati.Carnivoro;
+import isoladinosauri.modellodati.Dinosauro;
+import isoladinosauri.modellodati.Erbivoro;
 
 public class Turno {
 
@@ -242,6 +244,36 @@ public class Turno {
 	}
 
 
+	public void spostaDinosauro(Dinosauro mosso, Cella destinazione, int riga, int colonna) {
+		Giocatore giocatore = this.partita.identificaDinosauro(mosso);
+		if(destinazione.getDinosauro()!=null) {
+			//esegui combattimento
+			if(mosso instanceof Carnivoro) {
+				Carnivoro muovente = (Carnivoro)mosso;
+				muovente.mangia(destinazione.getDinosauro(), destinazione);
+			}
+			else {
+				Erbivoro muovente = (Erbivoro)mosso; 
+				//Carnivoro dinoDestinazione = (Carnivoro)destinazione.getDinosauro();
+				//destinazione.getDinosauro().mangia(muovente, this.partita);
+			}
+
+		} else {
+			//sposta il dinosauro perche' nella cella non c'e' nessuno
+			if(mosso.aggCordinate(riga, colonna)==true) {
+				//movimento eseguito correttamente
+			} else {
+				//il dinosauro muore perche' non ha abbastanza energia per muoversi
+				//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
+				this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+
+			}
+		}
+	}
+
+	public void incrementaEtaGiocatori() {
+		for(int i=0;i<this.partita.getGiocatori().size();i++) this.partita.getGiocatori().get(i).incrementaEtaAttuali();
+	}
 
 
 	public int getContatoreTurno() {

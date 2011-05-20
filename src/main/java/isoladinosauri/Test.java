@@ -69,12 +69,12 @@ public class Test {
 		giocatore2.illuminaMappa(giocatore2.getDinosauri().get(1).getRiga(),giocatore2.getDinosauri().get(1).getColonna());
 		giocatore3.illuminaMappa(giocatore3.getDinosauri().get(1).getRiga(),giocatore3.getDinosauri().get(1).getColonna());
 
-		p.aggiornaClassifica();
+//		p.aggiornaClassifica();
 		p.stampaClassifica();
 
 		i.stampaMappa();
 
-		p.aggiornaClassifica();
+//		p.aggiornaClassifica();
 		System.out.println("Classifica finale:");
 		p.stampaClassifica();
 
