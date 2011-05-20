@@ -11,12 +11,12 @@ public class Erbivoro extends Dinosauro {
 		return (super.energia * super.dimensione);
 	}
 	
-	public Erbivoro(String id, int posX, int posY, int turnoNascita) {
+	public Erbivoro(String id, int riga, int colonna, int turnoNascita) {
 		super.setId(id);
 		super.setEnergia(750);
 		super.energiaMax=1000;
-		super.posX = posX;
-		super.posY = posY;
+		super.riga = riga;
+		super.colonna = colonna;
 		super.dimensione=1;
 		Random random = new Random();
 		super.durataVita = random.nextInt(13) + 24;

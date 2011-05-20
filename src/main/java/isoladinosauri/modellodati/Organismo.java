@@ -2,8 +2,8 @@ package isoladinosauri.modellodati;
 
 public abstract class Organismo {
 	
-	protected int posX;
-	protected int posY;
+	protected int riga;
+	protected int colonna;
 	protected int energiaMax;
 	protected int energia;
 	/**
@@ -31,28 +31,28 @@ public abstract class Organismo {
 		this.energia = energia;
 	}
 	/**
-	 * @return the posX
+	 * @return the riga
 	 */
-	public int getPosX() {
-		return posX;
+	public int getRiga() {
+		return riga;
 	}
 	/**
-	 * @param posX the posX to set
+	 * @param riga the riga to set
 	 */
-	public void setPosX(int posX) {
-		this.posX = posX;
+	public void setRiga(int riga) {
+		this.riga = riga;
 	}
 	/**
-	 * @return the posY
+	 * @return the colonna
 	 */
-	public int getPosY() {
-		return posY;
+	public int getColonna() {
+		return colonna;
 	}
 	/**
-	 * @param posY the posY to set
+	 * @param colonna the colonna to set
 	 */
-	public void setPosY(int posY) {
-		this.posY = posY;
+	public void setColonna(int colonna) {
+		this.colonna = colonna;
 	}
 	
 	

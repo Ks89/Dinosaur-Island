@@ -18,12 +18,12 @@ public class Test {
 		p.aggiungiGiocatore(giocatore);
 		giocatore.getDinosauri().get(0).aumentaDimensione();
 		giocatore.getDinosauri().get(0).setEnergia(2500);
-		giocatore.illuminaMappa(giocatore.getDinosauri().get(0).getPosX(),giocatore.getDinosauri().get(0).getPosY());
+		giocatore.illuminaMappa(giocatore.getDinosauri().get(0).getRiga(),giocatore.getDinosauri().get(0).getColonna());
 		giocatore.stampaMappa();
 	    
 		
 		//depone uovo, cioe' aggiungo solo nell'array
-		giocatore.getDinosauri().get(0).deponi(i.getMappa()[giocatore.getDinosauri().get(0).getPosX()][giocatore.getDinosauri().get(0).getPosY()], giocatore);
+		giocatore.getDinosauri().get(0).deponi(i.getMappa()[giocatore.getDinosauri().get(0).getRiga()][giocatore.getDinosauri().get(0).getColonna()], giocatore);
 
 		System.out.println("L'uovo e' in coordinate" + giocatore.getUova().get(0));
 		
@@ -37,7 +37,7 @@ public class Test {
 
 		giocatore.getDinosauri().get(1).setEnergia(2500);
 
-		giocatore.illuminaMappa(giocatore.getDinosauri().get(1).getPosX(),giocatore.getDinosauri().get(1).getPosY());
+		giocatore.illuminaMappa(giocatore.getDinosauri().get(1).getRiga(),giocatore.getDinosauri().get(1).getColonna());
 		
 		giocatore.stampaMappa();
 
@@ -58,16 +58,16 @@ public class Test {
 
 		p.aggiungiGiocatore(giocatore3);
 
-		giocatore2.illuminaMappa(giocatore2.getDinosauri().get(0).getPosX(),giocatore2.getDinosauri().get(0).getPosY());
-		giocatore3.illuminaMappa(giocatore3.getDinosauri().get(0).getPosX(),giocatore3.getDinosauri().get(0).getPosY());
+		giocatore2.illuminaMappa(giocatore2.getDinosauri().get(0).getRiga(),giocatore2.getDinosauri().get(0).getColonna());
+		giocatore3.illuminaMappa(giocatore3.getDinosauri().get(0).getRiga(),giocatore3.getDinosauri().get(0).getColonna());
 
-		giocatore2.getDinosauri().get(0).deponi(i.getMappa()[giocatore2.getDinosauri().get(0).getPosX()][giocatore2.getDinosauri().get(0).getPosY()], giocatore2);
-		giocatore3.getDinosauri().get(0).deponi(i.getMappa()[giocatore3.getDinosauri().get(0).getPosX()][giocatore3.getDinosauri().get(0).getPosY()], giocatore3);
+		giocatore2.getDinosauri().get(0).deponi(i.getMappa()[giocatore2.getDinosauri().get(0).getRiga()][giocatore2.getDinosauri().get(0).getColonna()], giocatore2);
+		giocatore3.getDinosauri().get(0).deponi(i.getMappa()[giocatore3.getDinosauri().get(0).getRiga()][giocatore3.getDinosauri().get(0).getColonna()], giocatore3);
 
 		p.nascitaDinosauro(4);
 
-		giocatore2.illuminaMappa(giocatore2.getDinosauri().get(1).getPosX(),giocatore2.getDinosauri().get(1).getPosY());
-		giocatore3.illuminaMappa(giocatore3.getDinosauri().get(1).getPosX(),giocatore3.getDinosauri().get(1).getPosY());
+		giocatore2.illuminaMappa(giocatore2.getDinosauri().get(1).getRiga(),giocatore2.getDinosauri().get(1).getColonna());
+		giocatore3.illuminaMappa(giocatore3.getDinosauri().get(1).getRiga(),giocatore3.getDinosauri().get(1).getColonna());
 
 		p.aggiornaClassifica();
 		p.stampaClassifica();
@@ -102,14 +102,14 @@ public class Test {
 		System.out.println("giocatore2:" + giocatore2.getIdGiocatore());
 		System.out.println("giocatore4:" + giocatore4.getIdGiocatore());
 				
-		int[][] map = t.ottieniRaggiungibilita(giocatore.getDinosauri().get(1).getPosX(),giocatore.getDinosauri().get(1).getPosY());
+		int[][] map = t.ottieniRaggiungibilita(giocatore.getDinosauri().get(1).getRiga(),giocatore.getDinosauri().get(1).getColonna());
 		for(int a=0; a<map.length; a++){
 			for(int b=0; b<map[0].length; b++)
 				System.out.printf(map[a][b]+"\t");
 			System.out.printf("\n\n");
 		}
 		System.out.println();
-		int[][] map2 = t.ottieniStradaPercorsa(giocatore.getDinosauri().get(1).getPosX(),giocatore.getDinosauri().get(1).getPosY(),giocatore.getDinosauri().get(1).getPosX()-2,giocatore.getDinosauri().get(1).getPosY()+3);
+		int[][] map2 = t.ottieniStradaPercorsa(giocatore.getDinosauri().get(1).getRiga(),giocatore.getDinosauri().get(1).getColonna(),giocatore.getDinosauri().get(1).getRiga()-2,giocatore.getDinosauri().get(1).getColonna()+3);
 		for(int r=0; r<map2.length; r++){
 			for(int c=0; c<map2[0].length; c++)
 				System.out.printf(map2[r][c]+"\t");
