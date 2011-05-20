@@ -18,18 +18,14 @@ public class Partita {
 	private List<Giocatore> giocatori;
 	private int contatoreTurni;
 
-	//creare metdo in giocatore per creare il suo punteggio da usare in creaclassifica
-
 	//aggiungere movimento dinosauro e richiamare illuminaMappa ogni passo fatto, sia la destinaz finale che i passi intermedi intrapresi per raggiungere
 	//la destinazione
 
-	//simulare tutto con aggiunta di piÔøΩ giocatori
+	//simulare tutto con aggiunta di più giocatori
 	//simulare tutto con JUNIT e mettere la Javadoc
 	//riordinare tutto il codice
-
-	//da gestire la classifica, per ora la metto cosi, ma deve tenere a mente diverse cose
-	//e magari conviene farla solo con delle stringhe
 	private List<String> classifica;
+	//private List<Tupla> classificaGiocatori;
 
 	public Partita(Isola isola)
 	{
@@ -143,6 +139,7 @@ public class Partita {
 				else if(this.getGiocatore(i).getDinosauri().get(0) instanceof Erbivoro) dinosauro = new Erbivoro(idDinosauro,posizione[0], posizione[1], turnoNascita);
 				this.getGiocatore(i).aggiungiDinosauro(dinosauro);
 				this.getIsola().getMappa()[posizione[0]][posizione[1]].setDinosauro(dinosauro);	
+				this.getGiocatore(i).rimuoviUova();
 			}
 		}
 	}
@@ -184,63 +181,122 @@ public class Partita {
 	}
 
 
+	//*******************************************************************************************************************
+	//********************************************GESTIONE CLASSIFICA****************************************************
+	//*******************************************************************************************************************
 	public List<String> getClassifica() {
 		return classifica;
 	}
+	
+	//metodo che serve per aggiungere elementi nella classifica
+	//DEVE ESSERE USATO SOLO PER INSERIRE NUOVI GIOCATORI E PER AGGIORNARE I PUNTEGGI
+	//se passo un nuovo giocatore lo inserisce, se ne passo uno gia' presente gli aggiorna il punteggio
+	//se voglio gestire lo stato online/offline chiamo AGGIORNACLASSIFICASTATI()
+	public void aggiungiTuplaClassifica(Giocatore giocatore) {
+		
+		//ottengo il giocatore da aggiungere nella classifica e creo la sua tupla
+		String tupla = ",{ " + giocatore.getNomeUtente() + "," + giocatore.getNomeSpecie() + "," + giocatore.calcolaPunti() + ",s}";
+	
+		//se la tupla non e' presente in classifica (cioe' risultato==-1) la aggiungo
+		if(this.cercaInClassifica(giocatore)==-1) this.getClassifica().add(tupla);
+		//altrimenti cerco la tupla nella classifica e la aggiorno col metodo apposta "aggiornaTupla"
+		else this.aggiornaPuntiTupla(tupla,giocatore);
+	}
+	
+	//metodo per aggiornare una tupla quando il giocatore, passato in aggiungiTuplaClassifica, si trova gia' nella classifica
+	private void aggiornaPuntiTupla(String tupla, Giocatore giocatore) {
+		String[] tuplaTagliata;
+		String nuovaTupla;
+		int punti = giocatore.calcolaPunti();		
+		//ottengo la posizione nella classifica del giocatore, ovvero cerco la posizione della tupla associata al giocatore
+		int posizione = this.cercaInClassifica(giocatore);
 
-	private Giocatore cercaInClassifica(String tupla) {
-		String[] separa = tupla.substring(3, tupla.length()).split(",");
-
-		for(int i=0;i<this.getGiocatori().size();i++) {
-			//System.out.println(separa[0] + "," + this.getGiocatore(i).getNomeUtente() + "-" + separa[1] + "," + this.getGiocatore(i).getNomeSpecie());
-			if(separa[0].equals(this.getGiocatore(i).getNomeUtente()) && (separa[1].equals(this.getGiocatore(i).getNomeSpecie()))) return this.getGiocatore(i);
-		}
-		return null; //indica che l'elemento non e' stato trovato (viene gestino in aggiornaClassifica())
+		//taglio la tupla ad ogni virgola e modifico solo il campo dei punti per poi settare l'elemento della classifica
+		//in questo modo non aggiungo tuple alla classifica, semplicemente ne modifico una gia' esistente ed in particolare
+		//modifico solo un piccolo campo di essa, ovvero la stringa che indica i punti del gicoatore
+		//l'if serve nel caso in cui voglia aggiungere un giocatore che era giaì presente in classifica prima e che e' uscito
+		//e ora sta rientrando nella partita. ovviamente gli resetto i punti e lo imposto su online
+		tuplaTagliata = this.getClassifica().get(posizione).split(",");
+		if(tuplaTagliata[4].equals("n}")) nuovaTupla = this.getClassifica().get(posizione).replace(tuplaTagliata[3] + "," + tuplaTagliata[4], "" + punti + ",s}");
+		else nuovaTupla = this.getClassifica().get(posizione).replace(tuplaTagliata[3] + "," + tuplaTagliata[4], "" + punti + "," + tuplaTagliata[4]);
+		this.getClassifica().set(posizione, nuovaTupla);
 	}
 
-
-	public void aggiornaClassifica() {
-		String tupla; //elemento della classifica (cioe' la riga)
-		String[] tuplaTagliata;
-		String nuovaTupla; //quella che uso per modificare la tupla della classifica
+	//metodo che viene richiamata alla fine di ogni giro dei turni dei gicoatori (cioe' ad ogni turno della partita)
+	public void aggiornaClassificaStati() {
+		String nuovaTupla;
 		Giocatore giocatore;
+		for(int i=0;i<this.getClassifica().size();i++) {
+			//per ogni tupla della classifica controllo se il giocatore ad esso associata e' ancora
+			//presente in partita, tramite l'apposito metodo
+			giocatore = this.cercaInGiocatori(this.getClassifica().get(i));
+			
+			//se giocatore==null vuol dire che non e' stato trovato da cercaInGiocatori e quindi non e' piu' presente nella
+			//partita. Di conseguenza aggiorno la tupla modificando lo stato in offline (,n})
+			if(giocatore==null) {
+				nuovaTupla = this.getClassifica().get(i).replace(",s}", ",n}");
+				this.getClassifica().set(i, nuovaTupla);
+			}	
+		}
+		//qui chiamo l'ordinamento della classifica
+		this.ordinaClassifica();
+	}
 
-		if(this.getClassifica().size()==0) {
-			//la classifica e' vuota e quindi di certo devo aggiungere tutti i giocatori della parita
-			for(int i=0; i<this.getGiocatori().size();i++) {
-				tupla = ",{ " + this.getGiocatore(i).getNomeUtente() + "," + this.getGiocatore(i).getNomeSpecie() + "," + this.getGiocatore(i).calcolaPunti() + ",s}";
-				this.getClassifica().add(tupla);
-			}
-		} else {
-			for(int i=0; i<this.getClassifica().size();i++) {
-				tupla = this.getClassifica().get(i);
-				
-				//cerco il giocatore associato a questa tupla
-				giocatore = this.cercaInClassifica(tupla);
-				//System.out.println("giocatore: "+ giocatore);
-				
-				if(giocatore!=null) {
-					//vuol dire che la tupla e' riferita ad un giocatore online 
-					//quindi devo aggiornare la sua tupla
-					tuplaTagliata = this.getClassifica().get(i).split(",");
-					nuovaTupla = this.getClassifica().get(i).replace(tuplaTagliata[3], "" + giocatore.calcolaPunti());
-					this.getClassifica().set(i, nuovaTupla);
-				} else {
-					//vuol dire che la tupla e' riferita ad un gicoatore offline 
-					//allora aggiorno la sua tupla mettendolo ad offline
-					nuovaTupla = this.getClassifica().get(i).replace(",s}", ",n}");
-					this.getClassifica().set(i, nuovaTupla);
+	//dato un giocatore restituisce la posizione nella classifica
+	private int cercaInClassifica(Giocatore giocatore) {
+		String[] separa;
+		//scansiona la classifica e verifica se la tupla corrente e' associata al giocatore ricevuto in ingresso
+		//nel caso positivo restituisce la posizione del giocatore nella classifica
+		//in caso negativo restituisce sempre -1
+		for(int i=0;i<this.getClassifica().size();i++) {
+			separa = this.getClassifica().get(i).split(",");
+			if(separa[1].substring(2).equals(giocatore.getNomeUtente()) && (separa[2].equals(giocatore.getNomeSpecie()))) return i;
+		}
+		return -1;
+	}
+
+	//data una tupla della classifica dica a quale giocatore appartiene
+	private Giocatore cercaInGiocatori(String tupla) {
+		String[] separa = tupla.split(",");
+		//scansiona i giocatori e verifica se il giocatore corrente e' associato alla tupla ricevuto in ingresso
+		//nel caso positivo restituisce il giocatore associato all tupla
+		//in caso negativo restituisce null
+		for(int j=0;j<this.getGiocatori().size();j++) {
+			if(separa[1].substring(2).equals(this.getGiocatore(j).getNomeUtente()) && (separa[2].equals(this.getGiocatore(j).getNomeSpecie()))) return this.getGiocatore(j);
+		}
+		return null;
+	}
+	
+	//si occupa dell'ordinamento della classifica tramite bubblesort
+	//E' un metodo privato chiamato da aggiornaClassificaStati()
+	private void ordinaClassifica() {
+		String temp;
+		for(int j=0;j<this.getClassifica().size();j++) {
+			for(int i=j;i<this.getClassifica().size();i++) {
+				if(this.ottieniPuntiTupla(this.getClassifica().get(j))<this.ottieniPuntiTupla(this.getClassifica().get(i))) {
+					temp = this.getClassifica().get(j);
+					this.getClassifica().set(j, this.getClassifica().get(i));
+					this.getClassifica().set(i, temp);
 				}
 			}
 		}
-		//TODO ora bisogna fare un metodo per ordinare la classifica
 	}
-
-	//solo per test
+	
+	//usato in ordinaClassifica() per ottenere in punteggi su cui fare l'if
+	private int ottieniPuntiTupla(String tupla) {
+		String[] separa = tupla.split(",");
+		int punti = Integer.parseInt(separa[3]);
+		return punti;
+	}
+	
 	public void stampaClassifica() {
 		for(int i=0;i<this.getClassifica().size();i++) System.out.println(classifica.get(i));
 	}
 
+
+	//*******************************************************************************************************************
+	//************************************************SALVA PARTITA******************************************************
+	//*******************************************************************************************************************
 	public void salvaPartita() {
 
 		//	    Turno t = new Turno(p);

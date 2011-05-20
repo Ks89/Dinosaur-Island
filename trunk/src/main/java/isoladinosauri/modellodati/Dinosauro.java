@@ -1,5 +1,7 @@
 package isoladinosauri.modellodati;
 
+import java.util.Random;
+
 import isoladinosauri.Cella;
 import isoladinosauri.Giocatore;
 
@@ -12,9 +14,19 @@ public abstract class Dinosauro extends Organismo implements Animale {
 	protected int turnoNascita;
 	protected String id;
 
-	//ESISTONO I COSTRUTTORI IN CLASSI ASTRATTE CHE POI POSSONO IMPLEMENTARE
-	//LE SOTTOCLASSI? BOH, SE SI PUO' SAREBBE BELLO FARLO
-
+	protected Dinosauro(String id, int riga, int colonna, int turnoNascita) {
+		this.setId(id);
+		super.setEnergia(750);
+		super.energiaMax=1000;
+		super.riga = riga;
+		super.colonna = colonna;
+		this.dimensione=1;
+		Random random = new Random();
+		this.durataVita = random.nextInt(13) + 24;
+		this.turnoNascita = turnoNascita;
+		this.setEtaDinosauro(0);
+	}
+	
 	public abstract int calcolaForza();
 
 	public boolean aumentaDimensione() {
@@ -76,6 +88,14 @@ public abstract class Dinosauro extends Organismo implements Animale {
 		this.etaAttualeDinosauro++;;
 	}
 
+	public int getTurnoNascita() {
+		return turnoNascita;
+	}
+
+	public void setTurnoNascita(int turnoNascita) {
+		this.turnoNascita = turnoNascita;
+	}
+	
 	public String getId() {
 		return id;
 	}

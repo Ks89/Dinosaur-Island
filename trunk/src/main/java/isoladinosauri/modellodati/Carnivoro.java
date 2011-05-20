@@ -1,28 +1,18 @@
 package isoladinosauri.modellodati;
 
-import java.util.Random;
-
 import isoladinosauri.Cella;
 
 public class Carnivoro extends Dinosauro {
+
+	public Carnivoro(String id, int posX, int posY, int turnoNascita) {
+		super(id, posX, posY, turnoNascita);
+	}
 
 	@Override
 	public int calcolaForza() {
 		return (2 * super.energia * super.dimensione);
 	}
-		
-	public Carnivoro(String id, int riga, int colonna, int turnoNascita) {
-		super.setId(id);
-		super.setEnergia(750);
-		super.energiaMax=1000;
-		super.riga = riga;
-		super.colonna = colonna;
-		super.dimensione=1;
-		Random random = new Random();
-		super.durataVita = random.nextInt(13) + 24;
-		super.turnoNascita = turnoNascita;
-		super.setEtaDinosauro(0);
-	}
+
 	
 	public void mangia(Animale animale, Cella cella) {
 		//questo metodo e' chiamato SOLO se this si � mosso su cella con un altro dino

@@ -1,27 +1,16 @@
 package isoladinosauri.modellodati;
 
-import java.util.Random;
-
 import isoladinosauri.Cella;
 
 public class Erbivoro extends Dinosauro {
-
+	
+	public Erbivoro(String id, int posX, int posY, int turnoNascita) {
+		super(id, posX, posY, turnoNascita);
+	}
+	
 	@Override
 	public int calcolaForza() {
 		return (super.energia * super.dimensione);
-	}
-	
-	public Erbivoro(String id, int riga, int colonna, int turnoNascita) {
-		super.setId(id);
-		super.setEnergia(750);
-		super.energiaMax=1000;
-		super.riga = riga;
-		super.colonna = colonna;
-		super.dimensione=1;
-		Random random = new Random();
-		super.durataVita = random.nextInt(13) + 24;
-		super.turnoNascita = turnoNascita;
-		super.setEtaDinosauro(0);
 	}
 	
 	public void mangia(Vegetale vegetale, Cella cella) {
@@ -41,6 +30,17 @@ public class Erbivoro extends Dinosauro {
 			//il dinosauro avra' la sua energia al massimo
 			this.setEnergia(this.getEnergiaMax());
 		}		
+	}
+	
+	public void combatti(Dinosauro nemico, Cella cella)  {
+		if(this.calcolaForza()>=nemico.calcolaForza()) {
+			//il carnivoro vince il combattimento e mangia l'erbivoro
+			cella.setDinosauro(this);
+		}
+		else {
+			//il carnivoro perde il combattimento e l'erbivoro non fa nulla
+			cella.setDinosauro(nemico);
+		}
 	}
 
 }
