@@ -15,7 +15,7 @@ public class Carnivoro extends Dinosauro {
 
 	
 	public void mangia(Animale animale, Cella cella) {
-		//questo metodo e' chiamato SOLO se this si � mosso su cella con un altro dino
+		//questo metodo e' chiamato SOLO se this si e' mosso su una cella con un altro dino
 		
 		//se e' un caragona
 		if (animale instanceof Carogna) {
@@ -24,17 +24,17 @@ public class Carnivoro extends Dinosauro {
 			//in modo che possa rimuoverli nel caso uno dei 2 muoia/si esaurisca
 			Carogna mangiato = (Carogna)animale;
 			//mangio tutta la carogna
-			if(mangiato.getEnergia()<=(this.getEnergiaMax() - this.getEnergia())) {
-				this.setEnergia(this.getEnergia() + mangiato.getEnergia());
+			if(mangiato.getEnergia()<=(super.getEnergiaMax() - super.getEnergia())) {
+				super.setEnergia(super.getEnergia() + mangiato.getEnergia());
 				//rimuovi la carogna
 				cella.setOccupante(null);
 			}
 			//mangio solo una parte della carogna	 
 			else {
 				// la carogna sara consumata della diff dell'energia max e quella attuale del dino
-				mangiato.setEnergia(mangiato.getEnergia() - (this.getEnergiaMax() - this.getEnergia()));
+				mangiato.setEnergia(mangiato.getEnergia() - (super.getEnergiaMax() - super.getEnergia()));
 				//il dinosauro avra la sua energia al massimo
-				this.setEnergia(this.getEnergiaMax());
+				super.setEnergia(super.getEnergiaMax());
 			}		
 		} 
 		
@@ -44,7 +44,7 @@ public class Carnivoro extends Dinosauro {
 			if(this.calcolaForza()>=nemico.calcolaForza()) {
 				//il carnivoro vince il combattimento e mangia l'erbivoro
 				cella.setDinosauro(this);
-				this.setEnergia(this.getEnergia() + ((int)0.75 * nemico.getEnergia()));
+				super.setEnergia(super.getEnergia() + ((int)0.75 * nemico.getEnergia()));
 			}
 			else {
 				//il carnivoro perde il combattimento e l'erbivoro non fa nulla
@@ -58,12 +58,12 @@ public class Carnivoro extends Dinosauro {
 			if(this.calcolaForza()>=nemico.calcolaForza()) {
 				//il carnivoro vince il combattimento e mangia l'altro carnivoro
 				cella.setDinosauro(this);
-				this.setEnergia(this.getEnergia() + ((int)0.75 * nemico.getEnergia()));
+				this.setEnergia(super.getEnergia() + ((int)0.75 * nemico.getEnergia()));
 			}
 			else {
 				//il carnivoro perde il combattimento e l'erbivoro non fa nulla
 				cella.setDinosauro(nemico);
-				nemico.setEnergia(nemico.getEnergia() + ((int)0.75 * this.getEnergia()));
+				nemico.setEnergia(nemico.getEnergia() + ((int)0.75 * super.getEnergia()));
 			}
 		}			
 	}

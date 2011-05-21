@@ -1,8 +1,10 @@
 package isoladinosauri;
 
 import isoladinosauri.modellodati.Carnivoro;
+import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
 import isoladinosauri.modellodati.Erbivoro;
+import isoladinosauri.modellodati.Vegetale;
 
 public class Turno {
 
@@ -134,9 +136,9 @@ public class Turno {
 			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgRiga, sorgColonna, 2);
 			nPassi=2;
 		}
-		
+
 		//solo per test
-//		nPassi=3;
+		//		nPassi=3;
 
 		//estremi del movimento del dinosauro
 		maxR = estremoMappaMovimento[0]-origineMappaMovimento[0]+1;
@@ -243,33 +245,109 @@ public class Turno {
 		return mappaMovimento;
 	}
 
+	private void cambiaCella() {
 
-	public void spostaDinosauro(Dinosauro mosso, Cella destinazione, int riga, int colonna) {
+	}
+
+	public boolean spostaDinosauro(Dinosauro mosso, int riga, int colonna) {
+		//restituisce true se il movimento e' corretto o false se c'e' stato un problema
 		Giocatore giocatore = this.partita.identificaDinosauro(mosso);
+		Cella destinazione = this.partita.getIsola().getMappa()[riga][colonna];
+
+		int vecchiaRiga = mosso.getRiga();
+		int vecchiaColonna = mosso.getColonna();
+
+		System.out.println("coordinate partenza: " + vecchiaRiga + "," + vecchiaColonna + "coord arrivo: " + riga + "," + colonna);
+
+		if(destinazione==null) return false; //non posso muovermi sull'acqua e quindi comunico il problema
+
 		if(destinazione.getDinosauro()!=null) {
-			//esegui combattimento
+			//controllo di che tipo e' il dinosauro che muovo
 			if(mosso instanceof Carnivoro) {
 				Carnivoro muovente = (Carnivoro)mosso;
-				muovente.mangia(destinazione.getDinosauro(), destinazione);
+				if(muovente.aggCordinate(riga, colonna)==true) {
+					muovente.mangia(destinazione.getDinosauro(), destinazione);
+					return true;
+				}
+				else {
+					//il dinosauro muore perche' non ha abbastanza energia per muoversi
+					//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
+					this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+					return false; 					
+				}
 			}
-			else {
-				Erbivoro muovente = (Erbivoro)mosso; 
-				//Carnivoro dinoDestinazione = (Carnivoro)destinazione.getDinosauro();
-				//destinazione.getDinosauro().mangia(muovente, this.partita);
+			else { 
+				//quello che muovo e' erbivoro, quindi controllo cosa ho nella destinazione
+				if(destinazione.getOccupante() instanceof Carnivoro) {
+					Erbivoro muovente = (Erbivoro)mosso; 
+					if(muovente.aggCordinate(riga, colonna)==true) {
+						muovente.combatti(destinazione.getDinosauro(), destinazione);
+						return true;
+					}	
+					else {
+						//il dinosauro muore perche' non ha abbastanza energia per muoversi
+						//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
+						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+						return false; 
+					}
+				} else {
+					//nella destinazione ho un erbivoro e quindi non posso andare su quella cella, allora faccio il return
+					//con false per comunicare il problema
+					return false;
+				}
 			}
 
 		} else {
-			//sposta il dinosauro perche' nella cella non c'e' nessuno
-			if(mosso.aggCordinate(riga, colonna)==true) {
-				//movimento eseguito correttamente
-			} else {
-				//il dinosauro muore perche' non ha abbastanza energia per muoversi
-				//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
-				this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+			if(destinazione.getOccupante()!=null) {
+				//sposta il dinosauro perche' nella cella non c'e' nessuno e nel caso mangio l'occupante
+				if(mosso instanceof Carnivoro && destinazione.getOccupante() instanceof Carogna) {
+					Carnivoro muovente = (Carnivoro)mosso;
+					Carogna carogna = (Carogna)destinazione.getOccupante();
+					if(muovente.aggCordinate(riga, colonna)==true) {
+						muovente.mangia(carogna, destinazione);
+						destinazione.setDinosauro(muovente);
+						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+						return true;
+					} else {
+						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+						return false;	
+					}
+				} else if(mosso instanceof Erbivoro && destinazione.getOccupante() instanceof Vegetale) {
+					if(((Erbivoro)mosso).aggCordinate(riga, colonna)==true) {
+						((Erbivoro)mosso).mangia(((Vegetale)destinazione.getOccupante()), destinazione);
+						destinazione.setDinosauro(((Erbivoro)mosso));
+						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+						return true;
+					} else {
+						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+						return false;
+					}
+				} else  //eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo con un erbivoro o una vegetazione con un carnivor
+					if(mosso.aggCordinate(riga, colonna)==true) {
+						destinazione.setDinosauro(mosso);
+						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+						return true;
+					} else {
+						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+						return false;					
+					}
 
+
+			} else { //eseguo il movimento in una cella in cui c'e' terreno libero da tutto
+				if(mosso.aggCordinate(riga, colonna)==true) {
+					destinazione.setDinosauro(mosso);
+					this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+					return true;
+				} else {
+					this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+					return false;					
+				}
 			}
 		}
+		//return false;
 	}
+
+
 
 	public void incrementaEtaGiocatori() {
 		for(int i=0;i<this.partita.getGiocatori().size();i++) this.partita.getGiocatori().get(i).incrementaEtaAttuali();
