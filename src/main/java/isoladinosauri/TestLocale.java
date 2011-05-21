@@ -1,6 +1,8 @@
 package isoladinosauri;
 
+import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
+import isoladinosauri.modellodati.Vegetale;
 
 import java.util.Scanner;
 
@@ -110,7 +112,7 @@ public class TestLocale {
 						case 1 :
 							//muovi
 							int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getRiga(), dino.getColonna());
-							int[][] stradaPercorsa = t.ottieniStradaPercorsa(dino.getRiga(), dino.getColonna(),dino.getRiga()+3, dino.getColonna()+2);
+							int[][] stradaPercorsa;
 							int[] coordinate = trovaDinosauro(raggiungibile);
 
 							System.out.println("Coordinate: " +  coordinate[0] + " " + coordinate[1]);
@@ -122,26 +124,37 @@ public class TestLocale {
 							int fineColonna = dino.getColonna() + (raggiungibile[0].length - coordinate[1] - 1);
 							System.out.println("CoordinateMappa: " +  origineRiga + "," + origineColonna + "   " + fineRiga + "," + fineColonna);
 							i.stampaMappaRaggiungibilita(origineRiga, origineColonna, fineRiga, fineColonna, raggiungibile);
-							i.stampaMappaStradaPercorsa(origineRiga, origineColonna, fineRiga, fineColonna, stradaPercorsa);
 							
 							p.getGiocatori().get(conteggioGiocatori).stampaMappa();
 							i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
-//							System.out.println("Inserisci coordinate come riga,colonna: ");
-//
-//							String posMovimento = input.nextLine();
-//							posMovimento = input.nextLine();
-//							System.out.println("s" + posMovimento + "s");
-//							System.out.println("Coordinare movimento: " + posMovimento.split(",")[0] + "," + posMovimento.split(",")[1]);
-//							int riga = Integer.parseInt(posMovimento.split(",")[0]);
-//							int colonna = Integer.parseInt(posMovimento.split(",")[1]);
+							System.out.println("Inserisci coordinate come riga,colonna: ");
+
+							String posMovimento = input.nextLine();
+							posMovimento = input.nextLine();
+							System.out.println("s" + posMovimento + "s");
+							System.out.println("Coordinare movimento: " + posMovimento.split(",")[0] + "," + posMovimento.split(",")[1]);
+							int riga = Integer.parseInt(posMovimento.split(",")[0]);
+							int colonna = Integer.parseInt(posMovimento.split(",")[1]);
+							int rigaOrigineTest=dino.getRiga();
+							int colonnaOrigineTest=dino.getColonna();
+							
+							System.out.println("Posizione finale dinosauro: " + dino.getRiga() + "," + dino.getColonna() + "_" + riga + "," + colonna);
+							
+//							stradaPercorsa = t.ottieniStradaPercorsa(dino.getRiga(), dino.getColonna(),riga, colonna);
+//							i.stampaMappaStradaPercorsa(origineRiga, origineColonna, fineRiga, fineColonna, stradaPercorsa);
+//							i.stampaMappaRidotta();
+							
 //							i.getMappa()[riga][colonna].setDinosauro(p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro));
 //							i.getMappa()[p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).getRiga()][p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).getColonna()].setDinosauro(null);
 //							p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).aggCordinate(riga, colonna);
-//
-//							
-//							
-//							i.stampaMappaRidotta();
-//							System.out.println("Nuova posizione dino: " + p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).getRiga() + "," + p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).getColonna());
+
+							boolean spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
+							System.out.println("Rsultato spostamentoDinosauro: " + spostDino);
+							System.out.println("nuova posizãione dino: " + dino.getRiga() + "," + dino.getColonna());
+							System.out.println("partenza: " + i.getMappa()[riga][colonna]);
+							System.out.println("arrivo: " + i.getMappa()[riga][colonna]);
+							i.stampaMappaRidotta();
+							System.out.println("Nuova posizione dino: " + p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).getRiga() + "," + p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro).getColonna());
 							break;
 						case 2 :
 							//cresci
@@ -159,7 +172,7 @@ public class TestLocale {
 						}		
 						conteggioDinosauro++;
 					}while(p.getGiocatori().get(conteggioGiocatori).getDinosauri().size() > conteggioDinosauro); //chiudo while della scansione dei dinosauri
-					//qui si puo' anche stanpare mappe
+					//qui si puo' anche stampare mappe
 					p.aggiungiTuplaClassifica(p.getGiocatori().get(conteggioGiocatori));
 					conteggioGiocatori++;
 				}while(p.getGiocatori().size() > conteggioGiocatori);
@@ -182,11 +195,28 @@ public class TestLocale {
 			p.nascitaDinosauro(turnoCorrente);
 			p.aggiornaClassificaStati();
 			p.stampaClassifica();
+			cresciEconsuma(p);
 
 		} while(p.getGiocatori().size()>0); //se esco da qui ho il vincitore
 	}
 
-
+	private static void cresciEconsuma(Partita p) {
+		for(int i=0;i<40;i++) {
+			for(int j=0;j<40;j++) {
+				if(p.getIsola().getMappa()[i][j]!=null && p.getIsola().getMappa()[i][j].getOccupante()!=null) {
+					if(p.getIsola().getMappa()[i][j].getOccupante() instanceof Vegetale) {
+						Vegetale vegetale = (Vegetale)(p.getIsola().getMappa()[i][j].getOccupante());
+						vegetale.cresci();
+					} else if(p.getIsola().getMappa()[i][j].getOccupante() instanceof Carogna) {
+						Carogna carogna = (Carogna)(p.getIsola().getMappa()[i][j].getOccupante());
+						carogna.consuma();
+					}
+				} 
+				
+			}
+		}
+	}
+	
 	private static Giocatore cercaGiocatore (String nickname, Partita p) {
 		for(int i=0;i<p.getGiocatori().size();i++) if((p.getGiocatori().get(i).getNomeUtente()).equals(nickname)) return p.getGiocatori().get(i);
 		return null;

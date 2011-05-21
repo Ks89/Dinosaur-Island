@@ -7,6 +7,7 @@ public class Carogna extends Organismo implements Occupante, Animale {
 	public Carogna() {
 		Random random = new Random();
 		super.setEnergiaMax(random.nextInt(301) + 350);
+		super.setEnergia(super.getEnergiaMax());
 	}
 	
 	public void consuma() {
