@@ -12,7 +12,7 @@ public class TestVegetazione {
 
 	//serve solo per posizionare la vegetazione sulla mappa con gia' l'acqua, terra e carogne nel numero giusto e messe in modo corretto	
 	public void posizionaVegetazione () {
-		
+
 		//carico la mappa
 		String[][] mappa = new String[40][40];
 		try
@@ -65,12 +65,13 @@ public class TestVegetazione {
 			}
 		}
 
-//		System.out.println(acqua + " " + terra + " " + veg + " " + car);
+		//		System.out.println(acqua + " " + terra + " " + veg + " " + car);
 
 		//salvo la mappa
 		try{
 			Formatter out = new Formatter("mappaOK.txt");
-			String salvaRiga = new String();
+			//attenzione qui prima di modificare il codice c'era salvaRiga= new String(); e non null
+			String salvaRiga = null;
 			for(int i=0;i<40;i++) {
 				for(int j=0;j<40;j++) salvaRiga = salvaRiga.concat(mappa[i][j] + " ");
 				out.format("%s\n", salvaRiga);
@@ -82,76 +83,76 @@ public class TestVegetazione {
 		catch (SecurityException securityException)
 		{
 			System.err.println("Non hai accesso al file");
-			System.exit(1);
+			System.err.println("Il programma e' stato terminato");
 		}
 		catch (FileNotFoundException filesNotFoundException)
 		{
 			System.err.println("Errore nella creazione del file");
-			System.exit(1);
+			System.err.println("Il programma e' stato terminato");
 		}
 
 
-//		try
-//		{  	
-//			BufferedReader br = new BufferedReader(new FileReader("mappaOK.txt"));
-//			String riga = br.readLine();
-//			StringTokenizer st = null;	
-//
-//			for(int i=0;i<40;i++) {
-//				st = new StringTokenizer(riga);
-//
-//				for(int j=0;j<40;j++) mappa[i][j] = st.nextToken();           	
-//				riga = br.readLine();
-//			}
-//			br.close();
-//		}
-//		catch(IOException ioException)
-//		{
-//			System.err.println("Errore lettura file.");
-//		}
-//
-//		//verifico validaita' mappa
-//		acqua=0;
-//		terra=0;
-//		car=0;
-//		veg=0;
-//		for(int i=0;i<40;i++) {
-//			for(int j=0;j<40;j++) {
-//				if (mappa[i][j].equals("a")) { 
-//					acqua++;
-//				}
-//				if (mappa[i][j].equals("t")) { 
-//					terra++;
-//				}
-//				if (mappa[i][j].equals("c")) { 
-//					car++;
-//				}
-//				if (mappa[i][j].equals("v")) { 
-//					veg++;
-//				}
-//			}
-//		}
-//
-//		System.out.println(acqua + " " + terra + " " + veg + " " + car);
-//
-//		//stampo mappa
-//		for(int i=0;i<40;i++) {
-//			for(int j=0;j<40;j++) {
-//				if (mappa[i][j].equals("a")) { 
-//					System.out.print("a ");
-//				}
-//				if (mappa[i][j].equals("t")) { 
-//					System.out.print("t ");
-//				}
-//				if (mappa[i][j].equals("c")) { 
-//					System.out.print("c ");
-//				}
-//				if (mappa[i][j].equals("v")) { 
-//					System.out.print("v ");
-//				}
-//			}
-//			System.out.println();
-//		}
+		//		try
+		//		{  	
+		//			BufferedReader br = new BufferedReader(new FileReader("mappaOK.txt"));
+		//			String riga = br.readLine();
+		//			StringTokenizer st = null;	
+		//
+		//			for(int i=0;i<40;i++) {
+		//				st = new StringTokenizer(riga);
+		//
+		//				for(int j=0;j<40;j++) mappa[i][j] = st.nextToken();           	
+		//				riga = br.readLine();
+		//			}
+		//			br.close();
+		//		}
+		//		catch(IOException ioException)
+		//		{
+		//			System.err.println("Errore lettura file.");
+		//		}
+		//
+		//		//verifico validaita' mappa
+		//		acqua=0;
+		//		terra=0;
+		//		car=0;
+		//		veg=0;
+		//		for(int i=0;i<40;i++) {
+		//			for(int j=0;j<40;j++) {
+		//				if (mappa[i][j].equals("a")) { 
+		//					acqua++;
+		//				}
+		//				if (mappa[i][j].equals("t")) { 
+		//					terra++;
+		//				}
+		//				if (mappa[i][j].equals("c")) { 
+		//					car++;
+		//				}
+		//				if (mappa[i][j].equals("v")) { 
+		//					veg++;
+		//				}
+		//			}
+		//		}
+		//
+		//		System.out.println(acqua + " " + terra + " " + veg + " " + car);
+		//
+		//		//stampo mappa
+		//		for(int i=0;i<40;i++) {
+		//			for(int j=0;j<40;j++) {
+		//				if (mappa[i][j].equals("a")) { 
+		//					System.out.print("a ");
+		//				}
+		//				if (mappa[i][j].equals("t")) { 
+		//					System.out.print("t ");
+		//				}
+		//				if (mappa[i][j].equals("c")) { 
+		//					System.out.print("c ");
+		//				}
+		//				if (mappa[i][j].equals("v")) { 
+		//					System.out.print("v ");
+		//				}
+		//			}
+		//			System.out.println();
+		//		}
 
 
 	}
