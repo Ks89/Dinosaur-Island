@@ -1,5 +1,7 @@
 package isoladinosauri;
 
+import java.util.Random;
+
 import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
@@ -17,72 +19,72 @@ public class Turno {
 		this.partita = partita;
 	}
 
-//
-//	public void illuminaMappa (Giocatore giocatore,int riga, int colonna, int raggio) {
-//
-//		//se e' terra con un dinosauro sopra...
-//		//qui mi assicuro che il quella posizione ci sia davvero un dinosauro
-//		int[] vista = this.ottieniVisuale2(riga, colonna, raggio);
-//		boolean[][] mappaDaIlluminare = giocatore.getMappaVisibile();
-//
-//		//vista[0] e vista[2] sono X origine e X fine
-//		//vista[1] e vista[3] sono Y origine e Y fine
-//		for(int j=vista[1];j<vista[3]+1;j++) { //scansiono le Y
-//			for(int i=vista[0];i<vista[2]+1;i++) { //scansiono le X
-//				mappaDaIlluminare[i][j] = true; //illumino
-//				giocatore.setMappaVisibile(mappaDaIlluminare);
-//			}
-//		}
-//	}
-//
-//
-//	public int[] ottieniVisuale2 (int riga, int colonna, int raggio) {
-//		int[] vista = new int[4];
-//		int[] origineVista = this.ottieniOrigineVisuale2(riga, colonna, raggio);
-//		int[] fineVista = this.ottieniEstremoVisuale2(riga, colonna, raggio);
-//
-//		vista[0] = origineVista[0];
-//		vista[1] = origineVista[1];
-//		vista[2] = fineVista[0];
-//		vista[3] = fineVista[1];
-//		return vista;
-//	}
-//
-//
-//	//metodo public per ottenere le coordinate di origine della vista del Dinosauro
-//	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
-//	//e anche da quello per la gestione del movimento
-//	public int[] ottieniOrigineVisuale2 (int riga, int colonna, int raggio) {
-//		int[] coordinate = new int[2];
-//		int i=0, j=0;
-//
-//		//calcolo in i e j il punto di origine della vista
-//		//inizio con i=0 nella posizione del dinosauro, dopo lo incremeneto, cioe' mi sto spostando
-//		//verso l'origine della dimensione del raggio
-//		//se arrivo a 0 termino subito, se no termino quando
-//		for(i=0;i<raggio;i++) if(riga - i <= 0) break;
-//		for(j=0;j<raggio;j++) if(colonna - j <= 0) break;
-//
-//		coordinate[0] = riga - i;
-//		coordinate[1] = colonna - j;
-//		return coordinate;		
-//	}
-//
-//	//metodo public per ottenere le coordinate dell'estremo della vista del Dinosauro
-//	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
-//	//e anche da quello per la gestione del movimento
-//	public int[] ottieniEstremoVisuale2 (int riga, int colonna, int raggio) {
-//		int[] coordinate = new int[2];
-//		int i=0, j=0;
-//
-//		//calcolo in i e j il punto estremo in alto a sinistra della vista (fine)
-//		for(i=0;i<raggio;i++) if(riga + i >=39) break;
-//		for(j=0;j<raggio;j++) if(colonna + j >=39) break;
-//
-//		coordinate[0] = riga + i;
-//		coordinate[1] = colonna + j;
-//		return coordinate;
-//	}
+	//
+	//	public void illuminaMappa (Giocatore giocatore,int riga, int colonna, int raggio) {
+	//
+	//		//se e' terra con un dinosauro sopra...
+	//		//qui mi assicuro che il quella posizione ci sia davvero un dinosauro
+	//		int[] vista = this.ottieniVisuale2(riga, colonna, raggio);
+	//		boolean[][] mappaDaIlluminare = giocatore.getMappaVisibile();
+	//
+	//		//vista[0] e vista[2] sono X origine e X fine
+	//		//vista[1] e vista[3] sono Y origine e Y fine
+	//		for(int j=vista[1];j<vista[3]+1;j++) { //scansiono le Y
+	//			for(int i=vista[0];i<vista[2]+1;i++) { //scansiono le X
+	//				mappaDaIlluminare[i][j] = true; //illumino
+	//				giocatore.setMappaVisibile(mappaDaIlluminare);
+	//			}
+	//		}
+	//	}
+	//
+	//
+	//	public int[] ottieniVisuale2 (int riga, int colonna, int raggio) {
+	//		int[] vista = new int[4];
+	//		int[] origineVista = this.ottieniOrigineVisuale2(riga, colonna, raggio);
+	//		int[] fineVista = this.ottieniEstremoVisuale2(riga, colonna, raggio);
+	//
+	//		vista[0] = origineVista[0];
+	//		vista[1] = origineVista[1];
+	//		vista[2] = fineVista[0];
+	//		vista[3] = fineVista[1];
+	//		return vista;
+	//	}
+	//
+	//
+	//	//metodo public per ottenere le coordinate di origine della vista del Dinosauro
+	//	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
+	//	//e anche da quello per la gestione del movimento
+	//	public int[] ottieniOrigineVisuale2 (int riga, int colonna, int raggio) {
+	//		int[] coordinate = new int[2];
+	//		int i=0, j=0;
+	//
+	//		//calcolo in i e j il punto di origine della vista
+	//		//inizio con i=0 nella posizione del dinosauro, dopo lo incremeneto, cioe' mi sto spostando
+	//		//verso l'origine della dimensione del raggio
+	//		//se arrivo a 0 termino subito, se no termino quando
+	//		for(i=0;i<raggio;i++) if(riga - i <= 0) break;
+	//		for(j=0;j<raggio;j++) if(colonna - j <= 0) break;
+	//
+	//		coordinate[0] = riga - i;
+	//		coordinate[1] = colonna - j;
+	//		return coordinate;		
+	//	}
+	//
+	//	//metodo public per ottenere le coordinate dell'estremo della vista del Dinosauro
+	//	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
+	//	//e anche da quello per la gestione del movimento
+	//	public int[] ottieniEstremoVisuale2 (int riga, int colonna, int raggio) {
+	//		int[] coordinate = new int[2];
+	//		int i=0, j=0;
+	//
+	//		//calcolo in i e j il punto estremo in alto a sinistra della vista (fine)
+	//		for(i=0;i<raggio;i++) if(riga + i >=39) break;
+	//		for(j=0;j<raggio;j++) if(colonna + j >=39) break;
+	//
+	//		coordinate[0] = riga + i;
+	//		coordinate[1] = colonna + j;
+	//		return coordinate;
+	//	}
 
 	public int[] ottieniVisuale (int riga, int colonna) {
 		int[] vista = new int[4];
@@ -164,8 +166,8 @@ public class Turno {
 	public int [][] ottieniRaggiungibilita(int sorgRiga, int sorgColonna) {
 
 		int i,j,riga,colonna,maxR,maxC,rigaSu,rigaGiu,colonnaSx,colonnaDx,passo,nPassi;
-		int[] origineMappaMovimento = new int [2];
-		int[] estremoMappaMovimento = new int [2];
+		int[] origineMappaMovimento;
+		int[] estremoMappaMovimento;
 
 		if(this.partita.getIsola().getMappa()[sorgRiga][sorgColonna].getDinosauro() instanceof Carnivoro){
 			origineMappaMovimento = this.ottieniOrigineVisuale(sorgRiga, sorgColonna, 3); //in questo caso 3 e' il numero di passi non la dimensione
@@ -290,107 +292,122 @@ public class Turno {
 	public boolean spostaDinosauro(Dinosauro mosso, int riga, int colonna) {
 		//riga e colonna sono le coordinate della destinazione
 		//restituisce true se il movimento e' corretto o false se c'e' stato un problema
-		Cella destinazione = this.partita.getIsola().getMappa()[riga][colonna];
-		Dinosauro attaccato = destinazione.getDinosauro();
-		Giocatore giocatore;
-		if(attaccato!=null) giocatore = this.partita.identificaDinosauro(attaccato);
-		else giocatore = this.partita.identificaDinosauro(mosso); //questa riga e' senza senso ma mi serve per assegnare qualche cosa a
-		//giocatore quando non ci sono altri dinosauri nella destinazione per evitare che eclipse faccia casini
 
-		int vecchiaRiga = mosso.getRiga();
-		int vecchiaColonna = mosso.getColonna();
+		//controllo che nella destinazione non ci sia acqua
+		if(this.partita.getIsola().getMappa()[riga][colonna]!=null) {
 
-		System.out.println("coordinate partenza: " + vecchiaRiga + "," + vecchiaColonna + "coord arrivo: " + riga + "," + colonna);
+			Cella destinazione = this.partita.getIsola().getMappa()[riga][colonna];
+			Dinosauro attaccato = destinazione.getDinosauro();
+			Giocatore giocatore;
+			if(attaccato!=null) giocatore = this.partita.identificaDinosauro(attaccato);
+			else giocatore = this.partita.identificaDinosauro(mosso); //questa riga e' senza senso ma mi serve per assegnare qualche cosa a
+			//giocatore quando non ci sono altri dinosauri nella destinazione per evitare che eclipse faccia casini
 
-		if(destinazione==null) return false; //non posso muovermi sull'acqua e quindi comunico il problema
+			int vecchiaRiga = mosso.getRiga();
+			int vecchiaColonna = mosso.getColonna();
 
-		if(destinazione.getDinosauro()!=null) {
-			//controllo di che tipo e' il dinosauro che muovo
-			if(mosso instanceof Carnivoro) {
-				Carnivoro muovente = (Carnivoro)mosso;
-				if(muovente.aggCordinate(riga, colonna)==true) {
-					muovente.mangia(destinazione.getDinosauro(), destinazione);
-					//il metodo mangia mette il vinvitore direttamente nella cella di destinazione
-					//destinazione.setDinosauro(muovente);
-					if(destinazione.getDinosauro().equals(muovente)){
-						//ha vinto mosso
-						System.out.println("Rimosso dinosauro attaccato");
-						giocatore.rimuoviDinosauro(attaccato, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
-					} else { 
-						//vince il dino che si trova sulla cella di destinazione prima del movimento
-						System.out.println("Rimosso dinosauro attaccante");
-						giocatore=this.partita.identificaDinosauro(mosso);
-						giocatore.rimuoviDinosauro(muovente, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
-					}
-					//					this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-					return true;
-				}
-				else {
-					//il dinosauro muore perche' non ha abbastanza energia per muoversi
-					//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
-					this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
-					return false; 					
-				}
-			}
-			else { 
-				//quello che muovo e' erbivoro, quindi controllo cosa ho nella destinazione
-				if(destinazione.getDinosauro() instanceof Carnivoro) {
-					Erbivoro muovente = (Erbivoro)mosso; 
+			System.out.println("coordinate partenza: " + vecchiaRiga + "," + vecchiaColonna + "coord arrivo: " + riga + "," + colonna);
+
+			if(destinazione.getDinosauro()!=null) {
+				//controllo di che tipo e' il dinosauro che muovo
+				if(mosso instanceof Carnivoro) {
+					Carnivoro muovente = (Carnivoro)mosso;
 					if(muovente.aggCordinate(riga, colonna)==true) {
-						muovente.combatti(destinazione.getDinosauro(), destinazione);						
-
+						muovente.mangia(destinazione.getDinosauro(), destinazione);
+						//il metodo mangia mette il vinvitore direttamente nella cella di destinazione
 						//destinazione.setDinosauro(muovente);
-						if(destinazione.getDinosauro().equals(mosso)){
+						if(destinazione.getDinosauro().equals(muovente)){
 							//ha vinto mosso
+							System.out.println("Rimosso dinosauro attaccato");
 							giocatore.rimuoviDinosauro(attaccato, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
 						} else { 
 							//vince il dino che si trova sulla cella di destinazione prima del movimento
+							System.out.println("Rimosso dinosauro attaccante");
 							giocatore=this.partita.identificaDinosauro(mosso);
-							giocatore.rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
+							giocatore.rimuoviDinosauro(muovente, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
 						}
-
-						//						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+						//					this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 						return true;
-					}	
+					}
 					else {
 						//il dinosauro muore perche' non ha abbastanza energia per muoversi
 						//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
 						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
-						return false; 
+						return false; 					
 					}
-				} else {
-					//nella destinazione ho un erbivoro e quindi non posso andare su quella cella, allora faccio il return
-					//con false per comunicare il problema
-					return false;
 				}
-			}
+				else { 
+					//quello che muovo e' erbivoro, quindi controllo cosa ho nella destinazione
+					if(destinazione.getDinosauro() instanceof Carnivoro) {
+						Erbivoro muovente = (Erbivoro)mosso; 
+						if(muovente.aggCordinate(riga, colonna)==true) {
+							muovente.combatti(destinazione.getDinosauro(), destinazione);						
 
-		} else {
-			if(destinazione.getOccupante()!=null) {
-				//sposta il dinosauro perche' nella cella non c'e' nessuno e nel caso mangio l'occupante
-				if(mosso instanceof Carnivoro && destinazione.getOccupante() instanceof Carogna) {
-					Carnivoro muovente = (Carnivoro)mosso;
-					Carogna carogna = (Carogna)destinazione.getOccupante();
-					if(muovente.aggCordinate(riga, colonna)==true) {
-						muovente.mangia(carogna, destinazione);
-						destinazione.setDinosauro(muovente);
-						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-						return true;
+							//destinazione.setDinosauro(muovente);
+							if(destinazione.getDinosauro().equals(mosso)){
+								//ha vinto mosso
+								giocatore.rimuoviDinosauro(attaccato, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
+							} else { 
+								//vince il dino che si trova sulla cella di destinazione prima del movimento
+								giocatore=this.partita.identificaDinosauro(mosso);
+								giocatore.rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
+							}
+
+							//						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+							return true;
+						}	
+						else {
+							//il dinosauro muore perche' non ha abbastanza energia per muoversi
+							//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
+							this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+							return false; 
+						}
 					} else {
-						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
-						return false;	
-					}
-				} else if(mosso instanceof Erbivoro && destinazione.getOccupante() instanceof Vegetale) {
-					if(((Erbivoro)mosso).aggCordinate(riga, colonna)==true) {
-						((Erbivoro)mosso).mangia(((Vegetale)destinazione.getOccupante()), destinazione);
-						destinazione.setDinosauro(((Erbivoro)mosso));
-						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-						return true;
-					} else {
-						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+						//nella destinazione ho un erbivoro e quindi non posso andare su quella cella, allora faccio il return
+						//con false per comunicare il problema
 						return false;
 					}
-				} else  //eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo con un erbivoro o una vegetazione con un carnivor
+				}
+
+			} else {
+				if(destinazione.getOccupante()!=null) {
+					//sposta il dinosauro perche' nella cella non c'e' nessuno e nel caso mangio l'occupante
+					if(mosso instanceof Carnivoro && destinazione.getOccupante() instanceof Carogna) {
+						Carnivoro muovente = (Carnivoro)mosso;
+						Carogna carogna = (Carogna)destinazione.getOccupante();
+						if(muovente.aggCordinate(riga, colonna)==true) {
+							muovente.mangia(carogna, destinazione);
+							destinazione.setDinosauro(muovente);
+							this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+							this.riposizioneCarogna(riga, colonna);
+							return true;
+						} else {
+							this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+							return false;	
+						}
+					} else if(mosso instanceof Erbivoro && destinazione.getOccupante() instanceof Vegetale) {
+						if(((Erbivoro)mosso).aggCordinate(riga, colonna)==true) {
+							((Erbivoro)mosso).mangia(((Vegetale)destinazione.getOccupante()), destinazione);
+							destinazione.setDinosauro(((Erbivoro)mosso));
+							this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+							this.riposizioneVegetale(riga, colonna);
+							return true;
+						} else {
+							this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+							return false;
+						}
+					} else  //eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo con un erbivoro o una vegetazione con un carnivor
+						if(mosso.aggCordinate(riga, colonna)==true) {
+							destinazione.setDinosauro(mosso);
+							this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+							return true;
+						} else {
+							this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
+							return false;					
+						}
+
+
+				} else { //eseguo il movimento in una cella in cui c'e' terreno libero da tutto
 					if(mosso.aggCordinate(riga, colonna)==true) {
 						destinazione.setDinosauro(mosso);
 						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
@@ -399,23 +416,46 @@ public class Turno {
 						this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
 						return false;					
 					}
-
-
-			} else { //eseguo il movimento in una cella in cui c'e' terreno libero da tutto
-				if(mosso.aggCordinate(riga, colonna)==true) {
-					destinazione.setDinosauro(mosso);
-					this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-					return true;
-				} else {
-					this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
-					return false;					
 				}
 			}
-		}
-		//return false;
+		} else return false; //cioe' e' acqua e faccio il return con false per dare l'errore
 	}
 
+	private void riposizioneCarogna(int riga, int colonna) {
+		Carogna carogna = new Carogna();
+		Random random = new Random();
+		int nuovaRiga, nuovaColonna;
+		boolean stato=false;
+		do {
+			nuovaRiga = random.nextInt(40);
+			nuovaColonna = random.nextInt(40); 
+			if((nuovaRiga!=riga || nuovaColonna!=colonna) 
+					&& this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna]!=null &&
+					this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna].getOccupante()==null) {
+				this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna].setOccupante(carogna);
+				stato=true;
+			}
+		} while(stato==false);
+		System.out.println("Nuova carogna in: " + nuovaRiga + "," + nuovaColonna);
+	}
 
+	private void riposizioneVegetale(int riga, int colonna) {
+		Vegetale vegetale = new Vegetale();
+		Random random = new Random();
+		int nuovaRiga, nuovaColonna;
+		boolean stato=false;
+		do {
+			nuovaRiga = random.nextInt(40);
+			nuovaColonna = random.nextInt(40); 
+			if((nuovaRiga!=riga || nuovaColonna!=colonna) 
+					&& this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna]!=null &&
+					this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna].getOccupante()==null) {
+				this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna].setOccupante(vegetale);
+				stato=true;
+			}
+		} while(stato==false);
+		System.out.println("Nuovo vegetale in: " + nuovaRiga + "," + nuovaColonna);
+	}
 
 	public void incrementaEtaGiocatori() {
 		for(int i=0;i<this.partita.getGiocatori().size();i++) this.partita.getGiocatori().get(i).incrementaEtaAttuali();

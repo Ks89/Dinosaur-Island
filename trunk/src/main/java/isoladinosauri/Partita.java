@@ -118,7 +118,7 @@ public class Partita {
 		//delle uova. Quindi si preoccupa di chiamare il metodo SchiudiUova per far nascere i dinosauri
 
 		String[] coordinate; //array con dentro
-		int[] posizione = new int[2];
+		int[] posizione;
 		Dinosauro dinosauro = null;
 		Integer riga = null;
 		Integer colonna = null;
@@ -164,8 +164,8 @@ public class Partita {
 		//5) fino a che non faccio un return
 
 		//ottengo la vista del dinosauro
-		int[] origine = new int[2];  //origine vista
-		int[] estremo = new int[2]; //estremo vista
+		int[] origine;  //origine vista
+		int[] estremo; //estremo vista
 		int[] coordinate = new int[2];  //coordinare in cui mettero' il nuovo dinosauro
 
 		//TODO COSA STUPIDA: for fino a 39 perche' la cornice della mappa e' tutta di acqua (sembra cmq stupido)

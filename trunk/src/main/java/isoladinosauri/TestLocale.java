@@ -34,11 +34,11 @@ public class TestLocale {
 			switch(scelta1) {
 			case 1 :
 				//aggiungo un giocatore
-				String nickname = new String();
-				String password = new String();
-				String nomeSpecie = new String();
+				String nickname;
+				String password;
+				String nomeSpecie;
 				int tipo;
-				String tipoDinosauro = new String();
+				String tipoDinosauro;
 				nickname = input.nextLine();
 				System.out.println();
 				System.out.println("Inserisci il nickname per il login: ");
@@ -250,9 +250,9 @@ public class TestLocale {
 		for(int i=0;i<p.getGiocatori().size();i++)
 			if(p.getGiocatori().get(i).getDinosauri().isEmpty()) {
 				p.getGiocatori().remove(p.getGiocatori().get(i));
-				stato=true; //ho rimosso almeno uno dei giocatori
+				stato=true;
 			}
-		return false;
+		return stato;
 	}
 
 	private static void cresciEconsuma(Partita p) {
