@@ -11,7 +11,9 @@ public class Carogna extends Organismo implements Occupante, Animale {
 	}
 	
 	public void consuma() {
-		super.energia -= super.energiaMax/20;
+		if(super.getEnergiaMax()/20<=super.getEnergia()) 
+			super.setEnergia(super.getEnergia() - super.getEnergiaMax()/20);
+		else super.setEnergia(0);
 	}
 
 }

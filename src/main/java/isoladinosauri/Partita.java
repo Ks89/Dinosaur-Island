@@ -18,8 +18,16 @@ public class Partita {
 	private List<Giocatore> giocatori;
 	private int contatoreTurni;
 
+	//bug: se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
+	
 	//aggiungere movimento dinosauro e richiamare illuminaMappa ogni passo fatto, sia la destinaz finale che i passi intermedi intrapresi per raggiungere
 	//la destinazione
+	
+	//NB: fare l'illuminaMappa da zero, diversa, che riceve in ingresso la dimensione del dinosauro e lui illumina la zona, indipendentemente
+	//dal fatto che ci sia o no un dinosauro sopra.
+	
+	//da fare: la vegetazione, una volta che viene mangiata deve rinascere e lo stesso anche la corogna
+	//se la coragona arriva a 0 da solo cosa deve fare? Ricrearsi da un'altra parte?
 
 	//simulare tutto con aggiunta di più giocatori
 	//simulare tutto con JUNIT e mettere la Javadoc

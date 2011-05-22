@@ -90,12 +90,12 @@ public class Isola {
 							if(cella.getOccupante() instanceof Carogna)
 							{
 								Carogna carogna = (Carogna)cella.getOccupante();
-								System.out.print("c:" + carogna.getEnergiaMax() + " ");
+								System.out.print("c:" + carogna.getEnergia() + " ");
 							}
 							if(cella.getOccupante() instanceof Vegetale)
 							{
 								Vegetale vegetale = (Vegetale)cella.getOccupante();
-								System.out.print("v:" + vegetale.getEnergiaMax() + " ");
+								System.out.print("v:" + vegetale.getEnergia() + " ");
 							}
 							if(!(cella.getOccupante() instanceof Vegetale) &&
 									!(cella.getOccupante() instanceof Carogna)) {
@@ -203,7 +203,6 @@ public class Isola {
 	}	
 
 	public void stampaMappaRaggiungibilita(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]raggiungibilita) {
-		int cont=0;
 		System.out.print("   ");
 		for(int j=0;j<40;j++) {
 			if(j<10) System.out.print("0" + j + " ");
@@ -221,7 +220,6 @@ public class Isola {
 					if (mappa[i][j] instanceof Cella) {
 						Cella cella = mappa[i][j];
 						if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
-							cont++;
 							if((raggiungibilita[i - inizioRiga][j - inizioColonna]!=9) && (raggiungibilita[i - inizioRiga][j - inizioColonna]!=8))
 								System.out.print(" " + raggiungibilita[i - inizioRiga][j - inizioColonna] + " ");
 							else if(raggiungibilita[i - inizioRiga][j - inizioColonna]==9 || raggiungibilita[i - inizioRiga][j - inizioColonna]==8)
@@ -251,7 +249,6 @@ public class Isola {
 		}
 		System.out.println();
 		System.out.println();
-		System.out.println(cont);
 	}
 	
 	public void stampaMappaStradaPercorsa(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]stradaPercorsa) {
