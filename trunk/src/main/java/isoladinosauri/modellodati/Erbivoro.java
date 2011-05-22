@@ -34,11 +34,11 @@ public class Erbivoro extends Dinosauro {
 	
 	public void combatti(Dinosauro nemico, Cella cella)  {
 		if(this.calcolaForza()>=nemico.calcolaForza()) {
-			//il carnivoro vince il combattimento e mangia l'erbivoro
+			//l'erbivoro vince il combattimento e sconfigge il carnivoro, ma non lo mangia
 			cella.setDinosauro(this);
 		}
 		else {
-			//il carnivoro perde il combattimento e l'erbivoro non fa nulla
+			//TODO GRANDE DUBBIO: l'erbivoro perde il combattimento e il carnivoro non fa nulla (anche se mi sembra strano)
 			cella.setDinosauro(nemico);
 		}
 	}

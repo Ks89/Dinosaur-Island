@@ -43,8 +43,9 @@ public class Carnivoro extends Dinosauro {
 			Erbivoro nemico = (Erbivoro)animale;
 			if(this.calcolaForza()>=nemico.calcolaForza()) {
 				//il carnivoro vince il combattimento e mangia l'erbivoro
+				this.setEnergia(this.getEnergia() + ((int)0.75 * nemico.getEnergia()));
+				
 				cella.setDinosauro(this);
-				super.setEnergia(super.getEnergia() + ((int)0.75 * nemico.getEnergia()));
 			}
 			else {
 				//il carnivoro perde il combattimento e l'erbivoro non fa nulla
@@ -56,14 +57,14 @@ public class Carnivoro extends Dinosauro {
 		if (animale instanceof Carnivoro) {	
 			Carnivoro nemico = (Carnivoro)animale;
 			if(this.calcolaForza()>=nemico.calcolaForza()) {
-				//il carnivoro vince il combattimento e mangia l'altro carnivoro
-				cella.setDinosauro(this);
+				//il carnivoro vince il combattimento e mangia l'altro carnivor
 				this.setEnergia(super.getEnergia() + ((int)0.75 * nemico.getEnergia()));
+				cella.setDinosauro(this);
 			}
 			else {
 				//il carnivoro perde il combattimento e l'erbivoro non fa nulla
-				cella.setDinosauro(nemico);
 				nemico.setEnergia(nemico.getEnergia() + ((int)0.75 * super.getEnergia()));
+				cella.setDinosauro(nemico);
 			}
 		}			
 	}

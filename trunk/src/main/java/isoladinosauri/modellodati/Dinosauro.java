@@ -26,20 +26,27 @@ public abstract class Dinosauro extends Organismo implements Animale {
 		this.turnoNascita = turnoNascita;
 		this.setEtaDinosauro(0);
 	}
-	
+
 	public abstract int calcolaForza();
 
-	public boolean aumentaDimensione() {
+	public boolean aumentaDimensione(Giocatore giocatore, Cella cella) {
 		//nel caso in cui la dimensione sia gia' massima
 		//ritorna false perche' non e' in grado di far crescere
 		//la dimensione del dinosauro
-		if(dimensione < 5) {
-			dimensione++;
-			super.energia -= super.energiaMax / 2;
-			super.energiaMax = 1000 * this.dimensione;
-			return true;
+		if(this.dimensione < 5) {
+			if(super.getEnergia()>(super.getEnergiaMax()/2)) {
+				this.dimensione++;
+				super.energia -= super.energiaMax / 2;
+				super.energiaMax = 1000 * this.dimensione;
+				return true;
+			} else {
+				return false;
+			}
 		}
-		else return false; 
+		else {
+			System.out.println("Raggiunta la dimensiona massima, impossibile completare l'operazione");
+			return false; 
+		}
 	}
 
 	public boolean aggCordinate(int riga, int colonna) {
@@ -60,20 +67,27 @@ public abstract class Dinosauro extends Organismo implements Animale {
 	}
 
 	//metodo per far deporre un Uovo al dinosauro
-	public void deponi(Cella cella, Giocatore giocatore) {
+	public boolean deponi(Cella cella, Giocatore giocatore) {
 		//la cella deve essere quella in cui c'e' il dinosauro che depone
 		super.energia -= 1500;
 
 		if(super.getEnergia()>0) {
 			//il dinosauro pu' compiere l'azione di deposizione
-			if(giocatore.getDinosauri().size()<5) giocatore.aggiungiUovo(super.getRiga(),super.getColonna());
+			if(giocatore.getDinosauri().size()<5) {
+				giocatore.aggiungiUovo(super.getRiga(),super.getColonna());
+				return true;
+			}
 			else {
 				System.out.println("Errore squadra completa");
+				return false;
 				//errore squadra completa e non posso creare altri dinosauri
 			}
 		}
 		//il dinosauro muore perche' non ha sufficiente energia
-		else giocatore.rimuoviDinosauro(this, cella);		
+		else {
+			giocatore.rimuoviDinosauro(this, cella);	
+			return false;
+		}
 	}
 
 	public int getEtaDinosauro() {
@@ -95,7 +109,7 @@ public abstract class Dinosauro extends Organismo implements Animale {
 	public void setTurnoNascita(int turnoNascita) {
 		this.turnoNascita = turnoNascita;
 	}
-	
+
 	public String getId() {
 		return id;
 	}

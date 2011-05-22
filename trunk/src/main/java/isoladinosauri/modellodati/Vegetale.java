@@ -11,6 +11,8 @@ public class Vegetale extends Organismo implements Occupante {
 	}
 	
 	public void cresci() {
-		super.energia += super.energiaMax/20;
+		if(super.getEnergiaMax()/20<=(super.getEnergiaMax()-super.getEnergia())) 
+			super.setEnergia(super.getEnergia() + super.getEnergiaMax()/20);
+		else super.setEnergia(super.getEnergiaMax());
 	}	                                 
 }
