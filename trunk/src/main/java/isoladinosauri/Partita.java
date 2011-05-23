@@ -18,27 +18,24 @@ public class Partita {
 	private List<Giocatore> giocatori;
 	private int contatoreTurni;
 
-	//bug: se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
+	//FIXME se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
+	//FIXME fare dei for con estremi fissati a .size per la classe TestLocale, in modo da evitare quelle eccezioni nelle condizioni dei while
+	//TODO mettere la Javadoc
+	//TODO riordinare tutto il codice
 	
-	//aggiungere movimento dinosauro e richiamare illuminaMappa ogni passo fatto, sia la destinaz finale che i passi intermedi intrapresi per raggiungere
-	//la destinazione
-	
-	//NB: fare l'illuminaMappa da zero, diversa, che riceve in ingresso la dimensione del dinosauro e lui illumina la zona, indipendentemente
-	//dal fatto che ci sia o no un dinosauro sopra.
-	
-	//da fare: la vegetazione, una volta che viene mangiata deve rinascere e lo stesso anche la corogna
-	//se la coragona arriva a 0 da solo cosa deve fare? Ricrearsi da un'altra parte?
+	//FIXME rigestire da zero la classifica con una classe Tupla che contiene i campi e operare su quello in modo da ridurre il num di metodi
+	//e accorciare di molto il codice invece di splittare stringhe ogni volta eccc....
+	//ovviamente il metodo poi restitiuisce la stringa come avviene ora, ma il tutto implementato in modo piu furbo
 
-	//simulare tutto con aggiunta di più giocatori
-	//simulare tutto con JUNIT e mettere la Javadoc
-	//riordinare tutto il codice
+
 	private List<String> classifica;
 	//private List<Tupla> classificaGiocatori;
 
 	public Partita(Isola isola)
 	{
-		giocatori = new ArrayList<Giocatore>();
-		classifica = new ArrayList<String>();
+		this.giocatori = new ArrayList<Giocatore>();
+		this.classifica = new ArrayList<String>();
+		//this.classificaGiocatori = new ArrayList<Tupla>();
 		this.isola = isola;
 	}
 
@@ -59,10 +56,6 @@ public class Partita {
 	}
 
 
-
-
-
-
 	public List<Giocatore> getGiocatori() {
 		return giocatori;
 	}
@@ -79,8 +72,7 @@ public class Partita {
 	}
 
 	public void rimuoviGiocatore(Giocatore giocatore) {
-		//ricevo gicatore, cioe' il giocatore che devo cancellare
-
+		//ricevo gicatore, cioe' il giocatore che devo cancellare		
 		//rimuovo tutti i dinosauri del giocatore dalla mappa
 		for(int j=0;j<40;j++) {
 			for(int i=0;i<40;i++) {
@@ -168,7 +160,7 @@ public class Partita {
 		int[] estremo; //estremo vista
 		int[] coordinate = new int[2];  //coordinare in cui mettero' il nuovo dinosauro
 
-		//TODO COSA STUPIDA: for fino a 39 perche' la cornice della mappa e' tutta di acqua (sembra cmq stupido)
+		//FIXME COSA STUPIDA: for fino a 39 perche' la cornice della mappa e' tutta di acqua (sembra cmq stupido)
 		for(int i=1; i<39; i++) { //calcola il raggio della visuale
 			origine = this.turnoCorrente.ottieniOrigineVisuale(riga, colonna, i);
 			estremo = this.turnoCorrente.ottieniEstremoVisuale(riga, colonna, i);
@@ -195,22 +187,22 @@ public class Partita {
 	public List<String> getClassifica() {
 		return classifica;
 	}
-	
+
 	//metodo che serve per aggiungere elementi nella classifica
 	//DEVE ESSERE USATO SOLO PER INSERIRE NUOVI GIOCATORI E PER AGGIORNARE I PUNTEGGI
 	//se passo un nuovo giocatore lo inserisce, se ne passo uno gia' presente gli aggiorna il punteggio
 	//se voglio gestire lo stato online/offline chiamo AGGIORNACLASSIFICASTATI()
 	public void aggiungiTuplaClassifica(Giocatore giocatore) {
-		
+
 		//ottengo il giocatore da aggiungere nella classifica e creo la sua tupla
 		String tupla = ",{ " + giocatore.getNomeUtente() + "," + giocatore.getNomeSpecie() + "," + giocatore.calcolaPunti() + ",s}";
-	
+
 		//se la tupla non e' presente in classifica (cioe' risultato==-1) la aggiungo
 		if(this.cercaInClassifica(giocatore)==-1) this.getClassifica().add(tupla);
 		//altrimenti cerco la tupla nella classifica e la aggiorno col metodo apposta "aggiornaTupla"
 		else this.aggiornaPuntiTupla(tupla,giocatore);
 	}
-	
+
 	//metodo per aggiornare una tupla quando il giocatore, passato in aggiungiTuplaClassifica, si trova gia' nella classifica
 	private void aggiornaPuntiTupla(String tupla, Giocatore giocatore) {
 		String[] tuplaTagliata;
@@ -222,7 +214,7 @@ public class Partita {
 		//taglio la tupla ad ogni virgola e modifico solo il campo dei punti per poi settare l'elemento della classifica
 		//in questo modo non aggiungo tuple alla classifica, semplicemente ne modifico una gia' esistente ed in particolare
 		//modifico solo un piccolo campo di essa, ovvero la stringa che indica i punti del gicoatore
-		//l'if serve nel caso in cui voglia aggiungere un giocatore che era giaì presente in classifica prima e che e' uscito
+		//l'if serve nel caso in cui voglia aggiungere un giocatore che era gia presente in classifica prima e che e' uscito
 		//e ora sta rientrando nella partita. ovviamente gli resetto i punti e lo imposto su online
 		tuplaTagliata = this.getClassifica().get(posizione).split(",");
 		if(tuplaTagliata[4].equals("n}")) nuovaTupla = this.getClassifica().get(posizione).replace(tuplaTagliata[3] + "," + tuplaTagliata[4], "" + punti + ",s}");
@@ -238,7 +230,7 @@ public class Partita {
 			//per ogni tupla della classifica controllo se il giocatore ad esso associata e' ancora
 			//presente in partita, tramite l'apposito metodo
 			giocatore = this.cercaInGiocatori(this.getClassifica().get(i));
-			
+
 			//se giocatore==null vuol dire che non e' stato trovato da cercaInGiocatori e quindi non e' piu' presente nella
 			//partita. Di conseguenza aggiorno la tupla modificando lo stato in offline (,n})
 			if(giocatore==null) {
@@ -274,7 +266,7 @@ public class Partita {
 		}
 		return null;
 	}
-	
+
 	//si occupa dell'ordinamento della classifica tramite bubblesort
 	//E' un metodo privato chiamato da aggiornaClassificaStati()
 	private void ordinaClassifica() {
@@ -289,14 +281,14 @@ public class Partita {
 			}
 		}
 	}
-	
+
 	//usato in ordinaClassifica() per ottenere in punteggi su cui fare l'if
 	private int ottieniPuntiTupla(String tupla) {
 		String[] separa = tupla.split(",");
 		int punti = Integer.parseInt(separa[3]);
 		return punti;
 	}
-	
+
 	public void stampaClassifica() {
 		for(int i=0;i<this.getClassifica().size();i++) System.out.println(classifica.get(i));
 	}

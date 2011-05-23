@@ -63,7 +63,11 @@ public class Giocatore extends Utente {
 		//gestione mappa (buio e luce)
 		this.mappaVisibile = new boolean[40][40];
 		this.inizializzaMappaBuia();
-		this.illuminaMappa(dinosauro.getRiga(), dinosauro.getColonna());
+
+		//illumino la mappa della visibilita' nella zona in cui ho creato il dinosauro
+		//il raggio e' 2 costante, perche' tutti i giocatori appena creati hanno un solo dino e sempre con dimensione =1
+		//quindi per le specifiche il raggio deve essere =2 (sezione Visibilita')
+		this.partita.getTurnoCorrente().illuminaMappa(this, dinosauro.getRiga(), dinosauro.getColonna(), 2);
 
 		//inizializzo l'array per le uova, ovviamente parte da vuoto perche' non ho uova all'inizio
 		this.uova = new ArrayList<String>();
@@ -137,10 +141,10 @@ public class Giocatore extends Utente {
 		this.idGiocatore = idGiocatore;
 	}	
 
-	//***********************************************************************************************************************
-	//*************************************************GESTIONE VISIBILITA'**************************************************
-	//***********************************************************************************************************************
 
+	//***********************************************************************************************************************
+	//********************************************INIZIALIZZAZINE MAPPA VISIBILITA'******************************************
+	//***********************************************************************************************************************
 	public void inizializzaMappaBuia() {
 		//Inizializza la mappa tutta a buio e viene chiamato solo alla creazione del giocatore
 		for(int j=0;j<40;j++) {
@@ -148,27 +152,6 @@ public class Giocatore extends Utente {
 		}
 	}
 
-	public void illuminaMappa (int posizioneX, int posizioneY) {
-		Cella cella = this.partita.getIsola().getMappa()[posizioneX][posizioneY];
-		//se e' terra con un dinosauro sopra...
-		//qui mi assicuro che il quella posizione ci sia davvero un dinosauro
-		if(cella!=null && cella.getDinosauro()!=null) {
-
-			int[] vista = this.partita.getTurnoCorrente().ottieniVisuale(posizioneX, posizioneY);
-
-			Giocatore giocatore = this.partita.identificaDinosauro(cella.getDinosauro());
-			boolean[][] mappaDaIlluminare = giocatore.getMappaVisibile();
-
-			//vista[0] e vista[2] sono X origine e X fine
-			//vista[1] e vista[3] sono Y origine e Y fine
-			for(int j=vista[1];j<vista[3]+1;j++) { //scansiono le Y
-				for(int i=vista[0];i<vista[2]+1;i++) { //scansiono le X
-					mappaDaIlluminare[i][j] = true; //illumino
-					giocatore.setMappaVisibile(mappaDaIlluminare);
-				}
-			}
-		} else System.out.println("Eccezione: c'e' un problema perche' sto illuminando una zona in cui non c'e' un dinosauro");
-	}
 
 	//***********************************************************************************************************************
 	//**************************************************GESTIONE CLASSIFICA**************************************************
