@@ -10,8 +10,6 @@ import isoladinosauri.modellodati.Vegetale;
 
 public class Turno {
 
-	//NB: questa classe deve anche chiamare, alla fine del Turno corrente del giocatore, il metodo incrementaEtaAttuali
-
 	private Partita partita;
 	private int contatoreTurno; //di dubbia utilita', perche' a me sembra di aver gia' gestito i turni
 
@@ -19,114 +17,54 @@ public class Turno {
 		this.partita = partita;
 	}
 
-	//
-	//	public void illuminaMappa (Giocatore giocatore,int riga, int colonna, int raggio) {
-	//
-	//		//se e' terra con un dinosauro sopra...
-	//		//qui mi assicuro che il quella posizione ci sia davvero un dinosauro
-	//		int[] vista = this.ottieniVisuale2(riga, colonna, raggio);
-	//		boolean[][] mappaDaIlluminare = giocatore.getMappaVisibile();
-	//
-	//		//vista[0] e vista[2] sono X origine e X fine
-	//		//vista[1] e vista[3] sono Y origine e Y fine
-	//		for(int j=vista[1];j<vista[3]+1;j++) { //scansiono le Y
-	//			for(int i=vista[0];i<vista[2]+1;i++) { //scansiono le X
-	//				mappaDaIlluminare[i][j] = true; //illumino
-	//				giocatore.setMappaVisibile(mappaDaIlluminare);
-	//			}
-	//		}
-	//	}
-	//
-	//
-	//	public int[] ottieniVisuale2 (int riga, int colonna, int raggio) {
-	//		int[] vista = new int[4];
-	//		int[] origineVista = this.ottieniOrigineVisuale2(riga, colonna, raggio);
-	//		int[] fineVista = this.ottieniEstremoVisuale2(riga, colonna, raggio);
-	//
-	//		vista[0] = origineVista[0];
-	//		vista[1] = origineVista[1];
-	//		vista[2] = fineVista[0];
-	//		vista[3] = fineVista[1];
-	//		return vista;
-	//	}
-	//
-	//
-	//	//metodo public per ottenere le coordinate di origine della vista del Dinosauro
-	//	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
-	//	//e anche da quello per la gestione del movimento
-	//	public int[] ottieniOrigineVisuale2 (int riga, int colonna, int raggio) {
-	//		int[] coordinate = new int[2];
-	//		int i=0, j=0;
-	//
-	//		//calcolo in i e j il punto di origine della vista
-	//		//inizio con i=0 nella posizione del dinosauro, dopo lo incremeneto, cioe' mi sto spostando
-	//		//verso l'origine della dimensione del raggio
-	//		//se arrivo a 0 termino subito, se no termino quando
-	//		for(i=0;i<raggio;i++) if(riga - i <= 0) break;
-	//		for(j=0;j<raggio;j++) if(colonna - j <= 0) break;
-	//
-	//		coordinate[0] = riga - i;
-	//		coordinate[1] = colonna - j;
-	//		return coordinate;		
-	//	}
-	//
-	//	//metodo public per ottenere le coordinate dell'estremo della vista del Dinosauro
-	//	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
-	//	//e anche da quello per la gestione del movimento
-	//	public int[] ottieniEstremoVisuale2 (int riga, int colonna, int raggio) {
-	//		int[] coordinate = new int[2];
-	//		int i=0, j=0;
-	//
-	//		//calcolo in i e j il punto estremo in alto a sinistra della vista (fine)
-	//		for(i=0;i<raggio;i++) if(riga + i >=39) break;
-	//		for(j=0;j<raggio;j++) if(colonna + j >=39) break;
-	//
-	//		coordinate[0] = riga + i;
-	//		coordinate[1] = colonna + j;
-	//		return coordinate;
-	//	}
 
-	public int[] ottieniVisuale (int riga, int colonna) {
-		int[] vista = new int[4];
-		Cella cella = this.partita.getIsola().getMappa()[riga][colonna];
-
-		//se e' terra con un dinosauro sopra...
-		//qui mi assicuro che il quella posizione ci sia davvero un dinosauro
-		if(cella!=null && cella.getDinosauro()!=null) {
-
-			//ottengo coordinate origine e fine vista tramite i 2 metodi privati
-			int dimensione = cella.getDinosauro().getEnergiaMax() / 1000;
-			int dimensioneStabilita = this.calcolaRaggioVisibilita(dimensione);
-
-			//ottengo posizione dinosauro
-
-			int[] origineVista = this.ottieniOrigineVisuale(riga, colonna, dimensioneStabilita);
-			int[] fineVista = this.ottieniEstremoVisuale(riga, colonna, dimensioneStabilita);
-
-			vista[0] = origineVista[0];
-			vista[1] = origineVista[1];
-			vista[2] = fineVista[0];
-			vista[3] = fineVista[1];
-		} else System.out.println("Eccezione: c'e' un problema perche' sto calcolando la visuale di una zona in cui non c'e' un dinosauro");	
-		return vista;
-	}
-
-	private int calcolaRaggioVisibilita (int raggio) {
-		//stabisce la porzione di mappa che il dinosauro deve vedere in base al raggio
-		//metodo riciclato piu' volte:
-		//1)passando come raggio la dimensione per illuminare la mappa
-		//2)passando il numero di passi per il metodo movimento
+	//*******************************************************************************************************************
+	//****************************************GESTIONE VISTA E ILLUMINAZIONE*********************************************
+	//*******************************************************************************************************************
+	public int calcolaRaggioVisibilita (Dinosauro dinosauro) {
+		//e' un metodo che restituisce il raggio stabilito in base alla dimensione del dinosauro
+		//secondo le specifiche della sezione Visibilita'
+		int dimensione = dinosauro.getEnergiaMax()/1000;
 		int raggioStabilito;
-		if(raggio==1) raggioStabilito = 2;
-		else if(raggio==2 || raggio==3) raggioStabilito = 3;
+		if(dimensione==1) raggioStabilito = 2;
+		else if(dimensione==2 || dimensione==3) raggioStabilito = 3;
 		else raggioStabilito = 4; // se il raggio==4 || raggio==5
 		return raggioStabilito;
 	}
 
-	//metodo public per ottenere le coordinate di origine della vista del Dinosauro
-	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
-	//e anche da quello per la gestione del movimento
+	public void illuminaMappa (Giocatore giocatore, int riga, int colonna, int raggio) {
+		//esegue l'illuminazione della mappa con un certo raggio
+		int[] vista = this.ottieniVisuale(riga, colonna, raggio);
+		boolean[][] mappaDaIlluminare = giocatore.getMappaVisibile();
+
+		//vista[0] e vista[2] sono la riga di origine e la riga di fine
+		//vista[1] e vista[3] sono la colonna origine e la colonna fine
+		for(int j=vista[1];j<vista[3]+1;j++) { //scansiono le colonne
+			for(int i=vista[0];i<vista[2]+1;i++) { //scansiono le righe
+				mappaDaIlluminare[i][j] = true; //illumino
+				giocatore.setMappaVisibile(mappaDaIlluminare);
+			}
+		}
+	}
+
+
+	public int[] ottieniVisuale (int riga, int colonna, int raggio) {
+		//ottengo nell'array vista le coodinare (riga, colonna) della vista;
+		int[] vista = new int[4];
+		int[] origineVista = this.ottieniOrigineVisuale(riga, colonna, raggio);
+		int[] fineVista = this.ottieniEstremoVisuale(riga, colonna, raggio);
+		vista[0] = origineVista[0]; //riga
+		vista[1] = origineVista[1]; //colonna
+		vista[2] = fineVista[0]; //riga
+		vista[3] = fineVista[1]; //colonna
+		return vista;
+	}
+
+
 	public int[] ottieniOrigineVisuale (int riga, int colonna, int raggio) {
+		//per ottenere le coordinate di origine della vista del Dinosauro
+		//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
+		//e anche da quello per la gestione del movimento
 		int[] coordinate = new int[2];
 		int i=0, j=0;
 
@@ -142,14 +80,13 @@ public class Turno {
 		return coordinate;		
 	}
 
-	//metodo public per ottenere le coordinate dell'estremo della vista del Dinosauro
-	//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
-	//e anche da quello per la gestione del movimento
 	public int[] ottieniEstremoVisuale (int riga, int colonna, int raggio) {
+		//per ottenere le coordinate dell'estremo della vista del Dinosauro
+		//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
+		//e anche da quello per la gestione del movimento
 		int[] coordinate = new int[2];
 		int i=0, j=0;
 
-		//calcolo in i e j il punto estremo in alto a sinistra della vista (fine)
 		for(i=0;i<raggio;i++) if(riga + i >=39) break;
 		for(j=0;j<raggio;j++) if(colonna + j >=39) break;
 
@@ -162,7 +99,6 @@ public class Turno {
 	//*******************************************************************************************************************
 	//*****************************************GESTIONE MOVIMENTO********************************************************
 	//*******************************************************************************************************************
-
 	public int [][] ottieniRaggiungibilita(int sorgRiga, int sorgColonna) {
 
 		int i,j,riga,colonna,maxR,maxC,rigaSu,rigaGiu,colonnaSx,colonnaDx,passo,nPassi;
@@ -170,18 +106,17 @@ public class Turno {
 		int[] estremoMappaMovimento;
 
 		if(this.partita.getIsola().getMappa()[sorgRiga][sorgColonna].getDinosauro() instanceof Carnivoro){
-			origineMappaMovimento = this.ottieniOrigineVisuale(sorgRiga, sorgColonna, 3); //in questo caso 3 e' il numero di passi non la dimensione
+			//essendo la raggiungibilita di un carnivoro il raggio deve essere 3
+			origineMappaMovimento = this.ottieniOrigineVisuale(sorgRiga, sorgColonna, 3); 
 			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgRiga, sorgColonna, 3);
 			nPassi=3;
 		}
-		else{ //erbivoro
-			origineMappaMovimento = this.ottieniOrigineVisuale(sorgRiga, sorgColonna, 2); //in questo caso 2 e' il numero di passi non la dimensione
+		else{ 
+			//essendo la raggiungibilita di un erbivoro il raggio deve essere 3
+			origineMappaMovimento = this.ottieniOrigineVisuale(sorgRiga, sorgColonna, 2);
 			estremoMappaMovimento = this.ottieniEstremoVisuale(sorgRiga, sorgColonna, 2);
 			nPassi=2;
 		}
-
-		//solo per test
-		//		nPassi=3;
 
 		//estremi del movimento del dinosauro
 		maxR = estremoMappaMovimento[0]-origineMappaMovimento[0]+1;
@@ -191,10 +126,9 @@ public class Turno {
 
 		// numeri convenzione: 
 		//8 = ACQUA
-		//9 = NON RAGGIUNGIBILE			
+		//9 = NON RAGGIUNGIBILE		
 
 		// copio l'acqua della mappa nella sottomappa e metto non raggiungibile altrove
-
 		for(i=0; i<maxR; i++) {
 			for(j=0; j<maxC; j++) {
 				if(this.partita.getIsola().getMappa()[origineMappaMovimento[0]+i][origineMappaMovimento[1]+j] == null)
@@ -250,7 +184,6 @@ public class Turno {
 				if(mappaMovimento[i][j]==0) trovato = 1;
 
 		if(trovato==1){    	
-
 			partenzaDinoRiga = i-1;
 			partenzaDinoColonna = j-1;
 
@@ -300,7 +233,8 @@ public class Turno {
 			Dinosauro attaccato = destinazione.getDinosauro();
 			Giocatore giocatore;
 			if(attaccato!=null) giocatore = this.partita.identificaDinosauro(attaccato);
-			else giocatore = this.partita.identificaDinosauro(mosso); //questa riga e' senza senso ma mi serve per assegnare qualche cosa a
+			else giocatore = this.partita.identificaDinosauro(mosso); 
+			//la riga subito sopra e' senza senso ma mi serve per assegnare qualche cosa a
 			//giocatore quando non ci sono altri dinosauri nella destinazione per evitare che eclipse faccia casini
 
 			int vecchiaRiga = mosso.getRiga();
@@ -326,7 +260,6 @@ public class Turno {
 							giocatore=this.partita.identificaDinosauro(mosso);
 							giocatore.rimuoviDinosauro(muovente, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
 						}
-						//					this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 						return true;
 					}
 					else {
@@ -352,8 +285,6 @@ public class Turno {
 								giocatore=this.partita.identificaDinosauro(mosso);
 								giocatore.rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna]);
 							}
-
-							//						this.partita.getIsola().getMappa()[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 							return true;
 						}	
 						else {

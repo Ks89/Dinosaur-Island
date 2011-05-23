@@ -38,7 +38,7 @@ public class Erbivoro extends Dinosauro {
 			cella.setDinosauro(this);
 		}
 		else {
-			//TODO GRANDE DUBBIO: l'erbivoro perde il combattimento e il carnivoro non fa nulla (anche se mi sembra strano)
+			//FIXME GRANDE DUBBIO: l'erbivoro perde il combattimento e il carnivoro non fa nulla (anche se mi sembra strano)
 			cella.setDinosauro(nemico);
 		}
 	}

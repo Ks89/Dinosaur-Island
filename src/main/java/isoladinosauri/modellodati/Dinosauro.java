@@ -59,7 +59,7 @@ public abstract class Dinosauro extends Organismo implements Animale {
 			super.setColonna(colonna);
 			return true;
 		} else {
-			//TODO il dino deve essere cancellato dalla cella e dalla lista del giocatore
+			//il dino deve essere cancellato dalla cella e dalla lista del giocatore
 			//dal metodo che chiama aggCordinate (cioe' quello che si occupa del Movimento in Turno)
 			//tramite rimuoviDinosauro() in Giocatore
 			return false;

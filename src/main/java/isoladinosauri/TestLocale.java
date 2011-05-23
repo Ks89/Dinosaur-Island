@@ -88,7 +88,6 @@ public class TestLocale {
 					System.out.println("->ConteggioGiocatore: " + conteggioGiocatori);
 					System.out.println("*******************************");
 					System.out.println();
-					boolean crescita = true;
 					do {
 						if(p.getGiocatori().get(conteggioGiocatori).getDinosauri()!=null) {
 							Dinosauro dino = p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro);
@@ -119,7 +118,7 @@ public class TestLocale {
 								int[] coordinate = trovaDinosauro(raggiungibile);
 
 								System.out.println("Coordinate: " +  coordinate[0] + " " + coordinate[1]);
-								//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilitˆ
+								//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
 								System.out.println("Posiz Dino: " + dino.getRiga() + "," + dino.getColonna());
 								int origineRiga = dino.getRiga() - coordinate[0];
 								int origineColonna = dino.getColonna() - coordinate[1];
@@ -137,46 +136,45 @@ public class TestLocale {
 								do {
 									System.out.println("Inserisci coordinate come riga,colonna: ");
 
-									//									input.close();
-									//									input = new Scanner(System.in);
 									posMovimento = input.nextLine();
 									posMovimento = input.nextLine();
 									System.out.println("s" + posMovimento + "s");
 									System.out.println("-> Coordinare movimento ottenute: " + posMovimento.split(",")[0] + "," + posMovimento.split(",")[1]);
 									riga = Integer.parseInt(posMovimento.split(",")[0]);
 									colonna = Integer.parseInt(posMovimento.split(",")[1]);
-									//							int rigaOrigineTest=dino.getRiga();
-									//							int colonnaOrigineTest=dino.getColonna();
 
 									System.out.println("->Il dinosauro si muovera' da: (" + dino.getRiga() + "," + dino.getColonna() + ") a: (" + riga + "," + colonna + ")");
 
-									//										stradaPercorsa = t.ottieniStradaPercorsa(dino.getRiga(), dino.getColonna(),riga, colonna);
-									//										i.stampaMappaStradaPercorsa(origineRiga, origineColonna, fineRiga, fineColonna, stradaPercorsa);
-									//
-									//										int[] coordinateStrada = trovaDinosauroStrada(stradaPercorsa);
-									//
-									//										int origineRigaStrada = dino.getRiga() - coordinateStrada[0];
-									//										int origineColonnaStrada = dino.getColonna() - coordinateStrada[1];
-									//										int fineRigaStrada = dino.getRiga() + (stradaPercorsa.length - coordinateStrada[0] - 1);
-									//										int fineColonnaStrada = dino.getColonna() + (stradaPercorsa[0].length - coordinateStrada[1] - 1);
-									//										
-									//										//illumino la strada
-									//										for(int w=0;w<40;w++) 
-									//											for(int j=0;j<40;j++)
-									//												if((w>=origineRigaStrada && w<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada))
-									//													
-									//												if(stradaPercorsa[w][j]<0) t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori),w, j, 2);
+									stradaPercorsa = t.ottieniStradaPercorsa(dino.getRiga(), dino.getColonna(),riga, colonna);
+									i.stampaMappaStradaPercorsa(origineRiga, origineColonna, fineRiga, fineColonna, stradaPercorsa);
 
+									int[] coordinateStrada = trovaDinosauroStrada(stradaPercorsa);
+
+									int origineRigaStrada = dino.getRiga() - coordinateStrada[0];
+									int origineColonnaStrada = dino.getColonna() - coordinateStrada[1];
+									int fineRigaStrada = dino.getRiga() + (stradaPercorsa.length - coordinateStrada[0] - 1);
+									int fineColonnaStrada = dino.getColonna() + (stradaPercorsa[0].length - coordinateStrada[1] - 1);
+
+									System.out.println("origine: " + origineRigaStrada+","+origineColonnaStrada + " fine: "+fineRigaStrada+","+fineColonnaStrada);
+
+									int raggio = p.getTurnoCorrente().calcolaRaggioVisibilita(dino);
+									//illumino la strada
+									for(int w=0;w<40;w++) {
+										for(int j=0;j<40;j++) {
+											if((w>=origineRigaStrada && w<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada)) {
+												//System.out.println("coord: " + (w-origineRigaStrada) + "," + (origineColonnaStrada));
+												if(stradaPercorsa[w-origineRigaStrada][j-origineColonnaStrada]<0) t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), w, j, raggio);
+											}
+										}
+									}
 
 									i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
 
-									if(riga!=dino.getRiga() || colonna!=dino.getColonna())
+									if((riga!=dino.getRiga() || colonna!=dino.getColonna()) && raggiungibile[riga-origineRiga][colonna-origineColonna]!=9)
 										spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
 									else spostDino=false;
 
 								}while(spostDino==false);
-
-								//p.getTurnoCorrente().illuminaMappa(dino.getRiga(), dino.getColonna());
 
 								System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
 								i.stampaMappaRidotta();
@@ -193,13 +191,10 @@ public class TestLocale {
 							case 1 :
 								//cresci
 								if(dino.aumentaDimensione(p.getGiocatori().get(conteggioGiocatori),i.getMappa()[dino.getRiga()][dino.getColonna()])==true) {
-									crescita=true;
 									System.out.println("Il dinosauro " + dino.getId() + " e' ora di dimensione: " + (dino.getEnergiaMax()/1000));
 								}
 								else {
 									p.getGiocatori().get(conteggioGiocatori).rimuoviDinosauro(dino, i.getMappa()[dino.getRiga()][dino.getColonna()]);
-									//										conteggioDinosauro--;
-									crescita=false;
 									System.out.println("Non e' stato possibile far crescere il dinosauro: " + dino.getId());
 								}
 								break;
@@ -280,15 +275,6 @@ public class TestLocale {
 	private static int[] trovaDinosauroStrada (int[][] stradaPercorsa) {
 		int j,w;
 		int[] uscita = {0,0};
-		//		for(j=0;j<stradaPercorsa.length;j++) {
-		//			for(w=0;w<stradaPercorsa[0].length;w++) {
-		//				System.out.print(stradaPercorsa[j][w] + " ");
-		//			}
-		//			System.out.println();
-		//		}
-		//		System.out.println();
-		//		System.out.println();
-
 		for(j=0;j<stradaPercorsa.length;j++) {
 			for(w=0;w<stradaPercorsa[0].length;w++) {
 				if(stradaPercorsa[j][w]==-7) {
