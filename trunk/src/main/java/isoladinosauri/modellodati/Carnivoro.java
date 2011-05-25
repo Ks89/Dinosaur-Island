@@ -18,33 +18,42 @@ public class Carnivoro extends Dinosauro {
 		return (2 * super.energia * super.dimensione);
 	}
 
-	public void mangia(Animale animale, Cella cella) {
-		//questo metodo e' chiamato SOLO se this si e' mosso su una cella con un altro dino
-
+	@Override
+	public void mangia(Cella cella) {
+		//questo metodo e' chiamato SOLO se this si e' mosso su una cella con un occupante
+		Occupante occupante = cella.getOccupante();
+		
 		//se e' un caragona
-		if (animale instanceof Carogna) {
+		if (occupante instanceof Carogna) {
 			//mangia un animale che puo essere Dinosauro o una carogna
 			//NB: passo anche la Cella per sapere dove si trova l'animale e la carogna
 			//in modo che possa rimuoverli nel caso uno dei 2 muoia/si esaurisca
-			Carogna nemico = (Carogna)animale;
+			Carogna carogna = (Carogna)occupante;
 			//mangio tutta la carogna
-			if(nemico.getEnergia()<=(super.getEnergiaMax() - super.getEnergia())) {
-				super.setEnergia(super.getEnergia() + nemico.getEnergia());
+			if(carogna.getEnergia()<=(super.getEnergiaMax() - super.getEnergia())) {
+				super.setEnergia(super.getEnergia() + carogna.getEnergia());
 				//rimuovi la carogna
 				cella.setOccupante(null);
 			}
 			//mangio solo una parte della carogna	 
 			else {
 				// la carogna sara consumata della diff dell'energia max e quella attuale del dino
-				nemico.setEnergia(nemico.getEnergia() - (super.getEnergiaMax() - super.getEnergia()));
+				carogna.setEnergia(carogna.getEnergia() - (super.getEnergiaMax() - super.getEnergia()));
 				//il dinosauro avra la sua energia al massimo
 				super.setEnergia(super.getEnergiaMax());
 			}		
 		} 
 
-		//il dinosauro carnivoro a muoversi su una cella con un erbivoro
-		if (animale instanceof Erbivoro) {
-			Erbivoro nemico = (Erbivoro)animale;
+	
+	}
+	
+	@Override
+	public void combatti(Cella cella)  {
+		Dinosauro dinosauro =  cella.getDinosauro();
+		
+		//il dinosauro carnivoro a muoversi su una cella per combattere con un erbivoro
+		if (dinosauro instanceof Erbivoro) {
+			Erbivoro nemico = (Erbivoro)dinosauro;
 			if(this.calcolaForza()>=nemico.calcolaForza()) {
 				//il carnivoro vince il combattimento e mangia l'erbivoro
 				if(nemico.getEnergia()<=(super.getEnergiaMax() - super.getEnergia()))
@@ -57,10 +66,9 @@ public class Carnivoro extends Dinosauro {
 				cella.setDinosauro(nemico);
 			}
 		}
-
-		//il dinosauro carnivoro a muoversi su una cella con un altro carnivoro
-		if (animale instanceof Carnivoro) {	
-			Carnivoro nemico = (Carnivoro)animale;
+		//il dinosauro carnivoro a muoversi su una cella per combattere con un altro carnivoro
+		if (dinosauro instanceof Carnivoro) {	
+			Carnivoro nemico = (Carnivoro)dinosauro;
 			if(this.calcolaForza()>=nemico.calcolaForza()) {
 				//il carnivoro vince il combattimento e mangia l'altro carnivor
 				if(nemico.getEnergia()<=(super.getEnergiaMax() - super.getEnergia()))
@@ -74,5 +82,13 @@ public class Carnivoro extends Dinosauro {
 				cella.setDinosauro(nemico);
 			}
 		}			
+		if(this.calcolaForza()>=dinosauro.calcolaForza()) {
+			//l'erbivoro vince il combattimento e sconfigge il carnivoro, ma non lo mangia
+			cella.setDinosauro(this);
+		}
+		else {
+			//FIXME GRANDE DUBBIO: l'erbivoro perde il combattimento e il carnivoro non fa nulla (anche se mi sembra strano)
+			cella.setDinosauro(dinosauro);
+		}
 	}
 }

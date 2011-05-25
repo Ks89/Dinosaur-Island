@@ -32,8 +32,10 @@ public abstract class Dinosauro extends Organismo implements Animale {
 	}
 
 	public abstract int calcolaForza();
+	public abstract void mangia(Cella cella);
+	public abstract void combatti(Cella cella);
 
-	public boolean aumentaDimensione(Giocatore giocatore, Cella cella) {
+	public boolean aumentaDimensione(Giocatore giocatore) {
 		//nel caso in cui la dimensione sia gia' massima
 		//ritorna false perche' non e' in grado di far crescere
 		//la dimensione del dinosauro

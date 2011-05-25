@@ -182,7 +182,7 @@ public class MainLocale {
 									else spostDino=false;
 									
 //									//questa riga e' solo per test, cancellarla
-//									spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
+									//spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
 								}while(spostDino==false);
 
 								System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
@@ -202,8 +202,10 @@ public class MainLocale {
 							switch(scelta)  {								
 							case 1 :
 								//cresci
-								if(dino.aumentaDimensione(p.getGiocatori().get(conteggioGiocatori),i.getMappa()[dino.getRiga()][dino.getColonna()])==true) {
+								if(dino.aumentaDimensione(p.getGiocatori().get(conteggioGiocatori))==true) {
 									System.out.println("Il dinosauro " + dino.getId() + " e' ora di dimensione: " + (dino.getEnergiaMax()/1000));
+									int raggio = t.calcolaRaggioVisibilita(dino);
+									t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), dino.getRiga(), dino.getColonna(), raggio);
 								}
 								else {
 									p.getGiocatori().get(conteggioGiocatori).rimuoviDinosauro(dino, i.getMappa()[dino.getRiga()][dino.getColonna()]);
