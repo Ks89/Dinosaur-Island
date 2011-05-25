@@ -7,10 +7,10 @@ package isoladinosauri.modellodati;
  */
 public abstract class Organismo {
 	
-	protected int riga;
-	protected int colonna;
-	protected int energiaMax;
-	protected int energia;
+	private int riga;
+	private int colonna;
+	private int energiaMax;
+	private int energia;
 	
 	/**
 	 * @return the energiaMax

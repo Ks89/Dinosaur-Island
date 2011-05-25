@@ -10,8 +10,8 @@ package isoladinosauri;
  */
 public class Utente {
 	
-	protected String nomeUtente;
-	protected String password;
+	private String nomeUtente;
+	private String password;
 	
 	public String getNomeUtente() {
 		return nomeUtente;

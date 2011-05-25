@@ -11,11 +11,13 @@ import java.util.List;
 //import com.db4o.ObjectContainer;
 //import com.db4o.ObjectSet;
 
-//FIXME GRANDE DUBBIO: l'erbivoro perde il combattimento e il carnivoro non fa nulla (anche se mi sembra strano)
 //FIXME GRAVISSIMO: se c'e' un solo giocatore nella partita e il suo dinosauro muore il programma crasha SEMPRE (MOLTO GRAVE)
-		//se invece cancello il giocatore direttamente dal menu, allora non succede nulla. Il bug sta nei cicli dei dinosauri, sugli indici
+//se invece cancello il giocatore direttamente dal menu, allora non succede nulla. Il bug sta nei cicli dei dinosauri, sugli indici
+//FIXME se muovo e non ho piu energia per farlo il programma non uccide il dino e resta bloccato nel ciclo per inserire le coordinate
 //FIXME una volta che il dinosauro erbivoro va su cella di un carnivoro e perde, il menu' delle azioni non devo apparire piu'
 //FIXME se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
+//FIXME rifare il metodo per combattere in carnivoro ed erbivoro senza usare cella, ma che restituisce il dinosauro vincitore
+	//quindi nel metodo che lo richiama fare una istruzione cella.setDinosauro(...)  , vedi tasks TODO potrei rifare.... in Turno
 //TODO mettere la Javadoc (inziato a farlo)
 
 /**
@@ -33,6 +35,7 @@ public class Partita {
 	{
 		this.giocatori = new ArrayList<Giocatore>();
 		this.isola = isola;
+		//this.turnoCorrente = new Turno(this);
 	}
 
 	public Turno getTurnoCorrente() {
@@ -60,8 +63,9 @@ public class Partita {
 	}
 
 	public void aggiungiGiocatore(Giocatore giocatore) {
-		if(this.giocatori.size()<8) giocatori.add(giocatore);
-		else { 
+		if(this.giocatori.size()<8) {
+			giocatori.add(giocatore);
+		} else { 
 			System.out.println("Impossibile accedere, sono concessi solo 8 giocatori online");
 			//partita piena con 8 giocatori
 		}
@@ -70,10 +74,12 @@ public class Partita {
 	public void rimuoviGiocatore(Giocatore giocatore) {
 		//ricevo gicatore, cioe' il giocatore che devo cancellare		
 		//rimuovo tutti i dinosauri del giocatore dalla mappa
+		Cella[][] mappa = this.getIsola().getMappa();
 		for(int j=0;j<40;j++) {
 			for(int i=0;i<40;i++) {
-				if(this.getIsola().getMappa()[i][j]!=null && this.getIsola().getMappa()[i][j].getDinosauro()!=null) {
-					if(giocatore.getDinosauri().contains(this.getIsola().getMappa()[i][j].getDinosauro())==true) this.getIsola().getMappa()[i][j].setDinosauro(null);
+				if(mappa[i][j]!=null && mappa[i][j].getDinosauro()!=null && 
+						giocatore.getDinosauri().contains(mappa[i][j].getDinosauro())==true) {
+					mappa[i][j].setDinosauro(null);
 				}		
 			}
 		}
@@ -88,9 +94,11 @@ public class Partita {
 	public void setContatoreTurni(int contatoreTurni) {
 		this.contatoreTurni = contatoreTurni;
 	}
-	
+
 	public void incrementaEtaGiocatori() {
-		for(int i=0;i<this.getGiocatori().size();i++) this.getGiocatori().get(i).incrementaEtaAttuali();
+		for(int i=0;i<this.getGiocatori().size();i++) {
+			this.getGiocatori().get(i).incrementaEtaAttuali();
+		}
 	}
 
 	public Giocatore identificaDinosauro (Dinosauro dinosauro) {
@@ -98,11 +106,15 @@ public class Partita {
 		//quello che restituisce e' il giocatore che possiede quel dinosauro
 		//nella propria arraylist di Dinosauri
 		//se il dinosauro da cercare e' null blocco il metodo e ritorno null
-		if(dinosauro==null) return null;
-		
+		if(dinosauro==null) {
+			return null;
+		}
+
 		for(int i=0; i<this.getGiocatori().size();i++) {
 			for(int j=0; j<this.getGiocatore(i).getDinosauri().size();j++) {
-				if(dinosauro.equals(this.getGiocatore(i).getDinosauri().get(j))) return this.getGiocatore(i);
+				if(dinosauro.equals(this.getGiocatore(i).getDinosauri().get(j))) {
+					return this.getGiocatore(i);
+				}
 			}
 		}    	
 		return null;
@@ -138,8 +150,15 @@ public class Partita {
 
 				//NB: fare .getDinosauri().get(0) vuol dire  prendere il primo dino del giocatore
 				//solo per vedere se e' carnivoro o erbivoro e quindi per capire il tipo della specie del dinosauro
-				if(this.getGiocatore(i).getDinosauri().get(0) instanceof Carnivoro) dinosauro = new Carnivoro(idDinosauro,posizione[0], posizione[1], turnoNascita);
-				else if(this.getGiocatore(i).getDinosauri().get(0) instanceof Erbivoro) dinosauro = new Erbivoro(idDinosauro,posizione[0], posizione[1], turnoNascita);
+				Dinosauro primoDinosauro = this.getGiocatore(i).getDinosauri().get(0); 
+
+				if(primoDinosauro instanceof Carnivoro) {
+					dinosauro = new Carnivoro(idDinosauro,posizione[0], posizione[1], turnoNascita);
+				} else {
+					if(primoDinosauro instanceof Erbivoro) {
+						dinosauro = new Erbivoro(idDinosauro,posizione[0], posizione[1], turnoNascita);
+					}
+				}
 				if(this.getGiocatore(i).aggiungiDinosauro(dinosauro)==true) {
 					this.getIsola().getMappa()[posizione[0]][posizione[1]].setDinosauro(dinosauro);	
 					this.getGiocatore(i).rimuoviUova();
@@ -155,7 +174,7 @@ public class Partita {
 
 	//passate le coordinate dell'uovo questo metodo genera le coordinate i cui POSSO far nascere il dinosauro
 	private int[] generaCoordinateNascituro (int riga, int colonna) {
-		
+
 		//funzionamento:
 		//1) calcolo raggio visuale che parte da 1
 		//2) cerco nella visuale uno spazio libero (terra senza dinosauro) (cioe' la cornice subito intorno al dinosauro)

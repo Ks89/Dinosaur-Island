@@ -16,9 +16,10 @@ import java.util.StringTokenizer;
  */ 
 public class Isola {
 
-//	final int lungh = 40;
-	
+	//	final int lungh = 40;
+
 	private Cella[][] mappa; 
+	
 
 	public Cella[][] getMappa() {
 		return mappa;        
@@ -40,10 +41,10 @@ public class Isola {
 
 			for(int i=0;i<40;i++) {
 				st = new StringTokenizer(riga);
-				
+
 				for(int j=0;j<40;j++) {
 					cellaLetta = st.nextToken();
-					
+
 					if(cellaLetta.equals("a"))	{
 						//se acqua mette null senza fare la cella
 						mappa[i][j]=null;
@@ -120,28 +121,31 @@ public class Isola {
 		//presto sara' rimosso e trasformato in test junit
 		System.out.print("   ");
 		for(int j=0;j<40;j++) {
-			if(j<10) System.out.print("0" + j + " ");
-			else System.out.print(j + " ");
+			if(j<10) {
+				System.out.print("0" + j + " ");
+			} else {
+				System.out.print(j + " ");
+			}
 		}
 		System.out.println();
 		for(int i=0;i<40;i++) {
-			if(i<10) System.out.print("0" + i + " ");
-			else System.out.print(i + " ");
+			if(i<10) {
+				System.out.print("0" + i + " ");
+			} else {
+				System.out.print(i + " ");
+			}
 			for(int j=0;j<40;j++) {
 				if (mappa[i][j] == null) { //e' acqua
 					System.out.print("   ");
-				}
-				else { //se e' terra puo' essere carogna o vegetale
+				} else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
 					if(cella.getDinosauro()!=null) {
 						System.out.print(cella.getDinosauro().getId() + " ");
 					} else {
-						if(cella.getOccupante() instanceof Carogna)
-						{
+						if(cella.getOccupante() instanceof Carogna) {
 							System.out.print(" c ");
 						}
-						if(cella.getOccupante() instanceof Vegetale)
-						{
+						if(cella.getOccupante() instanceof Vegetale) {
 							System.out.print(" v ");
 						}
 						if(!(cella.getOccupante() instanceof Vegetale) &&
@@ -164,29 +168,32 @@ public class Isola {
 		//presto sara' rimosso e trasformato in test junit
 		System.out.print("   ");
 		for(int j=0;j<40;j++) {
-			if(j<10) System.out.print("0" + j + " ");
-			else System.out.print(j + " ");
+			if(j<10) {
+				System.out.print("0" + j + " ");
+			} else {
+				System.out.print(j + " ");
+			}
 		}
 		System.out.println();
 		for(int i=0;i<40;i++) {
-			if(i<10) System.out.print("0" + i + " ");
-			else System.out.print(i + " ");
+			if(i<10) {
+				System.out.print("0" + i + " ");
+			} else {
+				System.out.print(i + " ");
+			}
 			for(int j=0;j<40;j++) {
 				if(giocatore.getMappaVisibile()[i][j]==true) {
 					if (mappa[i][j] == null) { //e' acqua
 						System.out.print("   ");
-					}
-					else { //se e' terra puo' essere carogna o vegetale
+					} else { //se e' terra puo' essere carogna o vegetale
 						Cella cella = mappa[i][j];
 						if(cella.getDinosauro()!=null) {
 							System.out.print(cella.getDinosauro().getId() + " ");
 						} else {
-							if(cella.getOccupante() instanceof Carogna)
-							{
+							if(cella.getOccupante() instanceof Carogna) {
 								System.out.print(" c ");
 							}
-							if(cella.getOccupante() instanceof Vegetale)
-							{
+							if(cella.getOccupante() instanceof Vegetale) {
 								System.out.print(" v ");
 							}
 							if(!(cella.getOccupante() instanceof Vegetale) &&
@@ -196,8 +203,9 @@ public class Isola {
 						}
 
 					}
-				} else System.out.print("   ");
-
+				} else {
+					System.out.print("   ");
+				}
 			}
 			System.out.println();
 		}
@@ -208,34 +216,42 @@ public class Isola {
 	public void stampaMappaRaggiungibilita(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]raggiungibilita) {
 		System.out.print("   ");
 		for(int j=0;j<40;j++) {
-			if(j<10) System.out.print("0" + j + " ");
-			else System.out.print(j + " ");
+			if(j<10) {
+				System.out.print("0" + j + " ");
+			} else {
+				System.out.print(j + " ");
+			}
 		}
 		System.out.println();
 		for(int i=0;i<40;i++) {
-			if(i<10) System.out.print("0" + i + " ");
-			else System.out.print(i + " ");
+			if(i<10) {
+				System.out.print("0" + i + " ");
+			} else {
+				System.out.print(i + " ");
+			}
 			for(int j=0;j<40;j++) {
 				if (mappa[i][j] == null) { //e' acqua
 					System.out.print("   ");
-				}
-				else { //se e' terra puo' essere carogna o vegetale
+				} else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
 					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
-						if((raggiungibilita[i - inizioRiga][j - inizioColonna]!=9) && (raggiungibilita[i - inizioRiga][j - inizioColonna]!=8))
+						if((raggiungibilita[i - inizioRiga][j - inizioColonna]!=9) &&
+								(raggiungibilita[i - inizioRiga][j - inizioColonna]!=8)) {
 							System.out.print(" " + raggiungibilita[i - inizioRiga][j - inizioColonna] + " ");
-						else if(raggiungibilita[i - inizioRiga][j - inizioColonna]==9 || raggiungibilita[i - inizioRiga][j - inizioColonna]==8)
-							System.out.print(" " + raggiungibilita[i - inizioRiga][j - inizioColonna] + " ");
+						} else { 
+							if(raggiungibilita[i - inizioRiga][j - inizioColonna]==9 ||
+									raggiungibilita[i - inizioRiga][j - inizioColonna]==8) {
+								System.out.print(" " + raggiungibilita[i - inizioRiga][j - inizioColonna] + " ");
+							}
+						}
 					} else {
 						if(cella.getDinosauro()!=null) {
 							System.out.print(cella.getDinosauro().getId() + " ");
 						} else {
-							if(cella.getOccupante() instanceof Carogna)
-							{
+							if(cella.getOccupante() instanceof Carogna) {
 								System.out.print(" c ");
 							}
-							if(cella.getOccupante() instanceof Vegetale)
-							{
+							if(cella.getOccupante() instanceof Vegetale) {
 								System.out.print(" v ");
 							}
 							if(!(cella.getOccupante() instanceof Vegetale) &&
@@ -254,28 +270,33 @@ public class Isola {
 	}
 
 	public void stampaMappaStradaPercorsa(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]stradaPercorsa) {
-		int cont=0;
 		System.out.print("   ");
 		for(int j=0;j<40;j++) {
-			if(j<10) System.out.print("0" + j + " ");
-			else System.out.print(j + " ");
+			if(j<10) {
+				System.out.print("0" + j + " ");
+			} else {
+				System.out.print(j + " ");
+			}
 		}
 		System.out.println();
 		for(int i=0;i<40;i++) {
-			if(i<10) System.out.print("0" + i + " ");
-			else System.out.print(i + " ");
+			if(i<10) {
+				System.out.print("0" + i + " ");
+			} else {
+				System.out.print(i + " ");
+			}
 			for(int j=0;j<40;j++) {
 				if (mappa[i][j] == null) { //e' acqua
 					System.out.print("   ");
 				}
 				else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
-					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
-						cont++;
-						if((stradaPercorsa[i - inizioRiga][j - inizioColonna]!=9) && (stradaPercorsa[i - inizioRiga][j - inizioColonna]!=8))
+					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {	
+						if((stradaPercorsa[i - inizioRiga][j - inizioColonna]!=9) && (stradaPercorsa[i - inizioRiga][j - inizioColonna]!=8)) {
 							System.out.print(" " + stradaPercorsa[i - inizioRiga][j - inizioColonna] + " ");
-						else if(stradaPercorsa[i - inizioRiga][j - inizioColonna]==9 || stradaPercorsa[i - inizioRiga][j - inizioColonna]==8)
+						} else if(stradaPercorsa[i - inizioRiga][j - inizioColonna]==9 || stradaPercorsa[i - inizioRiga][j - inizioColonna]==8) {
 							System.out.print(" " + stradaPercorsa[i - inizioRiga][j - inizioColonna] + " ");
+						}
 					} else {
 						if(cella.getDinosauro()!=null) {
 							System.out.print(cella.getDinosauro().getId() + " ");
