@@ -6,14 +6,18 @@ import isoladinosauri.modellodati.Vegetale;
 
 import java.util.Scanner;
 
-public class TestLocale {
+/**
+ * Classe Test per simulare il gioco in Locale
+ */
+public class MainLocale {
 	public static void main(String[] args) {
-
+		boolean uscita=false;
 		System.out.println("Benvenuto in Isola dei Dinosauri Beta1");
 		Scanner input = new Scanner(System.in);
 		Isola i = new Isola();
 		Partita p = new Partita(i);
 		Turno t = new Turno(p);
+		Classifica c = new Classifica(p);
 		p.setTurnoCorrente(t);
 		i.caricaMappa();
 		int scelta,scelta1;
@@ -21,7 +25,9 @@ public class TestLocale {
 		int conteggioDinosauro=0;
 		int conteggioGiocatori=0;
 
-		do { //inzia la partita e termina solo quando resta un giocatore
+
+
+		do { //inzia la partita
 			conteggioGiocatori=0;
 			System.out.println("Menu:");
 			System.out.println("[1]: Aggiunge un giocatore [OK]");
@@ -29,6 +35,7 @@ public class TestLocale {
 			System.out.println("[3]: Esegue i turni dei giocatori, uno ad uno in sequenza [BETA - mancano un sacco di funzioni]");
 			System.out.println("[4]: Stampa la classifica [OK]");
 			System.out.println("[5]: Stampa tutte le mappe utili per i test[OK]");
+			System.out.println("[6]: Esce dal programma chiudendo la partita in corso [OK]");
 			scelta1 = input.nextInt();
 			conteggioDinosauro=0;
 			switch(scelta1) {
@@ -53,7 +60,7 @@ public class TestLocale {
 				else tipoDinosauro = "erbivoro";
 
 				Giocatore giocatore =  new Giocatore(p, nickname, password, turnoCorrente, nomeSpecie, tipoDinosauro);
-				p.aggiungiTuplaClassifica(giocatore);
+				c.aggiungiTuplaClassifica(giocatore);
 				break;
 			case 2 :
 				//rimuovo il giocatore
@@ -66,8 +73,7 @@ public class TestLocale {
 			case 3 :
 				//usa il giocatore successivo
 
-				do {
-					conteggioDinosauro=0;
+				for(conteggioGiocatori=0;conteggioGiocatori<p.getGiocatori().size();conteggioGiocatori++) {
 					System.out.println();
 					System.out.println("**********GIOCATORE************");
 					System.out.println("ID:\t\t" + p.getGiocatori().get(conteggioGiocatori).getIdGiocatore());
@@ -88,7 +94,8 @@ public class TestLocale {
 					System.out.println("->ConteggioGiocatore: " + conteggioGiocatori);
 					System.out.println("*******************************");
 					System.out.println();
-					do {
+					for(conteggioDinosauro=0;conteggioDinosauro<p.getGiocatori().get(conteggioGiocatori).getDinosauri().size();conteggioDinosauro++) {
+						giocatore = p.getGiocatori().get(conteggioGiocatori);
 						if(p.getGiocatori().get(conteggioGiocatori).getDinosauri()!=null) {
 							Dinosauro dino = p.getGiocatori().get(conteggioGiocatori).getDinosauri().get(conteggioDinosauro);
 							//gestisce le azioni del singolo dinosauro
@@ -128,7 +135,7 @@ public class TestLocale {
 
 								i.stampaMappaRaggiungibilita(origineRiga, origineColonna, fineRiga, fineColonna, raggiungibile);
 
-								p.getGiocatori().get(conteggioGiocatori).stampaMappa();
+								//p.getGiocatori().get(conteggioGiocatori).stampaMappa();
 								i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
 								String posMovimento;
 								int riga, colonna;
@@ -173,7 +180,9 @@ public class TestLocale {
 									if((riga!=dino.getRiga() || colonna!=dino.getColonna()) && raggiungibile[riga-origineRiga][colonna-origineColonna]!=9)
 										spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
 									else spostDino=false;
-
+									
+//									//questa riga e' solo per test, cancellarla
+//									spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
 								}while(spostDino==false);
 
 								System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
@@ -182,6 +191,9 @@ public class TestLocale {
 							default:
 								break;
 							}
+							
+							
+							
 							System.out.println("Azioni possibili:");
 							System.out.println("[1]: Cresci");
 							System.out.println("[2]: Deponi");
@@ -196,58 +208,78 @@ public class TestLocale {
 								else {
 									p.getGiocatori().get(conteggioGiocatori).rimuoviDinosauro(dino, i.getMappa()[dino.getRiga()][dino.getColonna()]);
 									System.out.println("Non e' stato possibile far crescere il dinosauro: " + dino.getId());
-								}
+										conteggioDinosauro--;
+//										conteggioGiocatori--;
+									}
+								
 								break;
 							case 2 :
 								//deponi
-								if(dino.deponi(i.getMappa()[dino.getRiga()][dino.getColonna()], p.getGiocatori().get(conteggioGiocatori))==false) 
+								//dino.setEnergia(65000);
+								if((dino.deponi(i.getMappa()[dino.getRiga()][dino.getColonna()], p.getGiocatori().get(conteggioGiocatori)))==false) 
 									System.out.println("Errore deposizione, possibili motivi: energia insufficiente, squadra dei dinosauri completa");
+								//									if(p.getGiocatori().get(conteggioGiocatori).getDinosauri().isEmpty()) {
+								//										conteggioDinosauro=0;
+								//										conteggioGiocatori--;
+								//									}
 								break;
 							default : //passa l'azione per il dinosauro specificato
 								break;
 							}	
 						}
-						conteggioDinosauro++;
 						System.out.println("Conteggio dinosauro: " + conteggioDinosauro);
-						if(rimuoviGiocatoriSenzaDinosauri(p) == false) if(conteggioGiocatori>=p.getGiocatori().size()) conteggioGiocatori=p.getGiocatori().size()-1;
+						System.out.println("Conteggio giocatori: " + conteggioGiocatori);
 
-					}while(p.getGiocatori().get(conteggioGiocatori).getDinosauri().size() > conteggioDinosauro); //chiudo while della scansione dei dinosauri
+						for(int w=0;w<p.getGiocatori().size();w++)
+							if(p.getGiocatori().get(w).getDinosauri().isEmpty()) {
+								p.getGiocatori().remove(p.getGiocatori().get(w));
+								if(conteggioGiocatori>0) conteggioGiocatori--;
+								conteggioDinosauro=0;
+							}
+						System.out.println("Conteggio dinosauro: " + conteggioDinosauro);
+						System.out.println("Conteggio giocatori: " + conteggioGiocatori);
+//						if(p.getGiocatori().isEmpty()) {
+//							break;
+//						}
+						//					if(rimuoviGiocatoriSenzaDinosauri(p) == true && conteggioGiocatori>=p.getGiocatori().size()) {
+						//							System.out.println("info varie: " + conteggioGiocatori + "," + p.getGiocatori().size());
+						//							conteggioGiocatori=p.getGiocatori().size()-1;
+						//						}
+
+					}//finisce il for con la scansione dei dinosauri di un certo giocatore
+
+					
+
+
 					//qui si puo' anche stampare mappe
-					p.aggiungiTuplaClassifica(p.getGiocatori().get(conteggioGiocatori));
-					conteggioGiocatori++;
-				}while(p.getGiocatori().size() > conteggioGiocatori);
+					c.aggiungiTuplaClassifica(p.getGiocatori().get(conteggioGiocatori));
+				}
 				break;
 			case 4 :
 				//stampo la classifica
-				p.stampaClassifica();
+				c.stampaClassifica();
 				break;
 			case 5 :
 				//stampo le mappe UTILI
 				i.stampaMappa();
 				i.stampaMappaRidotta();
 				break;
+			case 6:
+				//termina il ciclo while ed esce dal programma
+				uscita=true;
+				break;
 			}
 			if(scelta1==3) {
 				turnoCorrente++;
-				p.getTurnoCorrente().incrementaEtaGiocatori();
+				p.incrementaEtaGiocatori();
 			}
 			System.out.println("Classifica aggiornata e le uova sono state schiuse");
 			p.nascitaDinosauro(turnoCorrente);
-			p.aggiornaClassificaStati();
-			p.stampaClassifica();
+			c.aggiornaClassificaStati();
+			c.stampaClassifica();
 			cresciEconsuma(p);
 
-		} while(p.getGiocatori().size()>0); //se esco da qui ho il vincitore
-	}
-
-	private static boolean rimuoviGiocatoriSenzaDinosauri(Partita p) {
-		boolean stato=false;
-		for(int i=0;i<p.getGiocatori().size();i++)
-			if(p.getGiocatori().get(i).getDinosauri().isEmpty()) {
-				p.getGiocatori().remove(p.getGiocatori().get(i));
-				stato=true;
-			}
-		return stato;
+		} while(uscita==false);
 	}
 
 	private static void cresciEconsuma(Partita p) {

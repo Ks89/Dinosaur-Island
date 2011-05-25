@@ -2,6 +2,12 @@ package isoladinosauri.modellodati;
 
 import isoladinosauri.Cella;
 
+/**
+ * Classe che identifica un dinosauro Erbivoro,
+ * differente da Carnivoro per il metodo calcolaForza() e 
+ * per il fatto che puo' solo combattere contro Dinosauri
+ * invece puo' mangiare Occupanti (Vegetazione a runtime)
+ */
 public class Erbivoro extends Dinosauro {
 	
 	public Erbivoro(String id, int posX, int posY, int turnoNascita) {

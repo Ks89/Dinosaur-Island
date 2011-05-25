@@ -1,11 +1,17 @@
 package isoladinosauri.modellodati;
 
+/**
+ * Classe ASTRATTA che identifica un generico Organismo,
+ * il quale puo' essere un Dinosauro, un Vegetale o una Carogna
+ * Possiede solo metodi astratti comuni a tutte le sottoclassi 
+ */
 public abstract class Organismo {
 	
 	protected int riga;
 	protected int colonna;
 	protected int energiaMax;
 	protected int energia;
+	
 	/**
 	 * @return the energiaMax
 	 */

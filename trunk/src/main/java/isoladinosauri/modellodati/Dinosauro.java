@@ -6,6 +6,10 @@ import isoladinosauri.Cella;
 import isoladinosauri.Giocatore;
 
 
+/**
+ * Superclasse ASTRATTA di Carnivoro e Erbivoro che
+ * implementa i metodi comuni per gestire le azioni
+ */
 public abstract class Dinosauro extends Organismo implements Animale {
 
 	protected int dimensione;
@@ -70,21 +74,15 @@ public abstract class Dinosauro extends Organismo implements Animale {
 	public boolean deponi(Cella cella, Giocatore giocatore) {
 		//la cella deve essere quella in cui c'e' il dinosauro che depone
 		super.energia -= 1500;
-
+		
 		if(super.getEnergia()>0) {
-			//il dinosauro pu' compiere l'azione di deposizione
-			if(giocatore.getDinosauri().size()<5) {
+			//il dinosauro pu' compiere l'azione di deposizione, ma solo se il num di dino
+			//sommati a quello delle uova (perche' in futuro saranno anch'essi dino) sia <5
+			if((giocatore.getDinosauri().size() + giocatore.getUova().size()) < 5 ) {
 				giocatore.aggiungiUovo(super.getRiga(),super.getColonna());
 				return true;
-			}
-			else {
-				System.out.println("Errore squadra completa");
-				return false;
-				//errore squadra completa e non posso creare altri dinosauri
-			}
-		}
-		//il dinosauro muore perche' non ha sufficiente energia
-		else {
+			} else return false; //squadra completa e non posso creare altri dinosauri deponendo uova	
+		} else { //il dinosauro muore perche' non ha sufficiente energia
 			giocatore.rimuoviDinosauro(this, cella);	
 			return false;
 		}

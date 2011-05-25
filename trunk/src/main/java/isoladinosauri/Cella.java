@@ -3,10 +3,18 @@ package isoladinosauri;
 import isoladinosauri.modellodati.Dinosauro;
 import isoladinosauri.modellodati.Occupante;
 
+/**
+ * Classe usata per contenere due interfacce
+ * Occupante: puo' essere vegetale o carogna a runtime
+ * Dinosauro: puo' essere erbivoro o carnivoro a runtime
+ * Permette la presenza di un dinosauro e un occupante sulla stessa cella
+ * contemporaneamente, ma non di 2 occupanti e/o dinosauri.
+ */
+
 public class Cella {
 	
-	private Occupante occupante; //puo essere vegetale o carogna
-	private Dinosauro dinosauro; //puo essere erbivoro o carnivoro
+	private Occupante occupante;
+	private Dinosauro dinosauro;
 	
 	public Occupante getOccupante() {
 		return occupante;
