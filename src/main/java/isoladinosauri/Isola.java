@@ -8,9 +8,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+
+/**
+ * Classe Isola costituita dal solo attributo mappa.
+ * Essa contiene tutti i metodi per generare la mappa di gioco e/o
+ * caricarla da file esterno.
+ */ 
 public class Isola {
 
-	private Cella[][] mappa;
+//	final int lungh = 40;
+	
+	private Cella[][] mappa; 
 
 	public Cella[][] getMappa() {
 		return mappa;        
@@ -23,19 +31,19 @@ public class Isola {
 		//della creazione di un Occupante (vegetazione e/o carogna)
 		try
 		{  	
-			BufferedReader br = new BufferedReader(new FileReader("mappaTestAcquaUovo.txt"));
+			FileReader fileReader = new FileReader("mappaTestAcquaUovo.txt");
+			BufferedReader br = new BufferedReader(fileReader);
 			String riga = br.readLine();
 			StringTokenizer st = null;	
 			String cellaLetta;
-
 			mappa = new Cella[40][40];
 
 			for(int i=0;i<40;i++) {
 				st = new StringTokenizer(riga);
-
+				
 				for(int j=0;j<40;j++) {
 					cellaLetta = st.nextToken();
-
+					
 					if(cellaLetta.equals("a"))	{
 						//se acqua mette null senza fare la cella
 						mappa[i][j]=null;
@@ -61,7 +69,6 @@ public class Isola {
 					}
 				}
 				riga = br.readLine();
-				//System.out.println();
 			}
 			br.close();
 		}
@@ -293,7 +300,6 @@ public class Isola {
 		}
 		System.out.println();
 		System.out.println();
-		System.out.println(cont);
 	}
 
 }

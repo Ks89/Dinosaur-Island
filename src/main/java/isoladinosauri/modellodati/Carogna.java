@@ -2,6 +2,12 @@ package isoladinosauri.modellodati;
 
 import java.util.Random;
 
+
+/**
+ * Classe che identifica una carogna,
+ * differente da Vegetazione principalmente per
+ * il metodo consuma() e per l'energiaMax casuale
+ */
 public class Carogna extends Organismo implements Occupante, Animale {
 	
 	public Carogna() {

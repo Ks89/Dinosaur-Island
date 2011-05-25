@@ -8,8 +8,13 @@ import java.util.Formatter;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+/**
+ * Questa classe viene utilizzata solo per posizionare
+ * la vegetazione in modo casuale.
+ * E' solo una beta che verra' rimossa prossimamente
+ */
 public class TestVegetazione {
-
+	
 	//serve solo per posizionare la vegetazione sulla mappa con gia' l'acqua, terra e carogne nel numero giusto e messe in modo corretto	
 	public void posizionaVegetazione () {
 

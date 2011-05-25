@@ -8,18 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Classe Giocatore, costituita da tutti gli attributi che 
+ * lo identificano della partita. Il costruttore si preoccupaa anche 
+ * di gestire l'illumnazione della mappa e genera in automatico il
+ * primo dinosauro del giocatore.
+ */
 public class Giocatore extends Utente {
 
 	private Partita partita;
 	private int idGiocatore; //serve per identificare il giocatore quando creo gli id dei suoi dinosauri
-
 	private int etaAttualeGiocatore; //da quanto e' in vita. Se arriva a 120 il giocatore "muore"
 	private int turnoNascita; //turno di nascita del giocatore
-
 	private String nomeSpecie;
 	private List<Dinosauro> dinosauri; //squadra di dinosauri del giocatore
 	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se � false)
-
 	private List<String> uova; //e' un array di uova del giocatore che viene svuotato alla fine di ogni giro dei giocatori
 
 	//ATTENZIONE: SOLO IL PRIMO DINOSAURO DEL GIOCATORE E' POSIZIONATO A CASO NELLA MAPPA
@@ -61,8 +64,9 @@ public class Giocatore extends Utente {
 		this.partita.aggiungiGiocatore(this);
 
 		//gestione mappa (buio e luce)
+		//non serve inizializzarla perche' e' di default a FALSE
 		this.mappaVisibile = new boolean[40][40];
-		this.inizializzaMappaBuia();
+		
 
 		//illumino la mappa della visibilita' nella zona in cui ho creato il dinosauro
 		//il raggio e' 2 costante, perche' tutti i giocatori appena creati hanno un solo dino e sempre con dimensione =1
@@ -79,7 +83,7 @@ public class Giocatore extends Utente {
 	private int[] posizionaDinosauro () {
 		//metodo che fornisce le coordinate in cui andare
 		//a mettere in dinosauro, stando attento a non
-		//metterlo dove c'e' gia' un altro o dove c'e'
+		//posizionarlo dove c'e' gia' un altro o dove c'e'
 		//acqua. Il metodo mette in un array con 2 interi
 		//riga e colonna e fa il return
 		int[] coordinate = new int[2];
@@ -141,36 +145,14 @@ public class Giocatore extends Utente {
 		this.idGiocatore = idGiocatore;
 	}	
 
-
-	//***********************************************************************************************************************
-	//********************************************INIZIALIZZAZINE MAPPA VISIBILITA'******************************************
-	//***********************************************************************************************************************
-	public void inizializzaMappaBuia() {
-		//Inizializza la mappa tutta a buio e viene chiamato solo alla creazione del giocatore
-		for(int j=0;j<40;j++) {
-			for(int i=0;i<40;i++) mappaVisibile[i][j]=false;
-		}
-	}
-
-
-	//***********************************************************************************************************************
-	//**************************************************GESTIONE CLASSIFICA**************************************************
-	//***********************************************************************************************************************
-	public int calcolaPunti() {
-		int punti=0;
-		for(int i=0;i<this.getDinosauri().size();i++) punti += (this.getDinosauri().get(i).getEnergiaMax()/1000) + 1;
-		return punti;
-	}
-
-
 	//***********************************************************************************************************************
 	//***************************************************GESTIONE DINOSAURO**************************************************
 	//***********************************************************************************************************************
-	public void aggiungiDinosauro(Dinosauro dinosauro) {
-		if(dinosauri.size()<8) dinosauri.add(dinosauro);
-		else { 
-			//squadra piena con 5 dinosauri
-		}
+	public boolean aggiungiDinosauro(Dinosauro dinosauro) {
+		if(this.dinosauri.size() + this.getUova().size()<5 ) this.dinosauri.add(dinosauro);
+		else return false; //non posso aggiungere il dinosauro
+		//se tutto va bene restituisce true
+		return true;
 	}
 
 	public void rimuoviDinosauro(Dinosauro dinosauro, Cella cella) {
@@ -195,18 +177,10 @@ public class Giocatore extends Utente {
 
 	public void aggiungiUovo(int riga, int colonna) {
 		this.uova.add(riga + "-" + colonna);
-		//System.out.println(uova.get(0));
 	}
 
 	public void rimuoviUova() {
 		for(int i=0;i<this.getUova().size();i++) this.uova.clear();
-		//		boolean stato = uova.remove(cella);
-		//		if(stato==true) {
-		//			//uovo rimosso correttamente
-		//		}
-		//		else {
-		//			//uovo non trovato 
-		//		}
 	}
 
 	//***********************************************************************************************************************
@@ -246,27 +220,12 @@ public class Giocatore extends Utente {
 		return mappaVisibile;
 	}
 
-	public void setMappaVisibile(boolean[][] mappaVisibile) {
-		this.mappaVisibile = mappaVisibile;
-	}
-
 	public String getNomeSpecie() {
 		return nomeSpecie;
 	}
 
 	public void setNomeSpecie(String nomeSpecie) {
 		this.nomeSpecie = nomeSpecie;
-	}
-
-	public void stampaMappa() {
-		for(int i=0;i<40;i++) {
-			for(int j=0;j<40;j++) {
-				if(this.mappaVisibile[i][j]==true) System.out.print(1 + " ");
-				if(this.mappaVisibile[i][j]==false) System.out.print(0 + " ");
-			}
-			System.out.println();
-		}
-		System.out.println();
 	}
 
 }
