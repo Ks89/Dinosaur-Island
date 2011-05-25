@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
  * E' solo una beta che verra' rimossa prossimamente
  */
 public class TestVegetazione {
-	
+
 	//serve solo per posizionare la vegetazione sulla mappa con gia' l'acqua, terra e carogne nel numero giusto e messe in modo corretto	
 	public void posizionaVegetazione () {
 
@@ -28,7 +28,9 @@ public class TestVegetazione {
 
 			for(int i=0;i<40;i++) {
 				st = new StringTokenizer(riga);
-				for(int j=0;j<40;j++) mappa[i][j] = st.nextToken();           	
+				for(int j=0;j<40;j++) {
+					mappa[i][j] = st.nextToken();           	
+				}
 				riga = br.readLine();
 			}
 			br.close();
@@ -48,13 +50,12 @@ public class TestVegetazione {
 			for(int i=0; i<40;i++) {
 				for(int j=0; j<40 ;j++) {
 					random.setSeed(r1.nextInt() * r2.nextInt() + i*2 + w + r3.nextInt());
-					if(mappa[i][j].equals("t")) 
-						if(random.nextInt(5)==0) {
-							if(cont<512) {
-								mappa[i][j]="v"; 
-								cont++;
-							}
+					if(mappa[i][j].equals("t")) {
+						if(random.nextInt(5)==0 && cont<512) {
+							mappa[i][j]="v"; 
+							cont++;
 						}
+					}
 				}
 			}
 		}
@@ -63,14 +64,22 @@ public class TestVegetazione {
 		int acqua=0, terra=0, car=0, veg=0;
 		for(int i=0;i<40;i++) {
 			for(int j=0;j<40;j++) {
-				if (mappa[i][j].equals("a")) acqua++;
-				if (mappa[i][j].equals("t")) terra++;
-				if (mappa[i][j].equals("c")) car++;
-				if (mappa[i][j].equals("v")) veg++;
+				if (mappa[i][j].equals("a")) {
+					acqua++;
+				}
+				if (mappa[i][j].equals("t")) {
+					terra++;
+				}
+				if (mappa[i][j].equals("c")) {
+					car++;
+				}
+				if (mappa[i][j].equals("v")) {
+					veg++;
+				}
 			}
 		}
 
-		//		System.out.println(acqua + " " + terra + " " + veg + " " + car);
+		System.out.println(acqua + " " + terra + " " + veg + " " + car);
 
 		//salvo la mappa
 		try{
@@ -78,7 +87,9 @@ public class TestVegetazione {
 			//attenzione qui prima di modificare il codice c'era salvaRiga= new String(); e non null
 			String salvaRiga = null;
 			for(int i=0;i<40;i++) {
-				for(int j=0;j<40;j++) salvaRiga = salvaRiga.concat(mappa[i][j] + " ");
+				for(int j=0;j<40;j++) {
+					salvaRiga = salvaRiga.concat(mappa[i][j] + " ");
+				}
 				out.format("%s\n", salvaRiga);
 				salvaRiga="";
 			}

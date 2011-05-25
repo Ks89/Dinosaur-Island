@@ -43,7 +43,7 @@ public class Giocatore extends Utente {
 		//ottengo riga e colonna in un vettore di interi di 2 elementi
 		int[] pos = this.posizionaDinosauro();
 
-		this.idGiocatore = this.generaIdGiocatore();
+		this.setIdGiocatore(this.generaIdGiocatore());
 		String idDinosauro = this.generaIdDinosauro();
 
 		Dinosauro dinosauro;
@@ -66,7 +66,7 @@ public class Giocatore extends Utente {
 		//gestione mappa (buio e luce)
 		//non serve inizializzarla perche' e' di default a FALSE
 		this.mappaVisibile = new boolean[40][40];
-		
+
 
 		//illumino la mappa della visibilita' nella zona in cui ho creato il dinosauro
 		//il raggio e' 2 costante, perche' tutti i giocatori appena creati hanno un solo dino e sempre con dimensione =1
@@ -111,10 +111,16 @@ public class Giocatore extends Utente {
 			for(int j=0;j<this.partita.getGiocatori().size();j++) {
 				for(int i=0;i<8;i++) {
 					//mette a '0' gli id gia' occupati nell'array posizioni[]
-					if(this.partita.getGiocatori().get(j).getIdGiocatore()==posizioni[i]) posizioni[i]=0;
+					if(this.partita.getGiocatori().get(j).getIdGiocatore()==posizioni[i]) {
+						posizioni[i]=0;
+					}
 				}
 			} //cerco il primo che non e' '0' nell'array e ritorno l'indice + 1 
-			for(int i=0;i<8;i++) if(posizioni[i]!=0) return i+1;
+			for(int i=0;i<8;i++) {
+				if(posizioni[i]!=0) {
+					return i+1;
+				}
+			}
 		}
 		return -1; //TODO se c'e' un problema fa il return con -1
 	}
@@ -126,15 +132,24 @@ public class Giocatore extends Utente {
 		if(this.getDinosauri().isEmpty()) return 1;
 		else {
 			for(int j=0;j<this.getDinosauri().size();j++) {
-				for(int i=0;i<5;i++) if(this.getDinosauri().get(j).getId().charAt(1)==posizioni[i]) posizioni[i]='0';
+				for(int i=0;i<5;i++) {
+					if(this.getDinosauri().get(j).getId().charAt(1)==posizioni[i]) {
+						posizioni[i]='0';
+					}
+				}
 			}
-			for(int i=0;i<5;i++) if(posizioni[i]!='0') return i+1;
+			for(int i=0;i<5;i++) {
+				if(posizioni[i]!='0') {
+					return i+1;
+				}
+			}
 		}
 		return -1; //TODO se c'e' un problema fa il return con -1
 	}
 
 	public String generaIdDinosauro() {
-		return "" + this.idGiocatore + this.generaIdParziale();
+		System.out.println(this.generaIdParziale());
+		return "" + this.getIdGiocatore() + this.generaIdParziale();
 	}
 
 	public int getIdGiocatore() {
@@ -149,11 +164,15 @@ public class Giocatore extends Utente {
 	//***************************************************GESTIONE DINOSAURO**************************************************
 	//***********************************************************************************************************************
 	public boolean aggiungiDinosauro(Dinosauro dinosauro) {
-		if(this.dinosauri.size() + this.getUova().size()<5 ) this.dinosauri.add(dinosauro);
-		else return false; //non posso aggiungere il dinosauro
+		if(this.dinosauri.size() + this.getUova().size()<5 ) {
+			this.dinosauri.add(dinosauro);
+		} else {
+			return false; //non posso aggiungere il dinosauro
+		}
 		//se tutto va bene restituisce true
 		return true;
 	}
+	
 
 	public void rimuoviDinosauro(Dinosauro dinosauro, Cella cella) {
 		boolean stato = this.dinosauri.remove(dinosauro);
@@ -164,6 +183,20 @@ public class Giocatore extends Utente {
 		}
 		else {
 			//dinosauro non trovato 
+			System.out.println("Errore nella rimozione del dinosauro");
+		}
+	}
+	
+	public void rimuoviDinosauro(Dinosauro dinosauro) {
+		Cella cella = this.partita.getIsola().getMappa()[dinosauro.getRiga()][dinosauro.getColonna()];
+		if(this.dinosauri.remove(dinosauro)==true) {
+			//dinosauro rimosso correttamente
+			//lo cancello anche dalla mappa
+			cella.setDinosauro(null);
+		}
+		else {
+			//dinosauro non trovato
+			System.out.println("Errore nella rimozione del dinosauro");
 		}
 	}
 
@@ -180,7 +213,24 @@ public class Giocatore extends Utente {
 	}
 
 	public void rimuoviUova() {
-		for(int i=0;i<this.getUova().size();i++) this.uova.clear();
+		this.uova.clear();
+	}
+
+	//metodo per far deporre un Uovo al dinosauro
+	public boolean eseguiDeposizionedeponiUovo(Dinosauro dinosauro) {
+		dinosauro.setEnergia(dinosauro.getEnergia() - 1500);
+
+		if(dinosauro.getEnergia()>0) {
+			//il dinosauro pu' compiere l'azione di deposizione, ma solo se il num di dino
+			//sommati a quello delle uova (perche' in futuro saranno anch'essi dino) sia <5
+			if((this.getDinosauri().size() + this.getUova().size()) < 5 ) {
+				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna());
+				return true;
+			} else return false; //squadra completa e non posso creare altri dinosauri deponendo uova	
+		} else { //il dinosauro muore perche' non ha sufficiente energia
+			this.rimuoviDinosauro(dinosauro);	
+			return false;
+		}
 	}
 
 	//***********************************************************************************************************************
@@ -189,7 +239,9 @@ public class Giocatore extends Utente {
 	//viene richiamato da Turno, alla fine di ogni turno eseguito dal giocatore
 	public void incrementaEtaAttuali() {
 		this.etaAttualeGiocatore++;
-		for(int i=0;i<this.getDinosauri().size();i++) this.getDinosauri().get(i).incrementaEtaDinosauro();
+		for(int i=0;i<this.getDinosauri().size();i++) {
+			this.getDinosauri().get(i).incrementaEtaDinosauro();
+		}
 	}
 
 	public int getTurnoNascita() {
@@ -217,7 +269,10 @@ public class Giocatore extends Utente {
 	}
 
 	public boolean[][] getMappaVisibile() {
-		return mappaVisibile;
+		//su consiglio di Sonar ritorno un oggetto clonato per una questione
+		//di sicurezza
+		boolean[][] mappaReturn = mappaVisibile.clone();
+		return mappaReturn;
 	}
 
 	public String getNomeSpecie() {

@@ -27,8 +27,9 @@ public class Classifica {
 
 	private int calcolaPunti(Giocatore giocatore) {
 		int punti=0;
-		for(int i=0;i<giocatore.getDinosauri().size();i++) 
+		for(int i=0;i<giocatore.getDinosauri().size();i++) {
 			punti += (giocatore.getDinosauri().get(i).getEnergiaMax()/1000) + 1;
+		}
 		return punti;
 	}
 
@@ -48,15 +49,20 @@ public class Classifica {
 
 		//se la tupla non e' presente in classifica (cioe' risultato==-1) l'aggiungo
 		//altrimenti cerco la tupla nella classifica e la aggiorno col metodo apposta "aggiornaTupla"
-		if(this.cercaInClassifica(giocatore)==-1) this.getClassifica().add(tupla);
-		else this.aggiornaPuntiTupla(tupla,giocatore);
+		if(this.cercaInClassifica(giocatore)==-1) {
+			this.getClassifica().add(tupla);
+		} else {
+			this.aggiornaPuntiTupla(tupla,giocatore);
+		}
 	}
 
 	private void aggiornaPuntiTupla(Tupla tupla, Giocatore giocatore) {
 		//metodo per aggiornare una tupla quando il giocatore, passato in aggiungiTuplaClassifica, si trova gia' nella classifica
 
 		//se la tupla e' riferita ad un gicoatore offline lo rendo online
-		if(tupla.getStato().equals("n")) tupla.setStato("s");
+		if(tupla.getStato().equals("n")) {
+			tupla.setStato("s");
+		}
 		//aggiorno il punteggio del giocatore e lo inserisco nella tupla
 		tupla.setPunti(this.calcolaPunti(giocatore));
 	}
@@ -72,8 +78,11 @@ public class Classifica {
 
 			//se giocatore==null vuol dire che non e' stato trovato da cercaInGiocatori e quindi non e' piu' presente nella
 			//partita. Di conseguenza, aggiorno la tupla modificando lo stato in offline "n"
-			if(giocatore==null) this.getClassifica().get(i).setStato("n");
-			else this.aggiornaPuntiTupla(this.getClassifica().get(i), giocatore);
+			if(giocatore==null) {
+				this.getClassifica().get(i).setStato("n");
+			} else {
+				this.aggiornaPuntiTupla(this.getClassifica().get(i), giocatore);
+			}
 		}
 		//eseguo l'ordinamento decrescente della classifica per punteggio
 		this.ordinaClassifica();
@@ -88,7 +97,9 @@ public class Classifica {
 		for(int i=0;i<this.getClassifica().size();i++) {
 			tupla = this.getClassifica().get(i);
 			if(tupla.getNomeUtente().equals(giocatore.getNomeUtente()) &&
-					(tupla.getNomeSpecie().equals(giocatore.getNomeSpecie()))) return i;
+					(tupla.getNomeSpecie().equals(giocatore.getNomeSpecie()))) {
+				return i;
+			}
 		}
 		return -1;
 	}
@@ -99,7 +110,9 @@ public class Classifica {
 		//in caso negativo restituisce null
 		for(int j=0;j<this.partita.getGiocatori().size();j++) {
 			if(tupla.getNomeUtente().equals(this.partita.getGiocatori().get(j).getNomeUtente()) &&
-					(tupla.getNomeSpecie().equals(this.partita.getGiocatori().get(j).getNomeSpecie()))) return this.partita.getGiocatori().get(j);
+					(tupla.getNomeSpecie().equals(this.partita.getGiocatori().get(j).getNomeSpecie()))) {
+				return this.partita.getGiocatori().get(j);
+			}
 		}
 		return null;
 	}
@@ -120,11 +133,12 @@ public class Classifica {
 	}
 
 	public void stampaClassifica() {
-		for(int i=0;i<this.getClassifica().size();i++) 
+		for(int i=0;i<this.getClassifica().size();i++) {
 			System.out.println(this.classificaGiocatori.get(i).getNomeUtente() + "," +
 					this.classificaGiocatori.get(i).getNomeSpecie() + "," +
 					this.classificaGiocatori.get(i).getPunti() + "," + 
 					this.classificaGiocatori.get(i).getStato());
+		}
 	}
 
 

@@ -16,7 +16,7 @@ public class Erbivoro extends Dinosauro {
 
 	@Override
 	public int calcolaForza() {
-		return (super.energia * super.dimensione);
+		return (super.getEnergia() * super.getEnergiaMax()/1000);
 	}
 
 	@Override
@@ -53,7 +53,12 @@ public class Erbivoro extends Dinosauro {
 			cella.setDinosauro(this);
 		}
 		else {
-			//FIXME GRANDE DUBBIO: l'erbivoro perde il combattimento e il carnivoro non fa nulla (anche se mi sembra strano)
+			//l'erbivoro perde il combattimento e l'attaccato Carnivoro lo mangia
+			if(super.getEnergia()<=(nemico.getEnergiaMax() - nemico.getEnergia())) {
+				nemico.setEnergia(nemico.getEnergia() + ((int)(0.75 * super.getEnergia())));
+			} else {
+				nemico.setEnergia(nemico.getEnergiaMax());
+			}
 			cella.setDinosauro(nemico);
 		}
 	}
