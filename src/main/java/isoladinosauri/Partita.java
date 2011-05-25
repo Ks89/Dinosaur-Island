@@ -14,8 +14,7 @@ import java.util.List;
 //FIXME GRANDE DUBBIO: l'erbivoro perde il combattimento e il carnivoro non fa nulla (anche se mi sembra strano)
 //FIXME GRAVISSIMO: se c'e' un solo giocatore nella partita e il suo dinosauro muore il programma crasha SEMPRE (MOLTO GRAVE)
 		//se invece cancello il giocatore direttamente dal menu, allora non succede nulla. Il bug sta nei cicli dei dinosauri, sugli indici
-//FIXME una volta che il dinosauro erbivoro va su cella di un carnivoro e perde il menu' delle azioni non devo apparire piu'
-//TODO otimizzare ancore il metodo per spostamento in turno cercando ti togliere il codice col copia-incolla e metterlo in un metodo
+//FIXME una volta che il dinosauro erbivoro va su cella di un carnivoro e perde, il menu' delle azioni non devo apparire piu'
 //FIXME se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
 //TODO mettere la Javadoc (inziato a farlo)
 

@@ -259,39 +259,36 @@ public class Turno {
 		}
 	}
 
+	private boolean spostamentoConOccupante(Dinosauro mosso, int riga, int colonna) {
+		Cella[][] mappa = this.partita.getIsola().getMappa();
+		Cella destinazione = mappa[riga][colonna];
+		int vecchiaRiga = mosso.getRiga();
+		int vecchiaColonna = mosso.getColonna();
+		if(mosso.aggCordinate(riga, colonna)==true) {
+			mosso.mangia(destinazione);
+			destinazione.setDinosauro(mosso);
+			mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
+			this.riposizionaOccupante(riga, colonna, new Carogna());
+			return true;
+		} else {
+			this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, mappa[mosso.getRiga()][mosso.getColonna()]);
+			return false;	
+		}
+	}
+
 	private boolean mangiaOccupante(Dinosauro dinosauro, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = dinosauro.getRiga();
 		int vecchiaColonna = dinosauro.getColonna();
-
+		
 		if(dinosauro instanceof Carnivoro && destinazione.getOccupante() instanceof Carogna) {
 			Carnivoro mosso = (Carnivoro)dinosauro;
-			Carogna carogna = (Carogna)destinazione.getOccupante();
-			if(mosso.aggCordinate(riga, colonna)==true) {
-				mosso.mangia(carogna, destinazione);
-				destinazione.setDinosauro(mosso);
-				mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-				this.riposizionaOccupante(riga, colonna, new Carogna());
-				return true;
-			} else {
-				this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, mappa[mosso.getRiga()][mosso.getColonna()]);
-				return false;	
-			}
+			return this.spostamentoConOccupante(mosso, riga, colonna);
 		} else 
 			if(dinosauro instanceof Erbivoro && destinazione.getOccupante() instanceof Vegetale) {
 				Erbivoro mosso = (Erbivoro)dinosauro;
-				Vegetale vegetale = (Vegetale)destinazione.getOccupante();
-				if(mosso.aggCordinate(riga, colonna)==true) {
-					mosso.mangia(vegetale, destinazione);
-					destinazione.setDinosauro(mosso);
-					mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-					this.riposizionaOccupante(riga, colonna, new Vegetale());
-					return true;
-				} else {
-					this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso, this.partita.getIsola().getMappa()[mosso.getRiga()][mosso.getColonna()]);
-					return false;
-				}
+				return this.spostamentoConOccupante(mosso, riga, colonna);
 			} else
 				//eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo con un erbivoro o una vegetazione con un carnivoro
 				if(dinosauro.aggCordinate(riga, colonna)==true) {
@@ -304,17 +301,51 @@ public class Turno {
 				}
 	}
 
-	private boolean combatti(Dinosauro dinosauro, int riga, int colonna) {
+	private boolean spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
+		int vecchiaRiga = mosso.getRiga();
+		int vecchiaColonna = mosso.getColonna();
 		Dinosauro attaccato = destinazione.getDinosauro();
-		int vecchiaRiga = dinosauro.getRiga();
-		int vecchiaColonna = dinosauro.getColonna();
-
+		
 		//ottengo il gicoatore che possiede il dinosauro attaccato
 		//se giocatore==null e' perche' o attaccato non e' posseduto da nessuno
 		//o se attaccato==null
 		Giocatore giocatore = this.partita.identificaDinosauro(destinazione.getDinosauro());
+		
+		Dinosauro attaccante;
+		if(mosso instanceof Carnivoro) attaccante = (Carnivoro)mosso;
+		else attaccante = (Erbivoro)mosso;
+		
+		if(attaccante.aggCordinate(riga, colonna)==true) {
+			attaccante.combatti(destinazione);
+			//il metodo mangia mette il vincitore direttamente nella cella di destinazione
+			if(attaccante.equals(destinazione.getDinosauro())){
+				//ha vinto l'attaccante
+				System.out.println("Rimosso dinosauro attaccato");
+				giocatore.rimuoviDinosauro(attaccato, mappa[vecchiaRiga][vecchiaColonna]);
+			} else { 
+				//vince il dino che si trova sulla cella di destinazione prima del movimento
+				System.out.println("Rimosso dinosauro attaccante");
+				giocatore=this.partita.identificaDinosauro(attaccante);
+				giocatore.rimuoviDinosauro(attaccante, mappa[vecchiaRiga][vecchiaColonna]);
+			}
+			return true;
+		}
+		else {
+			//il dinosauro muore perche' non ha abbastanza energia per muoversi
+			//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
+			this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante, mappa[vecchiaRiga][vecchiaColonna]);
+			return false; 					
+		}
+	}
+
+	
+	private boolean combatti(Dinosauro dinosauro, int riga, int colonna) {
+		Cella[][] mappa = this.partita.getIsola().getMappa();
+		Cella destinazione = mappa[riga][colonna];
+		int vecchiaRiga = dinosauro.getRiga();
+		int vecchiaColonna = dinosauro.getColonna();
 
 		System.out.println("coordinate partenza: " + vecchiaRiga + "," + vecchiaColonna + "coord arrivo: " + riga + "," + colonna);
 
@@ -322,27 +353,7 @@ public class Turno {
 		//se e' carnivoro posso mangiare qualunque altro dinosauro
 		if(dinosauro instanceof Carnivoro) {
 			Carnivoro attaccante = (Carnivoro)dinosauro;
-			if(attaccante.aggCordinate(riga, colonna)==true) {
-				attaccante.mangia(destinazione.getDinosauro(), destinazione);
-				//il metodo mangia mette il vincitore direttamente nella cella di destinazione
-				if(attaccante.equals(destinazione.getDinosauro())){
-					//ha vinto l'attaccante
-					System.out.println("Rimosso dinosauro attaccato");
-					giocatore.rimuoviDinosauro(attaccato, mappa[vecchiaRiga][vecchiaColonna]);
-				} else { 
-					//vince il dino che si trova sulla cella di destinazione prima del movimento
-					System.out.println("Rimosso dinosauro attaccante");
-					giocatore=this.partita.identificaDinosauro(attaccante);
-					giocatore.rimuoviDinosauro(attaccante, mappa[vecchiaRiga][vecchiaColonna]);
-				}
-				return true;
-			}
-			else {
-				//il dinosauro muore perche' non ha abbastanza energia per muoversi
-				//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
-				this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante, mappa[vecchiaRiga][vecchiaColonna]);
-				return false; 					
-			}
+			return this.spostamentoConDinosauro(attaccante, riga, colonna);
 		} else { //se e' erbivoro posso combattere solo contro quelli carnivori (per sopravvivenza e non per mangiare)
 			//quello che muovo e' erbivoro, quindi controllo cosa ho nella destinazione
 
@@ -354,24 +365,7 @@ public class Turno {
 			}
 			else { //combatto contro un carnivoro
 				Erbivoro attaccante = (Erbivoro)dinosauro; 
-				if(attaccante.aggCordinate(riga, colonna)==true) {
-					attaccante.combatti(destinazione.getDinosauro(), destinazione);						
-					if(attaccante.equals(destinazione.getDinosauro())){
-						//ha vinto attaccante
-						giocatore.rimuoviDinosauro(attaccato, mappa[vecchiaRiga][vecchiaColonna]);
-					} else { 
-						//vince l'attaccato
-						giocatore=this.partita.identificaDinosauro(attaccante);
-						giocatore.rimuoviDinosauro(attaccante, mappa[vecchiaRiga][vecchiaColonna]);
-					}
-					return true;
-				}	
-				else {
-					//il dinosauro muore perche' non ha abbastanza energia per muoversi
-					//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
-					this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante, mappa[vecchiaRiga][vecchiaColonna]);
-					return false; 
-				}
+				return this.spostamentoConDinosauro(attaccante, riga, colonna);
 			}
 		}
 	}
