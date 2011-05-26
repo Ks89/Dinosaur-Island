@@ -12,27 +12,43 @@ import java.util.Scanner;
 public class MainLocale {
 	public static void main(String[] args) {
 		boolean uscita=false;
-		System.out.println("Benvenuto in Isola dei Dinosauri Beta1");
-		Scanner input = new Scanner(System.in);
-		Isola i = new Isola();
-		Partita p = new Partita(i);
-		Turno t = new Turno(p);
-		Classifica c = new Classifica(p);
-		p.setTurnoCorrente(t);
-		i.caricaMappa();
 		int scelta,scelta1;
 		int turnoCorrente=1;
 		int conteggioDinosauro=0;
 		int conteggioGiocatori=0;
+		System.out.println("Benvenuto in Isola dei Dinosauri Beta1");
+		Scanner input = new Scanner(System.in);
+		
+		CaricamentoMappa cm = new CaricamentoMappa();
+		GenerazioneMappa gm = new GenerazioneMappa();
+		Isola i;
 
-
-
+		System.out.println("Scegli come inzializzare la mappa di gioco");
+		System.out.println("[1]: Carica una mappa da file [OK]");
+		System.out.println("[2]: Genera a caso una mappa [OK]");
+		scelta = input.nextInt();
+		switch(scelta) {
+		case 1 :
+			Cella[][] mappaCelle = cm.caricaDaFile();
+			i = new Isola(mappaCelle);
+			break;
+		default :
+			String[][] mappaStringhe = gm.creaMappaCasuale();
+			i = new Isola(cm.caricaMappa(mappaStringhe));
+			break;
+		}
+		
+		Partita p = new Partita(i);
+		Turno t = new Turno(p);
+		Classifica c = new Classifica(p);
+		p.setTurnoCorrente(t);
+		
 		do { //inzia la partita
 			conteggioGiocatori=0;
 			System.out.println("Menu:");
 			System.out.println("[1]: Aggiunge un giocatore [OK]");
 			System.out.println("[2]: Rimuove un giocatore [OK]");
-			System.out.println("[3]: Esegue i turni dei giocatori, uno ad uno in sequenza [BETA - mancano un sacco di funzioni]");
+			System.out.println("[3]: Esegue i turni dei giocatori, uno ad uno in sequenza [OK]");
 			System.out.println("[4]: Stampa la classifica [OK]");
 			System.out.println("[5]: Stampa tutte le mappe utili per i test[OK]");
 			scelta1 = input.nextInt();
