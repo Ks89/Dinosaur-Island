@@ -1,12 +1,6 @@
 package isoladinosauri;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Formatter;
 import java.util.Random;
-import java.util.StringTokenizer;
 
 /**
  * Questa classe viene utilizzata solo per posizionare
@@ -17,27 +11,6 @@ public class PosizionaVegetazione {
 
 	//serve solo per posizionare la vegetazione sulla mappa con gia' l'acqua, terra e carogne nel numero giusto e messe in modo corretto	
 	public void posizionaVegetazione (String[][] mappa) {
-
-//		//carico la mappa
-//		try
-//		{  	
-//			BufferedReader br = new BufferedReader(new FileReader("mappaAcquosa.txt"));
-//			String riga = br.readLine();
-//			StringTokenizer st = null;	
-//
-//			for(int i=0;i<40;i++) {
-//				st = new StringTokenizer(riga);
-//				for(int j=0;j<40;j++) {
-//					mappa[i][j] = st.nextToken();           	
-//				}
-//				riga = br.readLine();
-//			}
-//			br.close();
-//		}
-//		catch(IOException ioException)
-//		{
-//			System.err.println("Errore lettura file.");
-//		}
 
 		//carico la vegetazione nella mappa
 		int cont=0;
@@ -78,6 +51,6 @@ public class PosizionaVegetazione {
 			}
 		}
 
-		System.out.println(acqua + " " + terra + " " + veg + " " + car);
+		System.out.println("Validita' mappa :" + acqua + " " + terra + " " + veg + " " + car);
 	}
 }
