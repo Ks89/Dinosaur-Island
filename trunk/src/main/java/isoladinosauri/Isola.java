@@ -3,11 +3,6 @@ package isoladinosauri;
 import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Vegetale;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
-
 
 /**
  * Classe Isola costituita dal solo attributo mappa.
@@ -16,75 +11,29 @@ import java.util.StringTokenizer;
  */ 
 public class Isola {
 
-	//	final int lungh = 40;
+	private static final int MAX = 40;
 
 	private Cella[][] mappa; 
 	
 
+	public Isola(Cella[][] mappa) {
+		this.setMappa(mappa);
+	}
+	
 	public Cella[][] getMappa() {
 		return mappa;        
 	}
-
-	public void caricaMappa() {
-		//esegue il caricamento della Mappa come file di testo (.txt)
-		//e riempie l'array Mappa con gli elementi letti dal file
-		//richiama anche i metodi predefiniti per inizializzare l'energiaMax al momento
-		//della creazione di un Occupante (vegetazione e/o carogna)
-		try
-		{  	
-			FileReader fileReader = new FileReader("mappaTestAcquaUovo.txt");
-			BufferedReader br = new BufferedReader(fileReader);
-			String riga = br.readLine();
-			StringTokenizer st = null;	
-			String cellaLetta;
-			mappa = new Cella[40][40];
-
-			for(int i=0;i<40;i++) {
-				st = new StringTokenizer(riga);
-
-				for(int j=0;j<40;j++) {
-					cellaLetta = st.nextToken();
-
-					if(cellaLetta.equals("a"))	{
-						//se acqua mette null senza fare la cella
-						mappa[i][j]=null;
-					}
-					if(cellaLetta.equals("t")) {
-						//se terra crea cella ma vuota
-						Cella cella=new Cella();
-						mappa[i][j]=cella;
-					}
-					if(cellaLetta.equals("v")) {
-						//se vegetale crea cella e mette come occupante il vegetale
-						Cella cella=new Cella();
-						//chiamo costruttore predef che inzializza energiaMax random
-						cella.setOccupante(new Vegetale()); 
-						mappa[i][j]=cella;
-					}
-					if(cellaLetta.equals("c")) {
-						//se carogna crea cella e mette come occupante la carogna
-						Cella cella=new Cella();
-						//chiamo costruttore predef che inzializza energiaMax random
-						cella.setOccupante(new Carogna());
-						mappa[i][j]=cella;
-					}
-				}
-				riga = br.readLine();
-			}
-			br.close();
-		}
-		catch(IOException ioException)
-		{
-			System.err.println("Errore lettura file.");
-		}
+	
+	public void setMappa(Cella[][] mappa) {
+		this.mappa = mappa;
 	}
 
 
 	public void stampaMappa() {
 		//metodo che esiste solo per testare il caricamento
 		//presto sara' rimosso e trasformato in test junit
-		for(int i=0;i<40;i++) {
-			for(int j=0;j<40;j++) {
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
 					System.out.print("a:    ");
 				}
@@ -120,7 +69,7 @@ public class Isola {
 		//metodo che esiste solo per testare il caricamento
 		//presto sara' rimosso e trasformato in test junit
 		System.out.print("   ");
-		for(int j=0;j<40;j++) {
+		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");
 			} else {
@@ -128,13 +77,13 @@ public class Isola {
 			}
 		}
 		System.out.println();
-		for(int i=0;i<40;i++) {
+		for(int i=0;i<MAX;i++) {
 			if(i<10) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
 			}
-			for(int j=0;j<40;j++) {
+			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
 					System.out.print("   ");
 				} else { //se e' terra puo' essere carogna o vegetale
@@ -167,7 +116,7 @@ public class Isola {
 		//metodo che esiste solo per testare il caricamento
 		//presto sara' rimosso e trasformato in test junit
 		System.out.print("   ");
-		for(int j=0;j<40;j++) {
+		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");
 			} else {
@@ -175,13 +124,13 @@ public class Isola {
 			}
 		}
 		System.out.println();
-		for(int i=0;i<40;i++) {
+		for(int i=0;i<MAX;i++) {
 			if(i<10) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
 			}
-			for(int j=0;j<40;j++) {
+			for(int j=0;j<MAX;j++) {
 				if(giocatore.getMappaVisibile()[i][j]==true) {
 					if (mappa[i][j] == null) { //e' acqua
 						System.out.print("   ");
@@ -215,7 +164,7 @@ public class Isola {
 
 	public void stampaMappaRaggiungibilita(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]raggiungibilita) {
 		System.out.print("   ");
-		for(int j=0;j<40;j++) {
+		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");
 			} else {
@@ -223,13 +172,13 @@ public class Isola {
 			}
 		}
 		System.out.println();
-		for(int i=0;i<40;i++) {
+		for(int i=0;i<MAX;i++) {
 			if(i<10) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
 			}
-			for(int j=0;j<40;j++) {
+			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
 					System.out.print("   ");
 				} else { //se e' terra puo' essere carogna o vegetale
@@ -271,7 +220,7 @@ public class Isola {
 
 	public void stampaMappaStradaPercorsa(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]stradaPercorsa) {
 		System.out.print("   ");
-		for(int j=0;j<40;j++) {
+		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");
 			} else {
@@ -279,13 +228,13 @@ public class Isola {
 			}
 		}
 		System.out.println();
-		for(int i=0;i<40;i++) {
+		for(int i=0;i<MAX;i++) {
 			if(i<10) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
 			}
-			for(int j=0;j<40;j++) {
+			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
 					System.out.print("   ");
 				}
