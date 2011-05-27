@@ -42,7 +42,7 @@ public class Classifica {
 
 		//creo la Tupla da inserire in classifica
 		Tupla tupla = new Tupla();
-		tupla.setNomeUtente(giocatore.getNomeUtente());
+		tupla.setNomeUtente(giocatore.getUtente().getNomeUtente());
 		tupla.setNomeSpecie(giocatore.getNomeSpecie());
 		tupla.setPunti(this.calcolaPunti(giocatore));
 		tupla.setStato("s");
@@ -96,7 +96,7 @@ public class Classifica {
 
 		for(int i=0;i<this.getClassifica().size();i++) {
 			tupla = this.getClassifica().get(i);
-			if(tupla.getNomeUtente().equals(giocatore.getNomeUtente()) &&
+			if(tupla.getNomeUtente().equals(giocatore.getUtente().getNomeUtente()) &&
 					(tupla.getNomeSpecie().equals(giocatore.getNomeSpecie()))) {
 				return i;
 			}
@@ -109,7 +109,7 @@ public class Classifica {
 		//in caso positivo restituisce il giocatore associato all tupla
 		//in caso negativo restituisce null
 		for(int j=0;j<this.partita.getGiocatori().size();j++) {
-			if(tupla.getNomeUtente().equals(this.partita.getGiocatori().get(j).getNomeUtente()) &&
+			if(tupla.getNomeUtente().equals(this.partita.getGiocatori().get(j).getUtente().getNomeUtente()) &&
 					(tupla.getNomeSpecie().equals(this.partita.getGiocatori().get(j).getNomeSpecie()))) {
 				return this.partita.getGiocatori().get(j);
 			}

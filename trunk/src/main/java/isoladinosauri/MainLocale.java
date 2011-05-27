@@ -6,6 +6,8 @@ import isoladinosauri.modellodati.Vegetale;
 
 import java.util.Scanner;
 
+import client.Gui;
+
 /**
  * Classe Test per simulare il gioco in Locale
  */
@@ -31,6 +33,8 @@ public class MainLocale {
 		case 1 :
 			Cella[][] mappaCelle = cm.caricaDaFile();
 			i = new Isola(mappaCelle);
+			Gui gui = new Gui();
+			gui.inizializzaGrafica(mappaCelle);
 			break;
 		default :
 			String[][] mappaStringhe = gm.creaMappaCasuale();
@@ -42,6 +46,8 @@ public class MainLocale {
 		Turno t = new Turno(p);
 		Classifica c = new Classifica(p);
 		p.setTurnoCorrente(t);
+		
+		
 		
 		do { //inzia la partita
 			conteggioGiocatori=0;
@@ -76,8 +82,8 @@ public class MainLocale {
 				} else {
 					tipoDinosauro = "erbivoro";
 				}
-
-				Giocatore giocatore =  new Giocatore(p, nickname, password, turnoCorrente, nomeSpecie, tipoDinosauro);
+				Utente utente = new Utente(nickname,password);
+				Giocatore giocatore =  new Giocatore(p, utente, turnoCorrente, nomeSpecie, tipoDinosauro);
 				c.aggiungiTuplaClassifica(giocatore);
 				break;
 			case 2 :
@@ -95,7 +101,7 @@ public class MainLocale {
 					System.out.println();
 					System.out.println("**********GIOCATORE************");
 					System.out.println("ID:\t\t" + p.getGiocatori().get(conteggioGiocatori).getIdGiocatore());
-					System.out.println("Nome:\t\t" + p.getGiocatori().get(conteggioGiocatori).getNomeUtente());
+					System.out.println("Nome:\t\t" + p.getGiocatori().get(conteggioGiocatori).getUtente().getNomeUtente());
 					System.out.println("Specie:\t\t" + p.getGiocatori().get(conteggioGiocatori).getNomeSpecie());
 					System.out.println("Eta':\t\t" + p.getGiocatori().get(conteggioGiocatori).getEtaAttuale());
 					System.out.println("Turno nascita:\t" + p.getGiocatori().get(conteggioGiocatori).getTurnoNascita());
@@ -327,7 +333,7 @@ public class MainLocale {
 
 	private static Giocatore cercaGiocatore (String nickname, Partita p) {
 		for(int i=0;i<p.getGiocatori().size();i++) {
-			if((p.getGiocatori().get(i).getNomeUtente()).equals(nickname)) {
+			if((p.getGiocatori().get(i).getUtente().getNomeUtente()).equals(nickname)) {
 				return p.getGiocatori().get(i);
 			}
 		}

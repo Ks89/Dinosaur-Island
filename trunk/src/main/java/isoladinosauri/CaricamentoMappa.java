@@ -24,10 +24,11 @@ public class CaricamentoMappa {
 		//e riempie l'array Mappa con gli elementi letti dal file
 		//richiama anche i metodi predefiniti per inizializzare l'energiaMax al momento
 		//della creazione di un Occupante (vegetazione e/o carogna)
+		BufferedReader br;
 		try
 		{  	
 			FileReader fileReader = new FileReader("mappaTestAcquaUovo.txt");
-			BufferedReader br = new BufferedReader(fileReader);
+			 br = new BufferedReader(fileReader);
 			String riga = br.readLine();
 			StringTokenizer st = null;	
 			String cellaLetta;

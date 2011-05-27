@@ -10,8 +10,22 @@ package isoladinosauri;
  */
 public class Utente {
 	
+	private Giocatore giocatore;
 	private String nomeUtente;
 	private String password;
+	
+	public Utente(String nomeUtente, String password) {
+		this.setNomeUtente(nomeUtente);
+		this.setPassword(password);
+	}
+	
+	public Giocatore getGiocatore() {
+		return giocatore;
+	}
+
+	public void setGiocatore(Giocatore giocatore) {
+		this.giocatore = giocatore;
+	}
 	
 	public String getNomeUtente() {
 		return nomeUtente;
