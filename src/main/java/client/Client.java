@@ -1,10 +1,11 @@
-package isoladinosauri;
+package client;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import isoladinosauri.Client;
+import client.Client;
+
 
 
 public class Client {
