@@ -14,9 +14,11 @@ import java.util.Random;
  * di gestire l'illumnazione della mappa e genera in automatico il
  * primo dinosauro del giocatore.
  */
-public class Giocatore extends Utente {
+public class Giocatore {
 
 	private Partita partita;
+	private Utente utente;
+
 	private int idGiocatore; //serve per identificare il giocatore quando creo gli id dei suoi dinosauri
 	private int etaAttualeGiocatore; //da quanto e' in vita. Se arriva a 120 il giocatore "muore"
 	private int turnoNascita; //turno di nascita del giocatore
@@ -31,10 +33,9 @@ public class Giocatore extends Utente {
 	//VIENE USATO SOLO NELLA CREAZIONE DEL GIOCATORE (E DI CONSEGUENZA DEL SUO PRIMO DINO)
 	//DOPO NON SARA' PIU' USATO
 
-	public Giocatore(Partita partita, String login, String password, int turnoNascita, String nomeSpecie, String tipoSpecie) {
+	public Giocatore(Partita partita, Utente utente, int turnoNascita, String nomeSpecie, String tipoSpecie) {
+		this.utente = utente;
 		this.partita = partita;
-		super.setNomeUtente(login);
-		super.setPassword(password);
 		this.etaAttualeGiocatore=0;
 		this.turnoNascita = turnoNascita;
 		this.nomeSpecie = nomeSpecie;
@@ -77,6 +78,14 @@ public class Giocatore extends Utente {
 		this.uova = new ArrayList<String>();
 	}
 
+	public Utente getUtente() {
+		return utente;
+	}
+
+	public void setUtente(Utente utente) {
+		this.utente = utente;
+	}
+	
 	//***********************************************************************************************************************
 	//**************************************************POSIZIONAMENTO*******************************************************
 	//***********************************************************************************************************************

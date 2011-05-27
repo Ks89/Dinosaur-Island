@@ -200,8 +200,8 @@ public class GenerazioneMappa {
 						offsety=Integer.parseInt(arraydistringhe[i].charAt(1)+"");
 						if((x+offsetx)>39) posNonConcessa=true;
 						else if((y+offsety)>39) posNonConcessa=true;
-						else if (mappa[x+offsetx][y+offsety]=="a"||mappa[x+offsetx][y+offsety]=="b") posNonConcessa=true;
-						else if (mappa[x+offsetx][y+offsety]=="a"||mappa[x+offsetx][y+offsety]=="b") posNonConcessa=true;
+						else if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) posNonConcessa=true;
+						else if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) posNonConcessa=true;
 					} //chiusura FOR
 
 				}//chiusura WHILE
