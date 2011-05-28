@@ -3,7 +3,7 @@ package client;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
+import java.util.Scanner;
 import client.Client;
 
 
@@ -25,22 +25,57 @@ public class Client {
 		BufferedReader keyboardReader = new BufferedReader(new InputStreamReader(System.in));
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-		//		String request = "@getTime";
-		String request;
+		String request=null;
 		String answer;
+		String nickname;
+		String password;
+		int scelta=0;
+		Scanner input = new Scanner(System.in);
 		while (true){
-			request = keyboardReader.readLine();
-			System.out.println("Sending request to server: " + request);
-			bufferedWriter.write(request);
-			bufferedWriter.newLine();
-			bufferedWriter.flush();
-			answer = bufferedReader.readLine();
-			if (answer != null) {
-				System.out.println("Server response: " + answer);
+			while(scelta!=9) {
+				System.out.println("1 - @creaUtente\n2 - @login\n9 - termina client\n");
+				scelta = input.nextInt();
+				switch(scelta) {
+				case 1:
+					bufferedWriter.flush();
+					System.out.println("nome utente: ");
+					nickname = keyboardReader.readLine();
+					System.out.println("password: ");
+					password = keyboardReader.readLine();
+					request="@creaUtente,user="+nickname+",pass="+password;
+					break;
+				case 2:
+					bufferedWriter.flush();
+					System.out.println("nome utente: ");
+					nickname = keyboardReader.readLine();
+					System.out.println("password: ");
+					password = keyboardReader.readLine();
+					request="@login,user="+nickname+",pass="+password;
+					break;
+				case 9:
+					bufferedWriter.flush();
+					break;
+				default:
+					bufferedWriter.flush();
+					System.out.println("scelta non consentita\n");
+					break;
+				}
+				if(scelta==1 || scelta==2) {
+					System.out.println("Sending request to server: " + request);
+					bufferedWriter.write(request);
+					bufferedWriter.newLine();
+					bufferedWriter.flush();
+					answer = bufferedReader.readLine();
+					if (answer != null) {
+						System.out.println("Server response: " + answer);
+					}
+				}
 			}
+			socket.close();
+			System.out.println("Terminating client.");
+			break;
 		}
-//		socket.close();
-//		System.out.println("Terminating client.");
+
 	}
 		public static void main(String[] args) {
 			Client client = new Client("localhost", 1234);
