@@ -149,8 +149,8 @@ public class Turno {
 		for(passo=1; passo<=nPassi; passo++) {
 			for(riga=0; riga<maxR; riga++) {
 				for(colonna=0; colonna<maxC; colonna++) {
-					if(mappaMovimento[riga][colonna] == passo-1) {
-						if(riga-1<0) {
+					if(mappaMovimento[riga][colonna] == passo-1) { //mi posiziono sul passo precedente per trovare il passo successivo
+						if(riga-1<0) { // controllo di non uscire fuori dalle righe della mappa
 							rigaSu=riga;
 						} else {
 							rigaSu=riga-1;
@@ -160,9 +160,8 @@ public class Turno {
 						} else {
 							rigaGiu=riga+1;
 						}
-
 						for(int i=rigaSu; i<=rigaGiu; i++) {
-							if(colonna-1<0) {
+							if(colonna-1<0) { // controllo di non uscire fuori dalle colonne della mappa
 								colonnaSx=colonna;
 							} else {
 								colonnaSx=colonna-1;
@@ -192,17 +191,17 @@ public class Turno {
 
 		int[][] mappaMovimento = this.ottieniRaggiungibilita(sorgRiga,sorgColonna);
 		int i=0,j=0,maxR,maxC,riga,colonna,partenzaDinoRiga,partenzaDinoColonna;
-		int arrivoDinoRiga,arrivoDinoColonna,deltaRiga,deltaColonna,distMin,cont=0;
+		int arrivoDinoRiga,arrivoDinoColonna,deltaRiga,deltaColonna,passiDaPercorrere,cont=0;
 		int rigaSu,rigaGiu,colonnaSx,colonnaDx;
 		boolean trovato=false;
 
-		deltaRiga = destRiga - sorgRiga;
-		deltaColonna = destColonna - sorgColonna;
+		deltaRiga = destRiga - sorgRiga; //numero di righe percorse
+		deltaColonna = destColonna - sorgColonna; //numero di colonne percorse
 
 		maxR = mappaMovimento.length;
 		maxC = mappaMovimento[0].length;
 
-		//cerco le coordinate fittizie (partenzaDinoX,partenzaDinoY) del dinosauro nella sottomappa
+		//cerco le coordinate fittizie (partenzaDinoRiga,partenzaDinoColonna) del dinosauro nella sottomappa
 		for(i=0,trovato=false; i<maxR && trovato==false; i++) {
 			for(j=0; j<maxC && trovato==false; j++) {
 				if(mappaMovimento[i][j]==0) {
@@ -214,18 +213,18 @@ public class Turno {
 			partenzaDinoRiga = i-1;
 			partenzaDinoColonna = j-1;
 
-			arrivoDinoRiga = partenzaDinoRiga + deltaRiga;
-			arrivoDinoColonna = partenzaDinoColonna + deltaColonna;
+			arrivoDinoRiga = partenzaDinoRiga + deltaRiga; //riga destinazione
+			arrivoDinoColonna = partenzaDinoColonna + deltaColonna; //colonna destinazione
 
-			distMin = mappaMovimento[arrivoDinoRiga][arrivoDinoColonna];
+			passiDaPercorrere = mappaMovimento[arrivoDinoRiga][arrivoDinoColonna];
+
+			mappaMovimento[arrivoDinoRiga][arrivoDinoColonna] -= 7; //parto dalla destinazione e sottraggo 7 al numero del passo
 
 			riga = arrivoDinoRiga;
 			colonna = arrivoDinoColonna;
-
-			mappaMovimento[riga][colonna] -= 7;
-
-			for(cont=distMin; cont>0; cont--) {
-				if(riga-1<0) {
+			
+			for(cont=passiDaPercorrere; cont>0; cont--) { //parto dalla destinazione e torno verso la partenza
+				if(riga-1<0) { // controllo di non uscire fuori dalle righe della mappa
 					rigaSu=riga;
 				} else {
 					rigaSu=riga-1;
@@ -236,7 +235,7 @@ public class Turno {
 					rigaGiu=riga+1;
 				}
 				for(i=rigaSu,trovato=false; i<=rigaGiu && trovato==false; i++) {
-					if(colonna-1<0) {
+					if(colonna-1<0) { // controllo di non uscire fuori dalle colonne della mappa
 						colonnaSx=colonna;
 					} else {
 						colonnaSx=colonna-1;
@@ -247,9 +246,9 @@ public class Turno {
 						colonnaDx=colonna+1;
 					}
 					for(j=colonnaSx; j<=colonnaDx && trovato==false; j++) {
-						if(mappaMovimento[i][j] == cont-1) {
+						if(mappaMovimento[i][j] == cont-1) { // se trovo una cella contenente un numero di passi inferiori a quello corrente
 							trovato=true;
-							mappaMovimento[i][j] -= 7;
+							mappaMovimento[i][j] -= 7; // sottraggo 7 x marcare la strada
 							riga=i;
 							colonna=j;
 						}

@@ -29,11 +29,17 @@ public class Client {
 		String answer;
 		String nickname;
 		String password;
+		String token;
+		String nomeRazza;
+		String tipoRazza;
 		int scelta=0;
 		Scanner input = new Scanner(System.in);
 		while (true){
 			while(scelta!=9) {
-				System.out.println("1 - @creaUtente\n2 - @login\n9 - termina client\n");
+				System.out.println("1 - @creaUtente");
+				System.out.println("2 - @login");
+				System.out.println("3 - @creaRazza");
+				System.out.println("9 - termina client");
 				scelta = input.nextInt();
 				switch(scelta) {
 				case 1:
@@ -52,6 +58,16 @@ public class Client {
 					password = keyboardReader.readLine();
 					request="@login,user="+nickname+",pass="+password;
 					break;
+				case 3:
+					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					System.out.println("nome razza: ");
+					nomeRazza = keyboardReader.readLine();
+					System.out.println("tipo [e/c]: ");
+					tipoRazza = keyboardReader.readLine();
+					request="@creaRazza,token="+token+",nome="+nomeRazza+",tipo="+tipoRazza;
+					break;
 				case 9:
 					bufferedWriter.flush();
 					break;
@@ -60,7 +76,7 @@ public class Client {
 					System.out.println("scelta non consentita\n");
 					break;
 				}
-				if(scelta==1 || scelta==2) {
+				if(scelta==1 || scelta==2 || scelta ==3) {
 					System.out.println("Sending request to server: " + request);
 					bufferedWriter.write(request);
 					bufferedWriter.newLine();
