@@ -13,7 +13,7 @@ public abstract class Organismo {
 	private int energia;
 	
 	/**
-	 * @return energiaMax int che indica l'energiaMax posseduta dall'Organismo.
+	 * @return Un int che indica l'energiaMax posseduta dall'Organismo.
 	 */
 	public int getEnergiaMax() {
 		return energiaMax;
@@ -25,7 +25,7 @@ public abstract class Organismo {
 		this.energiaMax = energiaMax;
 	}
 	/**
-	 * @return energia int che indica l'energia posseduta dall'Organismo.
+	 * @return Un int che indica l'energia posseduta dall'Organismo.
 	 */
 	public int getEnergia() {
 		return energia;
@@ -37,7 +37,7 @@ public abstract class Organismo {
 		this.energia = energia;
 	}
 	/**
-	 * @return riga int che indica la riga in cui e' presente.
+	 * @return Un int che indica la riga in cui e' presente.
 	 */
 	public int getRiga() {
 		return riga;
@@ -49,7 +49,7 @@ public abstract class Organismo {
 		this.riga = riga;
 	}
 	/**
-	 * @return colonna int che indica la colonna in cui e' presente.
+	 * @return Un int che indica la colonna in cui e' presente.
 	 */
 	public int getColonna() {
 		return colonna;

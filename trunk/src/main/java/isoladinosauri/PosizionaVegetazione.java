@@ -9,21 +9,28 @@ import java.util.Random;
  */
 public class PosizionaVegetazione {
 
-	//serve solo per posizionare la vegetazione sulla mappa con gia' l'acqua, terra e carogne nel numero giusto e messe in modo corretto	
+	private final int MAX = 40;
+	private final int VEGETAZIONE = 512;
+	
+	/** 
+	 * Metodo per posizionare in modo casuale la Vegetazione su una mappa 40x40 con gia' terra (t), acqua (a) e carogne (c).
+	 * @param mappa - Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
+	 */
 	public void posizionaVegetazione (String[][] mappa) {
-
 		//carico la vegetazione nella mappa
-		int cont=0;
+		int cont=0; //conta il numero di celle vegetazione inserite nella mappa
 		Random random = new Random();
-		Random r1 = new Random(103);
+		Random r1 = new Random(12);
 		Random r2 = new Random(3);
-		Random r3 =  new Random(12);
+		
+		//scansiono 50 volte la mappa ed inserisco la vegetazione nei posti liberi
+		//FIXME usare un while che si basa su cont
 		for(int w=0;w<100;w++){
-			for(int i=0; i<40;i++) {
-				for(int j=0; j<40 ;j++) {
-					random.setSeed(r1.nextInt() * r2.nextInt() + i*2 + w + r3.nextInt());
+			for(int i=0; i<MAX;i++) {
+				for(int j=0; j<MAX ;j++) {
+					random.setSeed(r1.nextInt() * r2.nextInt());
 					if(mappa[i][j].equals("t")) {
-						if(random.nextInt(5)==0 && cont<512) {
+						if(random.nextInt(5)==0 && cont<VEGETAZIONE) {
 							mappa[i][j]="v"; 
 							cont++;
 						}
@@ -32,10 +39,27 @@ public class PosizionaVegetazione {
 			}
 		}
 
-		//verifico validaita' mappa
-		int acqua=0, terra=0, car=0, veg=0;
-		for(int i=0;i<40;i++) {
-			for(int j=0;j<40;j++) {
+		//verifico validaita' della mappa
+		int[] verificata = this.verificaValidita(mappa);
+
+		System.out.println("Validita' mappa :" + verificata[0] + " " + verificata[1] + " " + verificata[2] + " " + verificata[3]);
+	}
+	
+	/**
+	 * Metodo per verificare la validita' della mappa, cioe' conta il numero di celle per ogni tipo.
+	 * @param mappa - Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
+	 * @return Un array di 4 elementi con i risultati della verifica, composto cosi': 
+	 * 		[0] - acqua, 
+	 * 		[1] - terra, 
+	 * 		[2] - carogna, 
+	 * 		[3] - vegetazione.
+	 */
+	private int[] verificaValidita(String[][] mappa) {
+		//verifico validaita' della mappa
+		int[] verifica = new int[4];
+		int acqua=0, terra=0, carogna=0, vegetazione=0;
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j].equals("a")) {
 					acqua++;
 				}
@@ -43,14 +67,18 @@ public class PosizionaVegetazione {
 					terra++;
 				}
 				if (mappa[i][j].equals("c")) {
-					car++;
+					carogna++;
 				}
 				if (mappa[i][j].equals("v")) {
-					veg++;
+					vegetazione++;
 				}
 			}
 		}
+		verifica[0] = acqua;
+		verifica[1] = terra;
+		verifica[2] = carogna;
+ 		verifica[3] = vegetazione;
+ 		return verifica;
 
-		System.out.println("Validita' mappa :" + acqua + " " + terra + " " + veg + " " + car);
 	}
 }

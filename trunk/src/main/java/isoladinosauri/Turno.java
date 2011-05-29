@@ -56,7 +56,7 @@ public class Turno {
 	 * @param riga int che rappresenta la riga della mappa in cui si trova il Dinosauro.
 	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
 	 * @param raggio int che rappresenta il raggio di celle intorno alla posizione del Dinosauro.
-	 * @return vista array di 4 int che rappresenta rispettivamente:
+	 * @return Un array di 4 int che rappresenta rispettivamente:
 	 * 			[0] - riga dell'origine della vista,
 	 * 			[1] - colonna dell'origine della vista,
 	 * 			[2] - riga della fine della vista,
@@ -78,7 +78,7 @@ public class Turno {
 	 * @param riga int che rappresenta la riga della mappa in cui si trova il Dinosauro.
 	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
 	 * @param raggio int che rappresenta il raggio di celle intorno alla posizione del Dinosauro.
-	 * @return coorinate array di 2 int che rappresenta rispettivamente:
+	 * @return Un array di 2 int che rappresenta rispettivamente:
 	 * 			[0] - riga dell'origine della vista,
 	 * 			[1] - colonna dell'origine della vista,
 	 */
@@ -112,7 +112,7 @@ public class Turno {
 	 * @param riga int che rappresenta la riga della mappa in cui si trova il Dinosauro.
 	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
 	 * @param raggio int che rappresenta il raggio di celle intorno alla posizione del Dinosauro.
-	 * @return coorinate array di 2 int che rappresenta rispettivamente:
+	 * @return Un array di 2 int che rappresenta rispettivamente:
 	 * 			[0] - riga della fine della vista,
 	 * 			[1] - colonna della fine della vista,
 	 */
@@ -146,7 +146,7 @@ public class Turno {
 	 * 1,2,3: numero dei passi per raggiungere tale cella.
 	 * @param sorgRiga int che rappresenta la riga in cui si trova il Dinosauro.
 	 * @param sorgColonna int che rappresenta la colonna in cui si trova il Dinosauro.
-	 * @return mappaMovimento array bidimensionale di raggio 2 per un Erbivoro, 3 per un Carnivoro.
+	 * @return Un array bidimensionale di raggio 2 per un Erbivoro, 3 per un Carnivoro.
 	 */
 	public int [][] ottieniRaggiungibilita(int sorgRiga, int sorgColonna) {
 
@@ -242,7 +242,7 @@ public class Turno {
 	 * @param sorgColonna int che rappresenta la colonna in cui si trova il Dinosauro.
 	 * @param destRiga int che rappresenta la riga in cui si dovra' muovere il Dinosauro.
 	 * @param destColonna int che rappresenta la riga in cui si dovra' muovere il Dinosauro.
-	 * @return mappaMovimento array bidimensionale con la strada percorsa indicata da numeri negativi
+	 * @return Un array bidimensionale con la strada percorsa indicata da numeri negativi
 	 */
 	public int [][] ottieniStradaPercorsa(int sorgRiga, int sorgColonna, int destRiga, int destColonna) {
 		int[][] mappaMovimento = this.ottieniRaggiungibilita(sorgRiga,sorgColonna);
@@ -328,7 +328,7 @@ public class Turno {
 	 * @param mosso Dinosauro che esegue lo spostamento.
 	 * @param riga int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
 	public boolean spostaDinosauro(Dinosauro mosso, int riga, int colonna) {
@@ -367,7 +367,7 @@ public class Turno {
 	 * @param dinosauro Dinosauro che esegue lo spostamento.
 	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
 	private boolean mangiaOccupante(Dinosauro dinosauro, int riga, int colonna) {
@@ -404,7 +404,7 @@ public class Turno {
 	 * @param mosso Dinosauro che esegue lo spostamento.
 	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
 	private boolean spostamentoConOccupante(Dinosauro mosso, int riga, int colonna) {
@@ -443,7 +443,7 @@ public class Turno {
 	 * @param dinosauro Dinosauro che esegue lo spostamento.
 	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
 	private boolean combatti(Dinosauro dinosauro, int riga, int colonna) {
@@ -481,7 +481,7 @@ public class Turno {
 	 * @param mosso Dinosauro che esegue lo spostamento.
 	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
 	private boolean spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) {
@@ -540,7 +540,7 @@ public class Turno {
 	 * @param mosso Dinosauro che esegue lo spostamento.
 	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
 	private boolean spostamentoSuTerreno(Dinosauro dinosauro, int riga, int colonna) {

@@ -9,22 +9,34 @@ import java.util.List;
  * aggiornarne i punteggi e rimuovere giocatori, mantenendo il tutto
  * ordinato in modo decrescente tramite bubblesort
  */
-
 public class Classifica {
 
 	private Partita partita;
 	private List<Tupla> classificaGiocatori;
 
+	/**
+	 * Costruttore della Classifica che riceve la Partita alla quale e' associata.
+	 * Esso inizializza anche l'ArrayList di Tuple che rappresenta la Classifica.
+	 * @param partita
+	 */
 	public Classifica(Partita partita) {
 		this.classificaGiocatori = new ArrayList<Tupla>();
 		this.partita = partita;
 	}
 
 
+	/**
+	 * @return Una List di Tuple che rappresentano le singole righe della classifica.
+	 */
 	public List<Tupla> getClassifica() {
 		return this.classificaGiocatori;
 	}
 
+	/**
+	 * Metodo per calcolare i punti dei Giocatori in base alla dimensione dei Dinosauri presente in squadra.
+	 * @param giocatore riferimento al Giocatore di cui bisogna calcolare il punti attuale.
+	 * @return un int che rappresenta il punteggio del Giocatore.
+	 */
 	private int calcolaPunti(Giocatore giocatore) {
 		int punti=0;
 		for(int i=0;i<giocatore.getDinosauri().size();i++) {
@@ -34,12 +46,14 @@ public class Classifica {
 	}
 
 
-	public void aggiungiTuplaClassifica(Giocatore giocatore) {
-		//metodo che serve per aggiungere elementi nella classifica
-		//DEVE ESSERE USATO SOLO PER INSERIRE NUOVI GIOCATORI E PER AGGIORNARE I PUNTEGGI
-		//se passo un nuovo giocatore lo inserisce, se ne passo uno gia' presente gli aggiorna il punteggio
-		//se voglio gestire lo stato online/offline chiamo AGGIORNACLASSIFICASTATI()
-
+	/**
+	 * Metodo che serve per aggiungere elementi nella classifica.
+	 * Deve esssre usato solo per inserire nuovi Giocatori e per aggiornare i punteggi.
+	 * Se gli si passa un Giocatore nuovo, lo inserisce, se giˆ presente ne aggiorna il punteggio.
+	 * Per gestire lo stato online/offline richiama automaticamente il metodo privato aggiornaClassificaStati().
+	 * @param giocatore riferimento al Giocatore da inserire nella Classifica.
+	 */
+	public void aggiungiTuplaClassifica(Giocatore giocatore) {	
 		//creo la Tupla da inserire in classifica
 		Tupla tupla = new Tupla();
 		tupla.setNomeUtente(giocatore.getUtente().getNomeUtente());
@@ -56,10 +70,14 @@ public class Classifica {
 		}
 	}
 
+	
+	/**
+	 * Metodo per aggiornare una Tupla (riga della Classifica) quando il Giocatore e' gia' presente in Classifica.
+	 * @param tupla riferimento a Tupla che rappresenta la singola riga della Classifica.
+	 * @param giocatore riferimento al Giocatore per cui si vuole aggiorna il punteggio ed inserirlo nella Tupla della Classifica.
+	 */
 	private void aggiornaPuntiTupla(Tupla tupla, Giocatore giocatore) {
-		//metodo per aggiornare una tupla quando il giocatore, passato in aggiungiTuplaClassifica, si trova gia' nella classifica
-
-		//se la tupla e' riferita ad un gicoatore offline lo rendo online
+		//se la tupla e' riferita ad un giocatore offline lo rendo online
 		if(tupla.getStato().equals("n")) {
 			tupla.setStato("s");
 		}
@@ -67,6 +85,13 @@ public class Classifica {
 		tupla.setPunti(this.calcolaPunti(giocatore));
 	}
 
+	
+	/**
+	 * Metodo che aggiorna lo stato online/offline di tutte le Tuple in Classifica utilizzando il metodo cercaInGiocatori
+	 * per capire queli Giocatori sono ancora nella Partita e quali sono usciti.
+	 * Inoltre, si occupa anche di ordinare la classifica in modo decrescente per punteggio tramite il metodo
+	 * privato ordinaClassifica.
+	 */
 	public void aggiornaClassificaStati() {
 		//metodo che viene richiamata alla fine di ogni giro dei turni dei gicoatori (cioe' ad ogni turno della partita)
 
@@ -87,13 +112,17 @@ public class Classifica {
 		//eseguo l'ordinamento decrescente della classifica per punteggio
 		this.ordinaClassifica();
 	}
+	
 
+	/**
+	 * Metodo che scansiona la Classifica e verifica se ogni Tupla e' associata al Giocatore ricevuto in ingresso e
+	 * in caso positivo restituisce la posiziona del Giocatore nella Classifica.
+	 * @param giocatore riferimento al Giocatore che deve essere cercato nella Classifica.
+	 * @return un int che rappresenta la posizione del Giocatore Cella classifica. E' uguale a '-1' nel caso in cui
+	 * 			nella Classifica non sia presente tale Giocatore.
+	 */
 	private int cercaInClassifica(Giocatore giocatore) {
-		//scansiona la classifica e verifica se la tupla corrente e' associata al giocatore ricevuto in ingresso
-		//nel caso positivo restituisce la posizione del giocatore nella classifica
-		//in caso negativo restituisce sempre -1
 		Tupla tupla;
-
 		for(int i=0;i<this.getClassifica().size();i++) {
 			tupla = this.getClassifica().get(i);
 			if(tupla.getNomeUtente().equals(giocatore.getUtente().getNomeUtente()) &&
@@ -104,6 +133,12 @@ public class Classifica {
 		return -1;
 	}
 
+	/**
+	 * Metodo che scansiona i Giocatori e verifica se la Tupla e' associata ad un Giocatore nella Partita.
+	 * In caso positivo restituisce il Giocatore associato alla Tupla, altrimenti 'null'.
+	 * @param tupla riferimento a Tupla che rappresenta la singola riga della Classifica.
+	 * @return Il riferimento al Giocatore associato alla Tupla.
+	 */
 	private Giocatore cercaInGiocatori(Tupla tupla) {
 		//scansiona i giocatori e verifica se il giocatore corrente e' associato alla tupla ricevuto in ingresso
 		//in caso positivo restituisce il giocatore associato all tupla
@@ -117,6 +152,10 @@ public class Classifica {
 		return null;
 	}
 
+	
+	/**
+	 * Metodo che ordina la Classifica in modo decescente per punteggio, tramite BubbleSort.
+	 */
 	private void ordinaClassifica() {
 		//si occupa dell'ordinamento della classifica tramite bubblesort
 		//E' un metodo privato chiamato da aggiornaClassificaStati()
@@ -132,6 +171,9 @@ public class Classifica {
 		}
 	}
 
+	/**
+	 * Metodo per stampare la Classifica.
+	 */
 	public void stampaClassifica() {
 		for(int i=0;i<this.getClassifica().size();i++) {
 			System.out.println(this.classificaGiocatori.get(i).getNomeUtente() + "," +

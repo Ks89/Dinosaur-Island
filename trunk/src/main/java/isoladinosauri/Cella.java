@@ -16,18 +16,30 @@ public class Cella {
 	private Occupante occupante;
 	private Dinosauro dinosauro;
 	
+	/**
+	 * @return Il riferimento all'Occupante presente nella Cella.
+	 */
 	public Occupante getOccupante() {
 		return occupante;
 	}
 	
+	/**
+	 * @param occupante L'Occupante che si vuole impostare nella Cella.
+	 */
 	public void setOccupante(Occupante occupante) {
 		this.occupante = occupante;
 	}
 	
+	/**
+	 * @return Il riferimento al Dinosauro presente nella Cella.
+	 */
 	public Dinosauro getDinosauro() {
 		return dinosauro;
 	}
 	
+	/**
+	 * @param dinosauro Il Dinosauro che si vuole impostare nella Cella.
+	 */
 	public void setDinosauro(Dinosauro dinosauro) {
 		this.dinosauro = dinosauro;
 	}

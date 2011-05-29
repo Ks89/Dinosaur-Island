@@ -16,6 +16,10 @@ public class GenerazioneMappa {
 
 	private static final int MAX = 40;
 
+	/**
+	 * Metodo per generare la mappa in modo 'presuo-casuale'.
+	 * @return La mappa genereta sotto forma di array bidimensionale di String.
+	 */
 	public String[][] creaMappaCasuale() {
 		String mappa[][] = this.inserisciAcqua();
 		this.inserisciCarogne(mappa);
@@ -29,6 +33,10 @@ public class GenerazioneMappa {
 
 	}
 
+	/**
+	 * Metodo per contare il numero di carogne all'interno della mappa di gioco.
+	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
+	 */
 	private void contaCarogne(String[][] mappa) {
 		int cont=0;
 		for(int i=0;i<MAX;i++) {
@@ -39,6 +47,11 @@ public class GenerazioneMappa {
 		System.out.println(cont);
 	}
 
+	/**
+	 * Metodo per inserire le Carogne all'interno della mappa generata in modo casuale.
+	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
+	 * @return Un array bidimensionale di String che rappresenta la mappa di gioco con inserite 20 carogne ('c').
+	 */
 	private String[][] inserisciCarogne(String[][] mappa) {
 		Random random = new Random();
 		int cont=0, riga, colonna;
@@ -53,6 +66,11 @@ public class GenerazioneMappa {
 		return mappa;
 	}
 
+	/**
+	 * Metodo per inserire la terra nella mappa generata in modo casuale.
+	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
+	 * @return Un array bidimensionale di String che rappresenta la mappa di gioco con inserite le cella di terra ('t').
+	 */
 	private String[][] inserisciTerra(String[][] mappa) {
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
@@ -64,6 +82,10 @@ public class GenerazioneMappa {
 		return mappa;
 	}
 
+	/**
+	 * Metodo che inserisce le "pozze" di acqua nella mappa di gioco in modo "preuso-casuale".
+	 * @return Un array bidimensionale di String che rappresenta la mappa di gioco con posizonate solo le celle d'acqua.
+	 */
 	private String[][] inserisciAcqua(){
 		String[][] mappa = new String[MAX][MAX];
 		/*
@@ -75,20 +97,17 @@ public class GenerazioneMappa {
 
 		do{
 			numeroraggiungibili=0;
-
 			//Inizializzazione mappa
 			for(int i=0;i<=39;i++) {
 				for(int j=0;j<=39;j++) mappa[i][j]=" ";
 
 			}
-
+			
 			//Disegno il contorno d'acqua dell isola
-
 			for(int j=0;j<=39;j++) mappa[0][j]="a";
 			for(int j=0;j<=39;j++) mappa[39][j]="a";
 			for(int i=0;i<=39;i++) mappa[i][0]="a";
 			for(int i=0;i<=39;i++) mappa[i][39]="a";
-
 
 			/*
 			 * Per fare in modo che l'acqua sia del 20 percento e 
@@ -112,59 +131,19 @@ public class GenerazioneMappa {
 			 * terzo (2+0,3+1)
 			 * E cosi' via
 			 */
-			ArrayList<String[]> arrayforme =new ArrayList<String[]>();
-
-			String formacinque[]={"00","10","01","11","20"};
-			String formacinquebis[]={"00","10","20","30","40"};
-			String formasei[]={"00","01","10","11","20","21"};
-			String formaseibis[]={"00","10","01","11","02","12"};
-			String formasette[]={"00","10","01","11","02","12","03"};
-			String formasettebis[]={"00","01","10","11","20","21","30"};
-			String formaotto[]={"00","01","02","03","10","11","12","13"};
-			String formaottobis[]={"00","01","02","10","11","12","20","21"};
-			String formanove[]={"00","01","02","10","11","12","20","21","22"};
-			String formanovebis[]={"00","01","02","10","11","12","20","21","22"};
-			String formadieci[]={"00","01","02","03","10","11","12","13","20","21"};
-			String formaundici[]={"00","01","10","11","20","21","22","30","31","32","41"};
-			String formaundicibis[]={"00","01","02","03","10","11","12","13","23","24","25"};
-			String formaundicitris[]={"00","01","02","10","11","12","20","21","22","30","31"};
-			String formadodici[]={"00","01","02","03","04","10","11","20","21","22","31","41"};
-			String formadodicibis[]={"00","01","02","10","11","12","20","21","22","30","31","32"};
-			String formadodicitris[]={"00","01","02","03","04","10","11","20","21","22","31","41"};
-			String formaquindici[]={"00","01","02","10","11","20","21","22","23","24","30","31","32","33","42"};
-
-			/*
-			 * Aggiungo tutte le forme a una struttura 
-			 * dati di tipo ArrayList che puo' contenere
-			 * array di stringhe come oggetti
-			 */
-			arrayforme.add(formacinque);
-			arrayforme.add(formacinquebis);
-			arrayforme.add(formasei);
-			arrayforme.add(formaseibis);
-			arrayforme.add(formasette);
-			arrayforme.add(formasettebis);
-			arrayforme.add(formaotto);
-			arrayforme.add(formaottobis);
-			arrayforme.add(formanove);
-			arrayforme.add(formanovebis);
-			arrayforme.add(formadieci);
-			arrayforme.add(formaundici);
-			arrayforme.add(formaundicibis);
-			arrayforme.add(formaundicitris);
-			arrayforme.add(formadodici);
-			arrayforme.add(formadodicitris);
-			arrayforme.add(formadodicibis);
-			arrayforme.add(formaquindici);
-
+			
+			//ottengo l'array di forme di acqua da inserire
+			ArrayList<String[]> arrayForme = this.ottieniFormeAcqua();
+			
+			
 			/*
 			 * Uno alla volta inserisco nella mappa
 			 * tutti gli elementi contenuti nella 
 			 * struttura arrayforme
 			 */
-			for(int numerofigure=0;numerofigure<arrayforme.size();numerofigure++){
+			for(int numerofigure=0;numerofigure<arrayForme.size();numerofigure++){
 
-				String arraydistringhe[]=arrayforme.get(numerofigure);
+				String arraydistringhe[]=arrayForme.get(numerofigure);
 
 				/*
 				 *cordinate generate a caso
@@ -228,8 +207,6 @@ public class GenerazioneMappa {
 				 * Devo controllare se tutte le zone di
 				 * terra sono unite (raggiungibili)
 				 */
-
-
 			}//Chiusura ciclo for 
 
 			/*
@@ -255,48 +232,48 @@ public class GenerazioneMappa {
 			 * Cerco il primo elemento di terra
 			 * sulla prima riga. Quando lo trovo
 			 * esco dal ciclo (break) e mi salvo le 
-			 * cordinate. Cosi guardo se quell
+			 * cordinate. Cosi guardo se quell'
 			 * elemento ne raggiunge altri 1280
 			 * (tutti gli elementi di terra)
 			 * Gli elementi raggiunti sono contrassegnati
-			 * dalla lettera "r"
+			 * dalla lettera 't'
 			 */
-
 
 			int j;
 			for (j=1;j<39;j++){
-				if (mappa[1][j]==" ") break;
+				if (mappa[1][j]==" ") {
+					break;
+				}
 			}
 			int primoeleterray=j;
-			mappa[1][primoeleterray]="r";
+			mappa[1][primoeleterray]="t";
 
 			/*
 			 * In questo ciclo do while si "colorano" i 
-			 * blocch adiacenti a quelli che contengono 'r'
+			 * blocchi adiacenti a quelli che contengono 't'
 			 * se sono vuoti. (Per la raggiungibilita')
 			 */
 			boolean modificato;
-
 			do{
 				modificato=false;
 				for(int i=0;i<39;i++){
 					for(j=0;j<39;j++){
-						if (mappa[i][j]=="r") {
+						if (mappa[i][j]=="t") {
 							if (mappa[i+1][j]==" ") {
-								mappa[i+1][j]="r";
+								mappa[i+1][j]="t";
 								modificato=true;
 							}
 
 							if (mappa[i-1][j]==" "){ 
-								mappa[i-1][j]="r";
+								mappa[i-1][j]="t";
 								modificato=true;
 							}
 							if (mappa[i][j+1]==" "){ 
-								mappa[i][j+1]="r";
+								mappa[i][j+1]="t";
 								modificato=true;
 							}
 							if (mappa[i][j-1]==" "){ 
-								mappa[i][j-1]="r";
+								mappa[i][j-1]="t";
 								modificato=true;
 							}
 						}//Chiusura IF
@@ -304,24 +281,65 @@ public class GenerazioneMappa {
 				}		 //Chiusura FOR
 			}while (modificato==true); //CHIUSURA DO-WHILE
 
-			//Conta il numero di r
+			//Conta il numero di t
 			for(int i=0;i<39;i++) {
-				for(int k=0;k<39;k++) if (mappa[i][k]=="r") numeroraggiungibili++;
-			}
-
-
-			//Per piu chiarezza cancello le r e le sostituisco con
-			//delle t(terra) si puo' direttamente usare la lettera 
-			//t per il controllo di raggiungibilita' di prima
-
-			for(int i=0;i<=39;i++) {
-				for(j=0;j<=39;j++) {
-					if (mappa[i][j]=="r") mappa[i][j]=" ";
-				}
+				for(int k=0;k<39;k++) if (mappa[i][k]=="t") numeroraggiungibili++;
 			}
 
 		}while (numeroraggiungibili!=1280);
 		return mappa;
+	}
+	
+	/**
+	 * Metodo che inserire in un ArrayList degli array si String contenti le coordinare delle celle di acqua che fanno
+	 * parte di una determinata forma.
+	 * @return Un ArrayList di array di String contenente tutte le forme di acqua.
+	 */
+	private ArrayList<String[]> ottieniFormeAcqua() {
+		ArrayList<String[]> arrayForme =new ArrayList<String[]>();
+		String formacinque[]={"00","10","01","11","20"};
+		String formacinquebis[]={"00","10","20","30","40"};
+		String formasei[]={"00","01","10","11","20","21"};
+		String formaseibis[]={"00","10","01","11","02","12"};
+		String formasette[]={"00","10","01","11","02","12","03"};
+		String formasettebis[]={"00","01","10","11","20","21","30"};
+		String formaotto[]={"00","01","02","03","10","11","12","13"};
+		String formaottobis[]={"00","01","02","10","11","12","20","21"};
+		String formanove[]={"00","01","02","10","11","12","20","21","22"};
+		String formanovebis[]={"00","01","02","10","11","12","20","21","22"};
+		String formadieci[]={"00","01","02","03","10","11","12","13","20","21"};
+		String formaundici[]={"00","01","10","11","20","21","22","30","31","32","41"};
+		String formaundicibis[]={"00","01","02","03","10","11","12","13","23","24","25"};
+		String formaundicitris[]={"00","01","02","10","11","12","20","21","22","30","31"};
+		String formadodici[]={"00","01","02","03","04","10","11","20","21","22","31","41"};
+		String formadodicibis[]={"00","01","02","10","11","12","20","21","22","30","31","32"};
+		String formadodicitris[]={"00","01","02","03","04","10","11","20","21","22","31","41"};
+		String formaquindici[]={"00","01","02","10","11","20","21","22","23","24","30","31","32","33","42"};
+
+		/*
+		 * Aggiungo tutte le forme a una struttura 
+		 * dati di tipo ArrayList che puo' contenere
+		 * array di stringhe come oggetti
+		 */
+		arrayForme.add(formacinque);
+		arrayForme.add(formacinquebis);
+		arrayForme.add(formasei);
+		arrayForme.add(formaseibis);
+		arrayForme.add(formasette);
+		arrayForme.add(formasettebis);
+		arrayForme.add(formaotto);
+		arrayForme.add(formaottobis);
+		arrayForme.add(formanove);
+		arrayForme.add(formanovebis);
+		arrayForme.add(formadieci);
+		arrayForme.add(formaundici);
+		arrayForme.add(formaundicibis);
+		arrayForme.add(formaundicitris);
+		arrayForme.add(formadodici);
+		arrayForme.add(formadodicitris);
+		arrayForme.add(formadodicibis);
+		arrayForme.add(formaquindici);
+		return arrayForme;
 	}
 
 //	private void salvaMappa(String[][] mappa) {

@@ -7,10 +7,7 @@ import isoladinosauri.Isola;
 import isoladinosauri.Partita;
 import isoladinosauri.Turno;
 import isoladinosauri.Utente;
-import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
-import isoladinosauri.modellodati.Vegetale;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,16 +15,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.*;
 
 public class Gui {
 
-	private final int MAX = 40;
-	private JButton cellaGui;
+	private static final int MAX = 40;
 	private JButton[][] mappaGui = new JButton[MAX][MAX];
 
 	private JLabel idDinosauroRis;

@@ -53,7 +53,7 @@ public class Erbivoro extends Dinosauro {
 	@Override
 	public boolean combatti(Dinosauro dinosauro)  {
 		//e' il dinosauro erbivoro a muoversi su una cella per combattere con un CARNIVORO
-		Carnivoro nemico = (Carnivoro)dinosauro;
+		Carnivoro nemico = (Carnivoro)dinosauro; //FIXME c'e' un cast da mettere a posto qui
 		if(this.calcolaForza()>=nemico.calcolaForza()) {
 			//l'erbivoro vince il combattimento e sconfigge il carnivoro, ma non lo mangia
 			return true; //avvisa di rimuovere il carnivoro, cioe' l'attaccato

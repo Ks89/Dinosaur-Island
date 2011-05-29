@@ -7,9 +7,6 @@ import isoladinosauri.modellodati.Erbivoro;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.db4o.Db4o;
-//import com.db4o.ObjectContainer;
-//import com.db4o.ObjectSet;
 
 //FIXME GRAVISSIMO: se c'e' un solo giocatore nella partita e il suo dinosauro muore il programma crasha SEMPRE (MOLTO GRAVE)
 //se invece cancello il giocatore direttamente dal menu, allora non succede nulla. Il bug sta nei cicli dei dinosauri, sugli indici
@@ -30,37 +27,20 @@ public class Partita {
 	private List<Giocatore> giocatori;
 	private int contatoreTurni;
 
+	/**
+	 * Costruttore della classe Partita che inizializza i Giocatori e l'Isola.
+	 * @param isola riferimento alla classe Isola contente la mappa di Cella[][].
+	 */
 	public Partita(Isola isola)
 	{
 		this.giocatori = new ArrayList<Giocatore>();
 		this.isola = isola;
-		//this.turnoCorrente = new Turno(this);
 	}
 
-	public Turno getTurnoCorrente() {
-		return turnoCorrente;
-	}
-
-	public void setTurnoCorrente(Turno turnoCorrente) {
-		this.turnoCorrente = turnoCorrente;
-	}
-
-	public Isola getIsola() {
-		return isola;
-	}
-
-	public void setIsola(Isola isola) {
-		this.isola = isola;
-	}
-
-	public List<Giocatore> getGiocatori() {
-		return giocatori;
-	}
-
-	private Giocatore getGiocatore(int i) {
-		return giocatori.get(i);
-	}
-
+	/**
+	 * Metodo per aggiungere un Giocatore alla Partita.
+	 * @param giocatore riferimento al Giocatore che deve essere aggiunto in Partita.
+	 */
 	public void aggiungiGiocatore(Giocatore giocatore) {
 		if(this.giocatori.size()<8) {
 			giocatori.add(giocatore);
@@ -70,6 +50,10 @@ public class Partita {
 		}
 	}
 
+	/**
+	 * Metodo per rimuovere un giocatore dalla Partita.
+	 * @param giocatore riferimento al Giocatore che deve essere rimosso dalla Partita.
+	 */
 	public void rimuoviGiocatore(Giocatore giocatore) {
 		//ricevo gicatore, cioe' il giocatore che devo cancellare		
 		//rimuovo tutti i dinosauri del giocatore dalla mappa
@@ -85,21 +69,22 @@ public class Partita {
 		//rimuovo il giocatore dalla lista dei giocatori
 		giocatori.remove(giocatore);
 	}
-
-	public int getContatoreTurni() {
-		return contatoreTurni;
-	}
-
-	public void setContatoreTurni(int contatoreTurni) {
-		this.contatoreTurni = contatoreTurni;
-	}
-
+	
+	/**
+	 * Metodo che incrementa l'eta' dei giocatori, turno dopo turno.
+	 */
 	public void incrementaEtaGiocatori() {
 		for(int i=0;i<this.getGiocatori().size();i++) {
 			this.getGiocatori().get(i).incrementaEtaAttuali();
 		}
 	}
+	
 
+	/**
+	 * Metodo che restituisce il Giocatore che posside il Dinosauro dato in ingresso.
+	 * @param dinosauro - Il Dinosauro che deve essere cercato tra quelli dei Giocatori.
+	 * @return Il Giocatore che possiede il Dinosauro nella propria squadra.
+	 */
 	public Giocatore identificaDinosauro (Dinosauro dinosauro) {
 		//gli do un dinosauro e lui lo cerca tra tutti quelli dei giocatori
 		//quello che restituisce e' il giocatore che possiede quel dinosauro
@@ -119,10 +104,16 @@ public class Partita {
 		return null;
 	}
 
-	public void nascitaDinosauro (int turnoNascita) {
-		//scansiona tutti i giocatori e all'interno di essi scansiona tutte le arraylist 
-		//delle uova. Quindi si preoccupa di chiamare il metodo SchiudiUova per far nascere i dinosauri
 
+	//************************************************************************************************************
+	//************************************GESTONE UOVA E NASCITA DINOSAURI****************************************
+	//************************************************************************************************************
+	/**
+	 * Metodo che scansiona tutti i Giocatori e all'interno di essi controlla tutte le Uova nell'apposito ArrayList. 
+	 * Quindi, si preoccupare di chiamare il metodo SchiudiUova per far nascere i Dinosauri.
+	 * @param turnoNascita - int che rappresenta il turno in cui sono nati i Dinosauri dalle uova.
+	 */
+	public void nascitaDinosauro (int turnoNascita) {
 		String[] coordinate; //array con dentro
 		int[] posizione;
 		Dinosauro dinosauro = null;
@@ -136,7 +127,6 @@ public class Partita {
 
 			//scansiono la lista delle uova appena ottenuta
 			for(int j=0; j<listaUova.size();j++) {
-
 				//ottengo le coordinate dell'uovo in questione
 				coordinate = listaUova.get(j).split("-");
 				riga = Integer.parseInt(coordinate[0]);
@@ -171,9 +161,16 @@ public class Partita {
 		}
 	}
 
-	//passate le coordinate dell'uovo questo metodo genera le coordinate i cui POSSO far nascere il dinosauro
-	private int[] generaCoordinateNascituro (int riga, int colonna) {
 
+	/**
+	 * Metodo che riceve le coordinate dell'uovo e genere in uscita quelle in cui si puo' far nascere un Dinosauro.
+	 * @param riga int che rappresenta la riga della mappa in cui si trova l'uovo.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova l'uovo.
+	 * @return Un array con i seguenti valori:
+	 * 		[0] - riga in cui si deve schiudere l'uovo, 
+	 * 		[1] - colonna in cui si deve schiudere l'uovo.
+	 */
+	private int[] generaCoordinateNascituro (int riga, int colonna) {
 		//funzionamento:
 		//1) calcolo raggio visuale che parte da 1
 		//2) cerco nella visuale uno spazio libero (terra senza dinosauro) (cioe' la cornice subito intorno al dinosauro)
@@ -200,7 +197,69 @@ public class Partita {
 
 			}
 		}
-		return coordinate; //se arrivo qui dovrei sollevare l'eccezione che il dinosauro non puo' nascere perche' nella
-		//mappa non c'e spazio (follia pura)
+		return coordinate; //FIXME se arrivo qui e' perche' nella mappa non c'e' spazio
+	}
+	
+	
+	//************************************************************************************************************
+	//***********************************************GETTER E SETTER**********************************************
+	//************************************************************************************************************
+	
+	/**
+	 * @return Un riferimento al turno corrente associato alla Partita.
+	 */
+	public Turno getTurnoCorrente() {
+		return turnoCorrente;
+	}
+
+	/**
+	 * @param turnoCorrente riferimento al Turno per impostare il turnoCorrente nella Partita.
+	 */
+	public void setTurnoCorrente(Turno turnoCorrente) {
+		this.turnoCorrente = turnoCorrente;
+	}
+
+	/**
+	 * @return L'Isola associata alla partita.
+	 */
+	public Isola getIsola() {
+		return isola;
+	}
+
+	/**
+	 * @param isola riferimento all'Isola che contiene la mappa di gioco.
+	 */
+	public void setIsola(Isola isola) {
+		this.isola = isola;
+	}
+
+	/**
+	 * @return Una lista dei Giocatori presenti in Partita.
+	 */
+	public List<Giocatore> getGiocatori() {
+		return giocatori;
+	}
+
+	/**
+	 * Metodo che permette di ottenere direttamente il Giocatore identificato da un certo indice 'i' nella Partita.
+	 * @param i Posizione del Giocatore nell'arrayList di Giocatori.
+	 * @return
+	 */
+	private Giocatore getGiocatore(int i) {
+		return giocatori.get(i);
+	}
+
+	/**
+	 * @return Un int che rappresenta il contatore dei turni.
+	 */
+	public int getContatoreTurni() {
+		return contatoreTurni;
+	}
+
+	/**
+	 * @param contatoreTurni - int per impostare il contatore dei turni.
+	 */
+	public void setContatoreTurni(int contatoreTurni) {
+		this.contatoreTurni = contatoreTurni;
 	}
 }
