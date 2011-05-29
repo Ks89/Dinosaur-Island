@@ -68,6 +68,12 @@ public class Client {
 					tipoRazza = keyboardReader.readLine();
 					request="@creaRazza,token="+token+",nome="+nomeRazza+",tipo="+tipoRazza;
 					break;
+				case 4:
+					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					request="@accessoPartita,token="+token;
+					break;
 				case 9:
 					bufferedWriter.flush();
 					break;
@@ -76,7 +82,7 @@ public class Client {
 					System.out.println("scelta non consentita\n");
 					break;
 				}
-				if(scelta==1 || scelta==2 || scelta ==3) {
+				if(scelta==1 || scelta==2 || scelta ==3 || scelta ==4) {
 					System.out.println("Sending request to server: " + request);
 					bufferedWriter.write(request);
 					bufferedWriter.newLine();
