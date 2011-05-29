@@ -11,19 +11,23 @@ import java.util.StringTokenizer;
 public class CaricamentoMappa {
 
 	private static final int MAX = 40;
-
 	private Cella[][] mappa; 
 
+	/**
+	 * Costruttore che inizializza la mappa di Celle.
+	 */
 	public CaricamentoMappa() {
 		mappa = new Cella[MAX][MAX];
 	}
 
 	
+	/**
+	 * Metodo che esegue il caricamento della mappa come file di testo e riempie un array bidimensionale con 
+	 * gli elementi letti da tale file. Inolte, richiama i metodi predefiniti per inizializzare l'energiaMax al momento
+	 * della creazione di un Occupante.
+	 * @return La mappa di gioco costituita da un array bidimensionali di Celle.
+	 */
 	public Cella[][] caricaDaFile() {
-		//esegue il caricamento della Mappa come file di testo (.txt)
-		//e riempie l'array Mappa con gli elementi letti dal file
-		//richiama anche i metodi predefiniti per inizializzare l'energiaMax al momento
-		//della creazione di un Occupante (vegetazione e/o carogna)
 		BufferedReader br;
 		try
 		{  	
@@ -51,10 +55,13 @@ public class CaricamentoMappa {
 	}
 
 	
+	/**
+	 * Esegue il caricamento della mappa di Celle da un array di String e tramite il metodo
+	 * assegnaCelle si praoccupa di creare i Vegetali e le Carogne, richiamandone i costruttori.
+	 * @param input array bidimensionali di String che rappresenta la mappa letta da file.
+	 * @return Un array bidimensionale di Celle che rappresenta la mappa di gioco.
+	 */
 	public Cella[][] caricaMappa(String[][] input) {
-		//esegue il caricamento della Mappa da una mappa di Stringhe a una di celle
-		//richiama anche i metodi predefiniti per inizializzare l'energiaMax al momento
-		//della creazione di un Occupante (vegetazione e/o carogna)
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
 				this.assegnaCelle(input[i][j], i, j);
@@ -64,6 +71,13 @@ public class CaricamentoMappa {
 	}
 	
 	
+	/**
+	 * Metodo richiamato da caricaMappa per assegnare ad ogni String presente nella mappa letta da file
+	 * l'oggetto Cella che puo' contenere una Carogna o un Vegetale.
+	 * @param elemento String che rappresenta la cella della mappa letta da file.
+	 * @param riga int che rappresenta la riga dell'elmento (la singola cella) letto dal file di testo.
+	 * @param colonna int che rappresenta la colonna dell'elmento (la singola cella) letto dal file di testo.
+	 */
 	private void assegnaCelle(String elemento, int riga, int colonna) {
 		if(elemento.equals("a"))	{
 			//se acqua mette null senza fare la cella

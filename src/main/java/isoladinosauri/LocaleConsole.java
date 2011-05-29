@@ -6,11 +6,6 @@ import isoladinosauri.modellodati.Vegetale;
 
 import java.util.Scanner;
 
-import javax.swing.SwingUtilities;
-
-import client.Gui;
-import client.TestZoom;
-
 public class LocaleConsole {
 
 	/**

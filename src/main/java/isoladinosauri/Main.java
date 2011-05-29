@@ -64,9 +64,9 @@ public class Main {
 				new ActionListener()
 				{
 					public void actionPerformed(ActionEvent event){
-						LocaleGrafica cl = new LocaleGrafica();
-						cl.grafica();
-						window.setVisible(false);
+//						LocaleGrafica cl = new LocaleGrafica();
+//						cl.grafica();
+//						window.setVisible(false);
 					}
 				}
 		);

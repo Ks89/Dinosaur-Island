@@ -12,26 +12,28 @@ import isoladinosauri.modellodati.Vegetale;
 public class Isola {
 
 	private static final int MAX = 40;
-
 	private Cella[][] mappa; 
 	
 
+	/**
+	 * Costruttore per inizializzare la mappa.
+	 * @param mappa Array bidimensionali di Celle per impostare la mappa.
+	 */
 	public Isola(Cella[][] mappa) {
-		this.setMappa(mappa);
+		this.mappa = mappa;
 	}
 	
+	/**
+	 * @return Un array bidimensionale di Celle che rappresenta la mappa di gioco.
+	 */
 	public Cella[][] getMappa() {
 		return mappa;        
 	}
-	
-	public void setMappa(Cella[][] mappa) {
-		this.mappa = mappa;
-	}
 
-
+	/**
+	 * Metodo per stampare la mappa di Gioco con l'energia di ogni elemento.
+	 */
 	public void stampaMappa() {
-		//metodo che esiste solo per testare il caricamento
-		//presto sara' rimosso e trasformato in test junit
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
@@ -65,9 +67,10 @@ public class Isola {
 	}	
 
 
+	/**
+	 * Metodo per stampare la mappa di Gioco senza l'energia degli elementi.
+	 */
 	public void stampaMappaRidotta() {
-		//metodo che esiste solo per testare il caricamento
-		//presto sara' rimosso e trasformato in test junit
 		System.out.print("   ");
 		for(int j=0;j<MAX;j++) {
 			if(j<10) {
@@ -112,6 +115,10 @@ public class Isola {
 	}	
 
 
+	/**
+	 * Metodo per stampare la mappa di Gioco con applicata la visibilita' del Giocatore.
+	 * @param giocatore riferimento al Giocatore per cui bisogna stampare la mappa della visibilita'.
+	 */
 	public void stampaMappaRidottaVisibilita(Giocatore giocatore) {
 		//metodo che esiste solo per testare il caricamento
 		//presto sara' rimosso e trasformato in test junit
@@ -162,6 +169,14 @@ public class Isola {
 		System.out.println();
 	}	
 
+	/**
+	 * Stampa la mappa della raggiungibilita'.
+	 * @param inizioRiga int che rappresenta la riga di inzio dell'area raggiungibile.
+	 * @param inizioColonna int che rappresenta la colonna di inzio dell'area raggiungibile.
+	 * @param fineRiga int che rappresenta la riga di fine dell'area raggiungibile.
+	 * @param fineColonna int che rappresenta la colonna di fine dell'area raggiungibile.
+	 * @param raggiungibilita array bidimensionale di int che rappresenta la mappa di raggiuigibilita'.
+	 */
 	public void stampaMappaRaggiungibilita(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]raggiungibilita) {
 		System.out.print("   ");
 		for(int j=0;j<MAX;j++) {
@@ -218,6 +233,14 @@ public class Isola {
 		System.out.println();
 	}
 
+	/**
+	 * Stampa la mappa della raggiungibilita' con applicata la strada percorsa.
+	 * @param inizioRiga int che rappresenta la riga di inzio dell'area raggiungibile.
+	 * @param inizioColonna int che rappresenta la colonna di inzio dell'area raggiungibile.
+	 * @param fineRiga int che rappresenta la riga di fine dell'area raggiungibile.
+	 * @param fineColonna int che rappresenta la colonna di fine dell'area raggiungibile.
+	 * @param stradaPercorsa array bidimensionale di int che rappresenta la strada percorsa dal Dinosauto durante uno spostamento.
+	 */
 	public void stampaMappaStradaPercorsa(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]stradaPercorsa) {
 		System.out.print("   ");
 		for(int j=0;j<MAX;j++) {

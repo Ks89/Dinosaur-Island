@@ -33,6 +33,14 @@ public class Giocatore {
 	//VIENE USATO SOLO NELLA CREAZIONE DEL GIOCATORE (E DI CONSEGUENZA DEL SUO PRIMO DINO)
 	//DOPO NON SARA' PIU' USATO
 
+	/**
+	 * Costruttore che assegna gli id, inzializza tutti i campi di Giocatore, crea un Dinosauro ed illumina l'area intorno al esso.
+	 * @param partita riferiemento alla Partita.
+	 * @param utente String che rappresenta il nome dell'Utente associato al Giocatore.
+	 * @param turnoNascita int che rappresenta il tuno di nascita del Giocatore.
+	 * @param nomeSpecie String che rappresenta il nome della specie.
+	 * @param tipoSpecie String che rappresenta il tipo della specie. Puo' essere "carnivoro" o "erbivoro".
+	 */
 	public Giocatore(Partita partita, Utente utente, int turnoNascita, String nomeSpecie, String tipoSpecie) {
 		this.utente = utente;
 		this.partita = partita;
@@ -68,7 +76,6 @@ public class Giocatore {
 		//non serve inizializzarla perche' e' di default a FALSE
 		this.mappaVisibile = new boolean[40][40];
 
-
 		//illumino la mappa della visibilita' nella zona in cui ho creato il dinosauro
 		//il raggio e' 2 costante, perche' tutti i giocatori appena creati hanno un solo dino e sempre con dimensione =1
 		//quindi per le specifiche il raggio deve essere =2 (sezione Visibilita')
@@ -79,10 +86,16 @@ public class Giocatore {
 		this.uova = new ArrayList<String>();
 	}
 
+	/**
+	 * @return Il riferimento all'Utente associato al Giocatore.
+	 */
 	public Utente getUtente() {
 		return utente;
 	}
 
+	/**
+	 * @param utente riferimento all'Utente per essegnarlo al Giocatore.
+	 */
 	public void setUtente(Utente utente) {
 		this.utente = utente;
 	}
@@ -90,6 +103,12 @@ public class Giocatore {
 	//***********************************************************************************************************************
 	//**************************************************POSIZIONAMENTO*******************************************************
 	//***********************************************************************************************************************
+	/**
+	 * Metodo che assegna delle coordinate casuali (valide) al Dinosauro.
+	 * @return Un array di int contente la poszione del Dinosauro appena creato:
+	 * 		[0] - riga, 
+	 * 		[1] - colonna.
+	 */
 	private int[] posizionaDinosauro () {
 		//metodo che fornisce le coordinate in cui andare
 		//a mettere in dinosauro, stando attento a non
@@ -112,6 +131,10 @@ public class Giocatore {
 	//***********************************************************************************************************************
 	//*****************************************************GENERO ID*********************************************************
 	//***********************************************************************************************************************
+	/**
+	 * Metodo che genera l'id del Giocatore, ovvero la prima parte dell'id del Dinosauro.
+	 * @return Un int che rappresenta l'id del Giocatore.
+	 */
 	private int generaIdGiocatore() {
 		//array che indica quali id dei giocatori sono disponibili nella partita
 		int[] posizioni = {1,2,3,4,5,6,7,8};
@@ -135,6 +158,11 @@ public class Giocatore {
 		return -1; //se c'e' un problema fa il return con -1
 	}
 
+	/**
+	 * Metodo che genera l'id parziale, ovvero solo quello associato al numero del Dinosauro, per poi essere combinato con la
+	 * parte del Giocatore e restituire, tramite il metodo generaIdDiinosauro, l'id completo nella forma "XY".
+	 * @return
+	 */
 	private int generaIdParziale() {
 		//uguale a generaIdGiocatore() ma sta volta lavoro sui char, perche' l'id del dinosauro
 		//e' il carattere [1] nel campo della classe Dinosauro
@@ -157,15 +185,24 @@ public class Giocatore {
 		return -1; //se c'e' un problema fa il return con -1
 	}
 
+	/**
+	 * @return Una String contenente l'id del Dinosauro in questa forma: "X": idGiocatore, "Y": numero del Dinosauro.
+	 */
 	public String generaIdDinosauro() {
-		System.out.println(this.generaIdParziale());
+//		System.out.println(this.generaIdParziale());
 		return "" + this.getIdGiocatore() + this.generaIdParziale();
 	}
 
+	/**
+	 * @return Un int che rappresente l'id del Giocatore.
+	 */
 	public int getIdGiocatore() {
 		return idGiocatore;
 	}
 
+	/**
+	 * @param idGiocatore int per impostare l'id del Giocatore.
+	 */
 	public void setIdGiocatore(int idGiocatore) {
 		this.idGiocatore = idGiocatore;
 	}	
@@ -173,6 +210,12 @@ public class Giocatore {
 	//***********************************************************************************************************************
 	//***************************************************GESTIONE DINOSAURO**************************************************
 	//***********************************************************************************************************************
+	/**
+	 * Metodo per aggiungere un Dinosauro alla lista del Giocatore.
+	 * @param dinosauro riferimento al dinosauro da aggiungere.
+	 * @return Un boolean che puo' indicare con 'true': tutto e'
+	 * andato bene, 'false': non e' stato possibile aggiungere il Dinosauro.
+	 */
 	public boolean aggiungiDinosauro(Dinosauro dinosauro) {
 		if(this.dinosauri.size() + this.getUova().size()<5 ) {
 			this.dinosauri.add(dinosauro);
@@ -184,6 +227,12 @@ public class Giocatore {
 	}
 	
 
+	//FIXME rimuovere questo metodo, e far funzionare in modo universale quello sotto.
+	/**
+	 * Metodo per rimuovere un Dinosauro dalla lista associata al Giocatore.
+	 * @param dinosauro riferimento al Dinosauro che deve essere rimosso.
+	 * @param cella riferimento alla Cella su cui si trova il Dinosauro
+	 */
 	public void rimuoviDinosauro(Dinosauro dinosauro, Cella cella) {
 		boolean stato = this.dinosauri.remove(dinosauro);
 		if(stato==true) {
@@ -197,6 +246,10 @@ public class Giocatore {
 		}
 	}
 	
+	/**
+	 * Metodo per rimuovere un Dinosauro dalla lista associata al Giocatore.
+	 * @param dinosauro riferimento al Dinosauro che deve essere rimosso.
+	 */
 	public void rimuoviDinosauro(Dinosauro dinosauro) {
 		Cella cella = this.partita.getIsola().getMappa()[dinosauro.getRiga()][dinosauro.getColonna()];
 		if(this.dinosauri.remove(dinosauro)==true) {
@@ -214,22 +267,38 @@ public class Giocatore {
 	//***********************************************************************************************************************
 	//******************************************************GESTIONE UOVA****************************************************
 	//***********************************************************************************************************************
+	/**
+	 * @return Una lista delle uova del Giocatore.
+	 */
 	public List<String> getUova() {
 		return uova;
 	}
 
+	/**
+	 * Metodo per aggiungere un Uovo.
+	 * @param riga int che rappresent la riga dove e' stato deposto l'uovo.
+	 * @param colonna int che rappresente la colonna dove e' stato deposto l'uovo.
+	 */
 	public void aggiungiUovo(int riga, int colonna) {
 		this.uova.add(riga + "-" + colonna);
 	}
 
+	/**
+	 * Metodo per rimuovere tutte le Uova del Giocatore.
+	 */
 	public void rimuoviUova() {
 		this.uova.clear();
 	}
 
-	//metodo per far deporre un Uovo al dinosauro
+	/**
+	 * Metodo per far deporre un uovo al Dinosauro.
+	 * @param dinosauro riferimento al Dinosauro che deve deporre l'uovo
+	 * @return Un boolean che indica con 'false' che il Dinosauro non ha 
+	 * 		abbastanza energia per compiere l'azione e quindi muore,
+	 * 		con 'true' che e' andato tutto bene.
+	 */
 	public boolean eseguiDeposizionedeponiUovo(Dinosauro dinosauro) {
 		dinosauro.setEnergia(dinosauro.getEnergia() - 1500);
-
 		if(dinosauro.getEnergia()>0) {
 			//il dinosauro pu' compiere l'azione di deposizione, ma solo se il num di dino
 			//sommati a quello delle uova (perche' in futuro saranno anch'essi dino) sia <5
@@ -246,7 +315,9 @@ public class Giocatore {
 	//***********************************************************************************************************************
 	//**************************************************GESTIONE TURNI*******************************************************
 	//***********************************************************************************************************************
-	//viene richiamato da Turno, alla fine di ogni turno eseguito dal giocatore
+	/**
+	 * Metodo richiamato da Turno, alla fine di ogni turno eseguito dal Giocatore.
+	 */
 	public void incrementaEtaAttuali() {
 		this.etaAttualeGiocatore++;
 		for(int i=0;i<this.getDinosauri().size();i++) {
@@ -254,18 +325,30 @@ public class Giocatore {
 		}
 	}
 
+	/**
+	 * @return Un int che rappresenta il turno di nascita del Giocatore.
+	 */
 	public int getTurnoNascita() {
 		return turnoNascita;
 	}
 
+	/**
+	 * @param turnoNascita int per impostare il turno di nascita del Giocatore.
+	 */
 	public void setTurnoNascita(int turnoNascita) {
 		this.turnoNascita = turnoNascita;
 	}
 
+	/**
+	 * @return Un int che rappresenta l'eta' attuale del Giocatore.
+	 */
 	public int getEtaAttuale() {
 		return etaAttualeGiocatore;
 	}
 
+	/**
+	 * @param etaAttualeGiocatore int per impostare l'eta' attuale del Giocatore.
+	 */
 	public void setEtaAttuale(int etaAttualeGiocatore) {
 		this.etaAttualeGiocatore = etaAttualeGiocatore;
 	}
@@ -274,10 +357,16 @@ public class Giocatore {
 	//***********************************************************************************************************************
 	//**************************************************GET e SET************************************************************
 	//***********************************************************************************************************************
+	/**
+	 * @return La lista dei Dinosauri del Giocatore.
+	 */
 	public List<Dinosauro> getDinosauri() {
 		return dinosauri;
 	}
 
+	/**
+	 * @return Un array bidimensionale di boolean che rappresenta la mappa della visibilita' del Giocatore.
+	 */
 	public boolean[][] getMappaVisibile() {
 		//su consiglio di Sonar ritorno un oggetto clonato per una questione
 		//di sicurezza
@@ -285,10 +374,16 @@ public class Giocatore {
 		return mappaReturn;
 	}
 
+	/**
+	 * @return Una String con il nome della specie del Giocatore.
+	 */
 	public String getNomeSpecie() {
 		return nomeSpecie;
 	}
 
+	/**
+	 * @param nomeSpecie String per impostare il nome della specie del Giocatore.
+	 */
 	public void setNomeSpecie(String nomeSpecie) {
 		this.nomeSpecie = nomeSpecie;
 	}

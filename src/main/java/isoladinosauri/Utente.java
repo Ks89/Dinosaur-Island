@@ -25,7 +25,7 @@ public class Utente {
 	}
 	
 	/**
-	 * @return giocatore indica il Giocatore associato all'Utente.
+	 * @return Il Giocatore associato all'Utente.
 	 */
 	public Giocatore getGiocatore() {
 		return this.giocatore;
@@ -39,7 +39,7 @@ public class Utente {
 	}
 	
 	/**
-	 * @return nomeUtente String che indica il nome dell'Utente.
+	 * @return Una String che indica il nome dell'Utente.
 	 */
 	public String getNomeUtente() {
 		return this.nomeUtente;
@@ -53,7 +53,7 @@ public class Utente {
 	}
 	
 	/**
-	 * @return password String che indica la password dell'Utente.
+	 * @return Una String che indica la password dell'Utente.
 	 */
 	public String getPassword() {
 		return this.password;

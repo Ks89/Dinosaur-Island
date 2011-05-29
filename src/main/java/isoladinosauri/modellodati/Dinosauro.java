@@ -36,7 +36,7 @@ public abstract class Dinosauro extends Organismo {
 	}
 
 	/**
-	 * @return forza restituisce la forza del Dinosauro, calcolata in modo differente
+	 * @return Un int che rppresenta la forza del Dinosauro, calcolata in modo differente
 	 * per Erbivori e Carnivoro. 
 	 */
 	public abstract int calcolaForza();
@@ -44,7 +44,7 @@ public abstract class Dinosauro extends Organismo {
 	
 	/**
 	 * @param occupante Occupante (Vegetazione o Carogna) che deve essere mangiato dal Dinosauro.
-	 * @return restituisce un boolean: 'true': Occupante mangiato completamente
+	 * @return Un boolean: 'true': Occupante mangiato completamente
 	 * 		e quindi dovra' essere rimosso
 	 * 		'false': Occupante mangiato solo in parte e non bisogna fare niente.
 	 */
@@ -62,8 +62,8 @@ public abstract class Dinosauro extends Organismo {
 	/**
 	 * Metodo per calcolare il raggio di celle intorno al Dinosauro
 	 * utilizzato in moltissimi metodi come la visibilita', la deposizione, il movimento ecc...
-	 * @return raggioStabilito int che indica il raggio di celle intorno al
-	 * Dinosauro in base alla sua dimensione.
+	 * @return Un int che indica il raggio di celle intorno al 
+	 * 			Dinosauro in base alla sua dimensione.
 	 */
 	public int calcolaRaggioVisibilita () {
 		//secondo le specifiche della sezione Visibilita'
@@ -83,7 +83,7 @@ public abstract class Dinosauro extends Organismo {
 	
 	/**
 	 * Metodo per aumentare la dimensione del Dinosauro dopo un'azione di crescita.
-	 * @return restituisce un boolean 'true': crescita avvenuta correttamente,
+	 * @return Un boolean 'true': crescita avvenuta correttamente,
 	 * 			'false': non e' stato possibile far cresce il Dinosauro
 	 * 			perche' e' gia' alla dimensione massima (5).
 	 */
@@ -114,7 +114,7 @@ public abstract class Dinosauro extends Organismo {
 	 * 				dopo un movimento in un'altra cella della mappa.
 	 * @param colonna int che indica la riga in cui dovra' andare il Dinosauro 
 	 * 				dopo un movimento in un'altra cella della mappa.
-	 * @return restituisce un boolean 'true': movimento corretto,
+	 * @return Un boolean 'true': movimento corretto,
 	 * 			'false': non e' stato possibile eseguire il movimento.
 	 */
 	public boolean aggCordinate(int riga, int colonna) {
@@ -135,7 +135,7 @@ public abstract class Dinosauro extends Organismo {
 	}
 
 	/**
-	 * @return etaAttualeDinosauro int che indica l'eta' attuale del Dinosauro.
+	 * @return Un int che indica l'eta' attuale del Dinosauro.
 	 */
 	public int getEtaDinosauro() {
 		return etaAttualeDinosauro;
@@ -156,7 +156,7 @@ public abstract class Dinosauro extends Organismo {
 	}
 
 	/**
-	 * @return turnoNascita int che indica il turno in cui e' nato il Dinosauro.
+	 * @return Un int che indica il turno in cui e' nato il Dinosauro.
 	 */
 	public int getTurnoNascita() {
 		return turnoNascita;
@@ -171,7 +171,7 @@ public abstract class Dinosauro extends Organismo {
 
 
 	/**
-	 * @return etaAttualeDinosauro int che indica l'eta' attuale del Dinosauro.
+	 * @return Un int che indica l'eta' attuale del Dinosauro.
 	 */
 	public int getEtaAttualeDinosauro() {
 		return etaAttualeDinosauro;
@@ -185,7 +185,7 @@ public abstract class Dinosauro extends Organismo {
 	}
 
 	/**
-	 * @return durataVita int che indica la durata della vita del Dinosauro.
+	 * @return Un int che indica la durata della vita del Dinosauro.
 	 */
 	public int getDurataVita() {
 		return durataVita;
@@ -199,7 +199,7 @@ public abstract class Dinosauro extends Organismo {
 	}
 	
 	/**
-	 * @return id String che indica l'identificativo del Dinosauro composto
+	 * @return Una String che indica l'identificativo del Dinosauro composto
 	 * da una String di 2 elementi "XY", dove 'X'=id giocatore e 'Y'=numero dinosauro.
 	 */
 	public String getId() {
