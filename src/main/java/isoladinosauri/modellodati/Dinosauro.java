@@ -2,19 +2,27 @@ package isoladinosauri.modellodati;
 
 import java.util.Random;
 
-import isoladinosauri.Cella;
-
 /**
- * Superclasse ASTRATTA di Carnivoro e Erbivoro che
- * implementa i metodi comuni per gestire le azioni
+ * Superclasse ASTRATTA di Carnivoro ed Erbivoro che
+ * implementa i metodi astratti: calcolaForza, mangia e combatti.
+ * Inoltre, possiede anche i metodi implentati per calcolare il
+ * raggio della visibilita, per far crescere il Dinosauro e quello
+ * per aggiornare le coordinate.
  */
-public abstract class Dinosauro extends Organismo implements Animale {
+public abstract class Dinosauro extends Organismo {
 
 	private int etaAttualeDinosauro;
 	private int durataVita;
 	private int turnoNascita;
 	private String id;
 
+	/**
+	 * @param id identificativo del Dinosauro composto da una String di 2 elementi "XY", dove 'X'=id giocatore e 'Y'=numero Dinosauro.
+	 * @param riga int che rappresenta la riga della mappa in cui si trova il dinosauro.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
+	 * @param turnoNascita int che rappresenta il turno della partita in cui e' stato creato il Carnivoro.
+	 * 			Lo scopo di questo valore e' quello di rendere molto semplice il calcolo dell'eta' del Dinosauro.
+	 */
 	protected Dinosauro(String id, int riga, int colonna, int turnoNascita) {
 		this.setId(id);
 		super.setEnergia(750);
@@ -27,11 +35,36 @@ public abstract class Dinosauro extends Organismo implements Animale {
 		this.setEtaDinosauro(0);
 	}
 
+	/**
+	 * @return forza restituisce la forza del Dinosauro, calcolata in modo differente
+	 * per Erbivori e Carnivoro. 
+	 */
 	public abstract int calcolaForza();
-	public abstract void mangia(Cella cella);
-	public abstract void combatti(Cella cella);
+	
+	
+	/**
+	 * @param occupante Occupante (Vegetazione o Carogna) che deve essere mangiato dal Dinosauro.
+	 * @return restituisce un boolean: 'true': Occupante mangiato completamente
+	 * 		e quindi dovra' essere rimosso
+	 * 		'false': Occupante mangiato solo in parte e non bisogna fare niente.
+	 */
+	public abstract boolean mangia(Occupante occupante);
+	
+	
+	/**
+	 * @param dinosauro Dinosauro (Erbivoro o Carnivoro) che deve essere attaccato
+	 * @return restituisce un boolean: 'true': se il Dinosauro attaccante ha vinto il combattimento
+	 * 		'false': se il Dinosauro attaccante ha perso il combattimento.
+	 */
+	public abstract boolean combatti(Dinosauro dinosauro);
 
-	//restituisce il raggio stabilito in base alla dimensione del dinosauro
+
+	/**
+	 * Metodo per calcolare il raggio di celle intorno al Dinosauro
+	 * utilizzato in moltissimi metodi come la visibilita', la deposizione, il movimento ecc...
+	 * @return raggioStabilito int che indica il raggio di celle intorno al
+	 * Dinosauro in base alla sua dimensione.
+	 */
 	public int calcolaRaggioVisibilita () {
 		//secondo le specifiche della sezione Visibilita'
 		int dimensione = super.getEnergiaMax()/1000;
@@ -48,6 +81,12 @@ public abstract class Dinosauro extends Organismo implements Animale {
 		return raggioStabilito;
 	}
 	
+	/**
+	 * Metodo per aumentare la dimensione del Dinosauro dopo un'azione di crescita.
+	 * @return restituisce un boolean 'true': crescita avvenuta correttamente,
+	 * 			'false': non e' stato possibile far cresce il Dinosauro
+	 * 			perche' e' gia' alla dimensione massima (5).
+	 */
 	public boolean aumentaDimensione() {
 		//nel caso in cui la dimensione sia gia' massima
 		//ritorna false perche' non e' in grado di far crescere
@@ -68,6 +107,16 @@ public abstract class Dinosauro extends Organismo implements Animale {
 		}
 	}
 
+	/**
+	 * Metodo per aggiornare le coordinate del Dinosauro dopo un'azione di spostamento
+	 * in un'altra cella della mappa.
+	 * @param riga int che indica la riga in cui dovra' andare il Dinosauro 
+	 * 				dopo un movimento in un'altra cella della mappa.
+	 * @param colonna int che indica la riga in cui dovra' andare il Dinosauro 
+	 * 				dopo un movimento in un'altra cella della mappa.
+	 * @return restituisce un boolean 'true': movimento corretto,
+	 * 			'false': non e' stato possibile eseguire il movimento.
+	 */
 	public boolean aggCordinate(int riga, int colonna) {
 		//esegue il movimento nelle coordinate specificate ed e' chiamato dal metodo
 		//del movimento nella classe Turno
@@ -85,47 +134,81 @@ public abstract class Dinosauro extends Organismo implements Animale {
 		}
 	}
 
+	/**
+	 * @return etaAttualeDinosauro int che indica l'eta' attuale del Dinosauro.
+	 */
 	public int getEtaDinosauro() {
 		return etaAttualeDinosauro;
 	}
 
+	/**
+	 * @param etaAttualeDinosauro int per stabilire l'eta' attuale del Dinosauro.
+	 */
 	public void setEtaDinosauro(int etaAttualeDinosauro) {
 		this.etaAttualeDinosauro = etaAttualeDinosauro;
 	}
 
+	/**
+	 * Metodo senza parametri che incrementa di 1 il valore int etaAttualeDinosauro.
+	 */
 	public void incrementaEtaDinosauro() {
 		this.etaAttualeDinosauro++;
 	}
 
+	/**
+	 * @return turnoNascita int che indica il turno in cui e' nato il Dinosauro.
+	 */
 	public int getTurnoNascita() {
 		return turnoNascita;
 	}
 
+	/**
+	 * @param turnoNascita int per stabilire il turno in cui e' nato il Dinosauro.
+	 */
 	public void setTurnoNascita(int turnoNascita) {
 		this.turnoNascita = turnoNascita;
 	}
 
 
+	/**
+	 * @return etaAttualeDinosauro int che indica l'eta' attuale del Dinosauro.
+	 */
 	public int getEtaAttualeDinosauro() {
 		return etaAttualeDinosauro;
 	}
 
+	/**
+	 * @param etaAttualeDinosauro int per stabilire l'eta' attuale del Dinosauro.
+	 */
 	public void setEtaAttualeDinosauro(int etaAttualeDinosauro) {
 		this.etaAttualeDinosauro = etaAttualeDinosauro;
 	}
 
+	/**
+	 * @return durataVita int che indica la durata della vita del Dinosauro.
+	 */
 	public int getDurataVita() {
 		return durataVita;
 	}
 
+	/**
+	 * @param durataVita int per stabilire la durata della vita (espressa in turni) del Dinosauro.
+	 */
 	public void setDurataVita(int durataVita) {
 		this.durataVita = durataVita;
 	}
 	
+	/**
+	 * @return id String che indica l'identificativo del Dinosauro composto
+	 * da una String di 2 elementi "XY", dove 'X'=id giocatore e 'Y'=numero dinosauro.
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @param id int per stabilire l'indentificativo del Dinosauro.
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}	

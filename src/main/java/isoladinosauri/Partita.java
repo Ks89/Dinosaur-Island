@@ -16,9 +16,8 @@ import java.util.List;
 //FIXME se muovo e non ho piu energia per farlo il programma non uccide il dino e resta bloccato nel ciclo per inserire le coordinate
 //FIXME una volta che il dinosauro erbivoro va su cella di un carnivoro e perde, il menu' delle azioni non devo apparire piu'
 //FIXME se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
-//FIXME rifare il metodo per combattere in carnivoro ed erbivoro senza usare cella, ma che restituisce il dinosauro vincitore
-	//quindi nel metodo che lo richiama fare una istruzione cella.setDinosauro(...)  , vedi tasks TODO potrei rifare.... in Turno
 //TODO mettere la Javadoc (inziato a farlo)
+//FIXME fare in modo che se le carogne arrivanoa  0 di energia sa sole con il consuma, vengano riposizionate in automatico da cariche
 
 /**
  * Classe Partita per la gestione dei giocatori,
@@ -186,7 +185,6 @@ public class Partita {
 		int[] estremo; //estremo vista
 		int[] coordinate = new int[2];  //coordinare in cui mettero' il nuovo dinosauro
 
-		//TODO corretto l'indice da 39 a 40, ma e' meglio tenerlo d'occhio, perche' non e' ancora stato ben testato questo cambiamento
 		for(int i=1; i<40; i++) { //calcola il raggio della visuale
 			origine = this.turnoCorrente.ottieniOrigineVisuale(riga, colonna, i);
 			estremo = this.turnoCorrente.ottieniEstremoVisuale(riga, colonna, i);
@@ -204,27 +202,5 @@ public class Partita {
 		}
 		return coordinate; //se arrivo qui dovrei sollevare l'eccezione che il dinosauro non puo' nascere perche' nella
 		//mappa non c'e spazio (follia pura)
-	}
-
-	//*******************************************************************************************************************
-	//************************************************SALVA PARTITA******************************************************
-	//*******************************************************************************************************************
-	public void salvaPartita() {
-
-		//	    Turno t = new Turno(p);
-		//	    t.setContatoreTurno((int)(Math.random()*100));
-		//	    p.setTurnoCorrente(t);
-		//	    //Scrive
-		//        ObjectContainer container = Db4o.openFile("isoladinosauri.db4o");
-		//        container.store(p);
-		//        container.commit();
-		//        container.close();
-		//	    
-		//        //legge
-		//	    ObjectContainer container2 = Db4o.openFile("isoladinosauri.db4o");
-		//	    ObjectSet<Partita> partite = container2.query(Partita.class);
-		//	    for(Partita partita : partite) {
-		//	        System.out.println(partita.getTurnoCorrente().getContatoreTurno());
-		//	    }
 	}
 }

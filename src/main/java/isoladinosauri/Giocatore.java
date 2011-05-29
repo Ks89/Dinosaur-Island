@@ -72,6 +72,7 @@ public class Giocatore {
 		//illumino la mappa della visibilita' nella zona in cui ho creato il dinosauro
 		//il raggio e' 2 costante, perche' tutti i giocatori appena creati hanno un solo dino e sempre con dimensione =1
 		//quindi per le specifiche il raggio deve essere =2 (sezione Visibilita')
+		
 		this.partita.getTurnoCorrente().illuminaMappa(this, dinosauro.getRiga(), dinosauro.getColonna(), 2);
 
 		//inizializzo l'array per le uova, ovviamente parte da vuoto perche' non ho uova all'inizio
@@ -131,7 +132,7 @@ public class Giocatore {
 				}
 			}
 		}
-		return -1; //TODO se c'e' un problema fa il return con -1
+		return -1; //se c'e' un problema fa il return con -1
 	}
 
 	private int generaIdParziale() {
@@ -153,7 +154,7 @@ public class Giocatore {
 				}
 			}
 		}
-		return -1; //TODO se c'e' un problema fa il return con -1
+		return -1; //se c'e' un problema fa il return con -1
 	}
 
 	public String generaIdDinosauro() {

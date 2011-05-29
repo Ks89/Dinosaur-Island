@@ -11,8 +11,8 @@ import isoladinosauri.modellodati.Vegetale;
 
 /**
  * Questa classe viene utilizzata per: 
- * gestire l'illuminazione e la vista
- * movimento, combattimento ecc.. dei dinosauri
+ * gestire l'illuminazione, la vista per il
+ * movimento, il combattimento ecc.. dei dinosauri
  * riposizionamento vegetazione e carogna dopo che sono
  * state mangiate.
  */
@@ -20,6 +20,9 @@ public class Turno {
 
 	private Partita partita;
 
+	/**
+	 * @param partita imposta la Partita associandola alla classe Turno.
+	 */
 	public Turno(Partita partita) {
 		this.partita = partita;
 	}
@@ -28,7 +31,14 @@ public class Turno {
 	//****************************************GESTIONE VISTA E ILLUMINAZIONE*********************************************
 	//*******************************************************************************************************************
 
-	//esegue l'illuminazione della mappa con un certo raggio
+	/**
+	 * Metodo che esegue l'illuminazione della mappa intorno ad un punto, dato un certo raggio di celle, 
+	 * richiamando il metodo ottieniVisuale(...).
+	 * @param giocatore valore che rappresenta il Giocatore a cui si deve illuminare la mappa di visibilita'.
+	 * @param riga int che rappresenta la riga della mappa in cui si trova il Dinosauro.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
+	 * @param raggio int che rappresenta il raggio di celle intorno alla posizione del Dinosauro.
+	 */
 	public void illuminaMappa (Giocatore giocatore, int riga, int colonna, int raggio) {
 		int[] vista = this.ottieniVisuale(riga, colonna, raggio);
 
@@ -41,7 +51,17 @@ public class Turno {
 		}
 	}
 
-	//ottengo nell'array vista le coodinare (riga, colonna) della vista;
+	/**
+	 * Metodo per ottenere la visuale, cioe' una sottomappa, dato un certo raggio.
+	 * @param riga int che rappresenta la riga della mappa in cui si trova il Dinosauro.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
+	 * @param raggio int che rappresenta il raggio di celle intorno alla posizione del Dinosauro.
+	 * @return vista array di 4 int che rappresenta rispettivamente:
+	 * 			[0] - riga dell'origine della vista,
+	 * 			[1] - colonna dell'origine della vista,
+	 * 			[2] - riga della fine della vista,
+	 * 			[3] - colonna della fine della vista.
+	 */
 	public int[] ottieniVisuale (int riga, int colonna, int raggio) {
 		int[] vista = new int[4];
 		int[] origineVista = this.ottieniOrigineVisuale(riga, colonna, raggio);
@@ -53,7 +73,15 @@ public class Turno {
 		return vista;
 	}
 
-	//per ottenere le coordinate di origine della vista del Dinosauro
+	/**
+	 * Metodo per ottenere l'origine della visuale del Dinosauro
+	 * @param riga int che rappresenta la riga della mappa in cui si trova il Dinosauro.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
+	 * @param raggio int che rappresenta il raggio di celle intorno alla posizione del Dinosauro.
+	 * @return coorinate array di 2 int che rappresenta rispettivamente:
+	 * 			[0] - riga dell'origine della vista,
+	 * 			[1] - colonna dell'origine della vista,
+	 */
 	public int[] ottieniOrigineVisuale (int riga, int colonna, int raggio) {
 		//e' fatto in modo che possa essere riutilizzato anche dal metodo sulla nascita del dino dall'uovo
 		//e anche da quello per la gestione del movimento
@@ -79,6 +107,15 @@ public class Turno {
 		return coordinate;		
 	}
 
+	/**
+	 * Metodo per ottenere la fine (estremo) della visuale del Dinosauro
+	 * @param riga int che rappresenta la riga della mappa in cui si trova il Dinosauro.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il Dinosauro.
+	 * @param raggio int che rappresenta il raggio di celle intorno alla posizione del Dinosauro.
+	 * @return coorinate array di 2 int che rappresenta rispettivamente:
+	 * 			[0] - riga della fine della vista,
+	 * 			[1] - colonna della fine della vista,
+	 */
 	public int[] ottieniEstremoVisuale (int riga, int colonna, int raggio) {
 		//per ottenere le coordinate dell'estremo della vista del Dinosauro
 		int[] coordinate = new int[2];
@@ -98,10 +135,19 @@ public class Turno {
 		return coordinate;
 	}
 
-
 	//*******************************************************************************************************************
-	//*****************************************GESTIONE MOVIMENTO********************************************************
+	//***************************************RAGGIUNGIBILITA E STRADA PERCORSA*******************************************
 	//*******************************************************************************************************************
+	
+	/**
+	 * Metodo che restituisce una mappa bidimensionale con all'interno un intero che
+	 * rappresenta il numero di passi necessari per raggiungere tale posizione: 
+	 * 0: posizione di partenza del Dinosauro
+	 * 1,2,3: numero dei passi per raggiungere tale cella.
+	 * @param sorgRiga int che rappresenta la riga in cui si trova il Dinosauro.
+	 * @param sorgColonna int che rappresenta la colonna in cui si trova il Dinosauro.
+	 * @return mappaMovimento array bidimensionale di raggio 2 per un Erbivoro, 3 per un Carnivoro.
+	 */
 	public int [][] ottieniRaggiungibilita(int sorgRiga, int sorgColonna) {
 
 		int riga,colonna,maxR,maxC,rigaSu,rigaGiu,colonnaSx,colonnaDx,passo,nPassi;
@@ -187,8 +233,18 @@ public class Turno {
 		return mappaMovimento;
 	}
 
+	/**
+	 * Metodo che restituisce una mappa bidimensionale di int per indicare la strada che il Dinosauro
+	 * compie per giungere a destinazione. Esso richiama anche il metodo per la raggiungibilita'.
+	 * La posizione del Dinosauro e' indicata con il valore '-7' e i passi con un valore crescente
+	 * come per esempio: -6, -5, -4 ecc...
+	 * @param sorgRiga int che rappresenta la riga in cui si trova il Dinosauro.
+	 * @param sorgColonna int che rappresenta la colonna in cui si trova il Dinosauro.
+	 * @param destRiga int che rappresenta la riga in cui si dovra' muovere il Dinosauro.
+	 * @param destColonna int che rappresenta la riga in cui si dovra' muovere il Dinosauro.
+	 * @return mappaMovimento array bidimensionale con la strada percorsa indicata da numeri negativi
+	 */
 	public int [][] ottieniStradaPercorsa(int sorgRiga, int sorgColonna, int destRiga, int destColonna) {
-
 		int[][] mappaMovimento = this.ottieniRaggiungibilita(sorgRiga,sorgColonna);
 		int i=0,j=0,maxR,maxC,riga,colonna,partenzaDinoRiga,partenzaDinoColonna;
 		int arrivoDinoRiga,arrivoDinoColonna,deltaRiga,deltaColonna,passiDaPercorrere,cont=0;
@@ -264,26 +320,37 @@ public class Turno {
 	//***************************************************SPOSTAMENTO*********************************************************
 	//***********************************************************************************************************************
 	/**
-	 * @param mosso - Dinosauro che esegue lo spostamento
-	 * @param riga - riga della mappa in cui spostarsi
-	 * @param colonna - colonna della mappa in cui spostarsi
-	 * @return - 'true' se lo spostamento ha avuto successo, 'false' se ci sono stati problemi
+	 * Metodo che segue il vero spostamento di un Dinosauro da una Cella ad un'altra.
+	 * Esso richiama i metodi per lo spostamento dui vari tipi di terreno ed eventualmente quelli per
+	 * mangiare Dinosauri e/o Occupanti.
+	 * E' strutturato in modo da permettere ad un Dinosauro di mangiare il nemico e successivamente
+	 * mangiare anche l'occupante (solo dopo aver combattuto e vinto col nemico).
+	 * @param mosso Dinosauro che esegue lo spostamento.
+	 * @param riga int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
+	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * 			'false' se ci sono stati problemi.
 	 */
 	public boolean spostaDinosauro(Dinosauro mosso, int riga, int colonna) {
-		//riga e colonna sono le coordinate della destinazione
-		//restituisce true se il movimento e' corretto o false se c'e' stato un problema
-
 		//ottengo cella di destinazione, individuata da (riga,colonna)
 		Cella destinazione = this.partita.getIsola().getMappa()[riga][colonna];
 
 		//se nella destinazione c'e' acqua blocca subito il metodo con return false;
-		if(destinazione==null) return false;
-		else {
-			//TODO dubbio su cosa mangiare nel caso ci siano piu' cose assieme su una cella
+		if(destinazione==null) {
+			return false;
+		} else {
+			//XXX questa e' la logica per far si che dopo al combattimento si possa anche mangiare l'occupante
 			if(destinazione.getDinosauro()!=null) {
 				//combatto col dinosauro presente nella cella di destinazione
-				return this.combatti(mosso, riga, colonna);
-			} else 			
+				boolean risultato = this.combatti(mosso, riga, colonna);
+				if(destinazione.getOccupante()!=null) {
+					//mangio l'occupante, distinguendo se vegetazione o carogna
+					if(risultato==false || this.mangiaOccupante(mosso, riga, colonna)==false) {
+						risultato=false;
+					}
+				}
+				return risultato;	
+			} else {
 				if(destinazione.getOccupante()!=null) {
 					//mangio l'occupante, distinguendo se vegetazione o carogna
 					return this.mangiaOccupante(mosso, riga, colonna);
@@ -291,26 +358,18 @@ public class Turno {
 					//mi sto muovendo su terra semplice
 					return this.spostamentoSuTerreno(mosso, riga, colonna);
 				}
+			}
 		}
 	}
-
-	private boolean spostamentoConOccupante(Dinosauro mosso, int riga, int colonna) {
-		Cella[][] mappa = this.partita.getIsola().getMappa();
-		Cella destinazione = mappa[riga][colonna];
-		int vecchiaRiga = mosso.getRiga();
-		int vecchiaColonna = mosso.getColonna();
-		if(mosso.aggCordinate(riga, colonna)==true) {
-			mosso.mangia(destinazione);
-			destinazione.setDinosauro(mosso);
-			mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-			this.riposizionaOccupante(riga, colonna, new Carogna());
-			return true;
-		} else {
-			this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso);
-			return false;	
-		}
-	}
-
+	
+	/**
+	 * Metodo per far mangiare al Dinosauro il Vegetale o la Carogna
+	 * @param dinosauro Dinosauro che esegue lo spostamento.
+	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
+	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * 			'false' se ci sono stati problemi.
+	 */
 	private boolean mangiaOccupante(Dinosauro dinosauro, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
@@ -325,7 +384,8 @@ public class Turno {
 				Erbivoro mosso = (Erbivoro)dinosauro;
 				return this.spostamentoConOccupante(mosso, riga, colonna);
 			} else
-				//eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo con un erbivoro o una vegetazione con un carnivoro
+				//eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo
+				//con un erbivoro o una vegetazione con un carnivoro
 				if(dinosauro.aggCordinate(riga, colonna)==true) {
 					destinazione.setDinosauro(dinosauro);
 					mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
@@ -336,49 +396,56 @@ public class Turno {
 				}
 	}
 
-	private boolean spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) {
+	/**
+	 * Metodo che esegue lo spostamento di un Dinosauro nella cella di destinazione quando vi
+	 * e' un Occupante. In questo caso il metodo capisce se la Carogna/Vegetazione puo' essere
+	 * mangiata dal dinosauro e di conseguenza richiama il metodo mangia() per gestire
+	 * l'assorbimento dell'energia. Questo metodo privato viene chiamato all'interno di mangiaOccupante.
+	 * @param mosso Dinosauro che esegue lo spostamento.
+	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
+	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * 			'false' se ci sono stati problemi.
+	 */
+	private boolean spostamentoConOccupante(Dinosauro mosso, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = mosso.getRiga();
 		int vecchiaColonna = mosso.getColonna();
-		Dinosauro attaccato = destinazione.getDinosauro();
-
-		//ottengo il gicoatore che possiede il dinosauro attaccato
-		//se giocatore==null e' perche' o attaccato non e' posseduto da nessuno
-		//o se attaccato==null
-		Giocatore giocatore = this.partita.identificaDinosauro(destinazione.getDinosauro());
-
-		Dinosauro attaccante;
-		if(mosso instanceof Carnivoro) {
-			attaccante = (Carnivoro)mosso;
-		} else {
-			attaccante = (Erbivoro)mosso;
-		}
-
-		if(attaccante.aggCordinate(riga, colonna)==true) {
-			attaccante.combatti(destinazione); //TODO potrei rifare il metodo per far restituire il dinosauro vincitore e senza far acquisire la cella per poi settare in questo metodo il vincitore nella cella
-			//il metodo mangia mette il vincitore direttamente nella cella di destinazione
-			if(attaccante.equals(destinazione.getDinosauro())){
-				//ha vinto l'attaccante
-				System.out.println("Rimosso dinosauro attaccato");
-				giocatore.rimuoviDinosauro(attaccato,mappa[vecchiaRiga][vecchiaColonna]);
-			} else { 
-				//vince il dino che si trova sulla cella di destinazione prima del movimento
-				System.out.println("Rimosso dinosauro attaccante");
-				giocatore=this.partita.identificaDinosauro(attaccante);
-				giocatore.rimuoviDinosauro(attaccante,mappa[vecchiaRiga][vecchiaColonna]);
+		if(mosso.aggCordinate(riga, colonna)==true) {
+			if(mosso.mangia(destinazione.getOccupante())==true) {
+				//se l'azione "mangia" ha esaurito tutta l'energia dell'occupante,
+				//quest'ultimo deve essere rimosso dalla cella e ne deve essere riscreato
+				//uno nuovo con energia al max in un punto a caso della mappa 
+				destinazione.setOccupante(null);
+				this.riposizionaOccupante(riga, colonna, new Carogna());
+			}
+			destinazione.setDinosauro(mosso);
+			
+			//XXX l'if sotto e' importantissimo!!! Esso controlla se il dinosauro sta mangiando
+			//l'occupante dopo un'azione di movimento o se invece il dinosauro ha prima combattuto
+			//con un altro dino e poi nella sua destinazione ha mangiato l'occupante sulla sua stessa
+			//cella, quindi con coordinate di partenza e arrivo uguali
+			//se avviene cio' il dinosauro non deve essere cancellato, altrimenti si perde il riferimento
+			//nella mappa, perche' si cancellerebbe proprio la destinazione raggiunta del dinosauro vincente
+			if(riga!=vecchiaRiga || colonna!=vecchiaColonna) {
+				mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 			}
 			return true;
-		}
-		else {
-			//il dinosauro muore perche' non ha abbastanza energia per muoversi
-			//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
-			this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante);
-			return false; 					
+		} else {
+			this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso);
+			return false;	
 		}
 	}
 
-
+	/**
+	 * Metodo per far combattere due Dinosauri.
+	 * @param dinosauro Dinosauro che esegue lo spostamento.
+	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
+	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * 			'false' se ci sono stati problemi.
+	 */
 	private boolean combatti(Dinosauro dinosauro, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
@@ -406,8 +473,76 @@ public class Turno {
 				return this.spostamentoConDinosauro(attaccante, riga, colonna);
 			}
 		}
+	}	
+
+	/**
+	 * Metodo che esegue lo spostamento di un Dinosauro nella cella di destinazione quando in essa vi
+	 * e' un altro Dinosauro. Questo metodo privato viene chiamato all'interno di combatti(...).
+	 * @param mosso Dinosauro che esegue lo spostamento.
+	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
+	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * 			'false' se ci sono stati problemi.
+	 */
+	private boolean spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) {
+		Cella[][] mappa = this.partita.getIsola().getMappa();
+		Cella destinazione = mappa[riga][colonna];
+		int vecchiaRiga = mosso.getRiga();
+		int vecchiaColonna = mosso.getColonna();
+		Dinosauro attaccato = destinazione.getDinosauro();
+
+		//ottengo il giocatore che possiede il dinosauro attaccato
+		//se giocatore==null e' perche' o attaccato non e' posseduto da nessuno
+		//o se attaccato==null
+		Giocatore giocatore = this.partita.identificaDinosauro(destinazione.getDinosauro());
+
+		Dinosauro attaccante;
+		if(mosso instanceof Carnivoro) {
+			attaccante = (Carnivoro)mosso;
+		} else {
+			attaccante = (Erbivoro)mosso;
+		}
+
+		if(attaccante.aggCordinate(riga, colonna)==true) {
+			//esegue il comattimento e stabilisce in vincitore in base al risultato del metodo
+			//restituisce true se vince l'attaccante o false se vince l'attaccato (nemico)
+			if(attaccante.combatti(destinazione.getDinosauro())==true) {
+				destinazione.setDinosauro(attaccante);
+			} else {
+				destinazione.setDinosauro(attaccato);
+			}
+			if(attaccante.equals(destinazione.getDinosauro())){
+				//ha vinto l'attaccante
+				System.out.println("Rimosso dinosauro attaccato");
+				giocatore.rimuoviDinosauro(attaccato,mappa[vecchiaRiga][vecchiaColonna]);
+			} else { 
+				//vince il dino che si trova sulla cella di destinazione prima del movimento
+				System.out.println("Rimosso dinosauro attaccante");
+				giocatore=this.partita.identificaDinosauro(attaccante);
+				giocatore.rimuoviDinosauro(attaccante,mappa[vecchiaRiga][vecchiaColonna]);
+			}
+			return true;
+		}
+		else {
+			//il dinosauro muore perche' non ha abbastanza energia per muoversi
+			//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
+			this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante);
+			return false; 					
+		}
 	}
 
+
+	
+
+	/**
+	 * Metodo che esegue un semplice spostamento del Dinosauro su una cella della mappa
+	 * costituita da terreno semplice, cioe' senza Dinosauri e/o Occupanti.
+	 * @param mosso Dinosauro che esegue lo spostamento.
+	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
+	 * @return restituisce un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * 			'false' se ci sono stati problemi.
+	 */
 	private boolean spostamentoSuTerreno(Dinosauro dinosauro, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
@@ -424,6 +559,13 @@ public class Turno {
 		}
 	}
 
+	/**
+	 * Metodo che si occupa di riposizionare gli Occupanti all'interno della mappa dopo che sono
+	 * stati mangiati da altri Dinosauri.
+	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
+	 * @param elemento valore che rappresenta l'Occupante da riposizionare.
+	 */
 	private void riposizionaOccupante(int riga, int colonna, Occupante elemento) {
 		Occupante occupante;
 		Random random = new Random();
@@ -435,7 +577,6 @@ public class Turno {
 		} else {
 			occupante = (Carogna)elemento;
 		}
-
 		do {
 			nuovaRiga = random.nextInt(40);
 			nuovaColonna = random.nextInt(40); 
