@@ -6,13 +6,18 @@ import isoladinosauri.modellodati.Vegetale;
 
 import java.util.Scanner;
 
-import client.Gui;
+import javax.swing.SwingUtilities;
 
-/**
- * Classe Test per simulare il gioco in Locale
- */
-public class MainLocale {
-	public static void main(String[] args) {
+import client.Gui;
+import client.TestZoom;
+
+public class LocaleConsole {
+
+	/**
+	 * Classe richiamata dal main per simulare il gioco in Locale con grafica
+	 */
+
+	public void avviaLineaDiComando () {
 		boolean uscita=false;
 		int scelta,scelta1;
 		int turnoCorrente=1;
@@ -20,10 +25,11 @@ public class MainLocale {
 		int conteggioGiocatori=0;
 		System.out.println("Benvenuto in Isola dei Dinosauri Beta1");
 		Scanner input = new Scanner(System.in);
-		
+
 		CaricamentoMappa cm = new CaricamentoMappa();
 		GenerazioneMappa gm = new GenerazioneMappa();
 		Isola i;
+		Cella[][] mappaCelle;
 
 		System.out.println("Scegli come inzializzare la mappa di gioco");
 		System.out.println("[1]: Carica una mappa da file [OK]");
@@ -31,24 +37,23 @@ public class MainLocale {
 		scelta = input.nextInt();
 		switch(scelta) {
 		case 1 :
-			Cella[][] mappaCelle = cm.caricaDaFile();
-			i = new Isola(mappaCelle);
-			Gui gui = new Gui();
-			gui.inizializzaGrafica(mappaCelle);
+			mappaCelle = cm.caricaDaFile();
+			i = new Isola(mappaCelle);		
 			break;
 		default :
 			String[][] mappaStringhe = gm.creaMappaCasuale();
-			i = new Isola(cm.caricaMappa(mappaStringhe));
+			mappaCelle = cm.caricaMappa(mappaStringhe);
+			i = new Isola(mappaCelle);
 			break;
 		}
-		
+
 		Partita p = new Partita(i);
 		Turno t = new Turno(p);
 		Classifica c = new Classifica(p);
 		p.setTurnoCorrente(t);
-		
-		
-		
+
+
+
 		do { //inzia la partita
 			conteggioGiocatori=0;
 			System.out.println("Menu:");
@@ -144,6 +149,7 @@ public class MainLocale {
 							switch(scelta)  {
 							case 1 :
 								//muovi
+																
 								int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getRiga(), dino.getColonna());
 								int[][] stradaPercorsa;
 								int[] coordinate = trovaDinosauro(raggiungibile);
@@ -159,7 +165,6 @@ public class MainLocale {
 
 								i.stampaMappaRaggiungibilita(origineRiga, origineColonna, fineRiga, fineColonna, raggiungibile);
 
-								//p.getGiocatori().get(conteggioGiocatori).stampaMappa();
 								i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
 								String posMovimento;
 								int riga, colonna;
@@ -206,8 +211,8 @@ public class MainLocale {
 									} else {
 										spostDino=false;
 									}
-									
-									//spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
+
+//									spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
 								}while(spostDino==false);
 
 								System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
@@ -241,7 +246,6 @@ public class MainLocale {
 								break;
 							case 2 :
 								//deponi
-								dino.setEnergia(65000);
 								if((p.getGiocatori().get(conteggioGiocatori).eseguiDeposizionedeponiUovo(dino))==false) {
 									System.out.println("Errore deposizione, possibili motivi: energia insufficiente, squadra dei dinosauri completa");
 									//									if(p.getGiocatori().get(conteggioGiocatori).getDinosauri().isEmpty()) {
@@ -326,7 +330,6 @@ public class MainLocale {
 						}
 					}
 				} 
-
 			}
 		}
 	}

@@ -1,16 +1,21 @@
 package isoladinosauri.modellodati;
 
-import isoladinosauri.Cella;
-
 /**
  * Classe che identifica un dinosauro Carnivoro,
  * differente da Erbivoro per il metodo calcolaForza() e 
- * per il modo in cui mangia Dinosauri e Occupanti
+ * per il modo in cui mangia Dinosauri e Occupanti.
  */
 public class Carnivoro extends Dinosauro {
 
-	public Carnivoro(String id, int posX, int posY, int turnoNascita) {
-		super(id, posX, posY, turnoNascita);
+	/**
+	 * @param id identificativo del dinosauro composto da una String di 2 elementi "XY", dove 'X'=id giocatore e 'Y'=numero dinosauro.
+	 * @param riga int che rappresenta la riga della mappa in cui si trova il dinosauro.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il dinosauro.
+	 * @param turnoNascita int che rappresenta il turno della partita in cui e' stato creato il Carnivoro.
+	 * 			Lo scopo di questo valore e' quello di rendere molto semplice il calcolo dell'eta' del dinosauro.
+	 */
+	public Carnivoro(String id, int riga, int colonna, int turnoNascita) {
+		super(id, riga, colonna, turnoNascita);
 	}
 
 	@Override
@@ -19,21 +24,17 @@ public class Carnivoro extends Dinosauro {
 	}
 
 	@Override
-	public void mangia(Cella cella) {
-		//questo metodo e' chiamato SOLO se this si e' mosso su una cella con un occupante
-		Occupante occupante = cella.getOccupante();
-
-		//se e' un caragona
+	public boolean mangia(Occupante occupante) {
+		//questo metodo e' chiamato SOLO se this si e' mosso su una cella con un occupante.
+		//se e' un caragona la mangio e restituisco true o false in base al fatto che potrei non averla
+		//mangiata completamente
 		if (occupante instanceof Carogna) {
-			//mangia un animale che puo essere Dinosauro o una carogna
-			//NB: passo anche la Cella per sapere dove si trova l'animale e la carogna
-			//in modo che possa rimuoverli nel caso uno dei 2 muoia/si esaurisca
 			Carogna carogna = (Carogna)occupante;
+
 			//mangio tutta la carogna
 			if(carogna.getEnergia()<=(super.getEnergiaMax() - super.getEnergia())) {
 				super.setEnergia(super.getEnergia() + carogna.getEnergia());
-				//rimuovi la carogna
-				cella.setOccupante(null);
+				return true; //avvisa di rimuovere la carogna
 			}
 			//mangio solo una parte della carogna	 
 			else {
@@ -41,53 +42,53 @@ public class Carnivoro extends Dinosauro {
 				carogna.setEnergia(carogna.getEnergia() - (super.getEnergiaMax() - super.getEnergia()));
 				//il dinosauro avra la sua energia al massimo
 				super.setEnergia(super.getEnergiaMax());
+				return false; //avvisa di non rimuovere la carogna
 			}		
 		} 
+		return false;
 	}
 
 	@Override
-	public void combatti(Cella cella)  {
-		Dinosauro dinosauro =  cella.getDinosauro();
-
-		//il dinosauro carnivoro a muoversi su una cella per combattere con un erbivoro
+	public boolean combatti(Dinosauro dinosauro)  {
+		//e' il dinosauro carnivoro a muoversi su una cella per combattere con un ERBIVORO
 		if (dinosauro instanceof Erbivoro) {
 			Erbivoro nemico = (Erbivoro)dinosauro;
 			if(this.calcolaForza()>=nemico.calcolaForza()) {
 				//il carnivoro vince il combattimento e mangia l'erbivoro
-				if(nemico.getEnergia()<=(super.getEnergiaMax() - super.getEnergia())) {
+				if((int)(0.75 * nemico.getEnergia())<=(super.getEnergiaMax() - super.getEnergia())) {
 					super.setEnergia(super.getEnergia() + ((int)(0.75 * nemico.getEnergia())));
 				} else {
 					super.setEnergia(super.getEnergiaMax());
 				}
-				cella.setDinosauro(this);
+				return true; //avvisa di rimuovere l'erbivoro (perdente)
 			}
 			else {
-				//il carnivoro perde il combattimento e l'erbivoro non fa nulla
-				cella.setDinosauro(nemico);
+				return false; //avvisa di rimuovere il carnivoro (perdente)
 			}
 		} else {
-			//il dinosauro carnivoro a muoversi su una cella per combattere con un altro carnivoro
+			//e' il dinosauro carnivoro a muoversi su una cella per combattere con un altro CARNIVORO
 			if (dinosauro instanceof Carnivoro) {	
 				Carnivoro nemico = (Carnivoro)dinosauro;
 				if(this.calcolaForza()>=nemico.calcolaForza()) {
-					//il carnivoro vince il combattimento e mangia l'altro carnivor
-					if(nemico.getEnergia()<=(super.getEnergiaMax() - super.getEnergia())) {
+					//il carnivoro vince il combattimento e mangia l'altro carnivoro
+					if(((int)(0.75 * nemico.getEnergia()))<=(super.getEnergiaMax() - super.getEnergia())) {
 						super.setEnergia(super.getEnergia() + ((int)(0.75 * nemico.getEnergia())));
 					} else {
 						super.setEnergia(super.getEnergiaMax());
 					}
-					cella.setDinosauro(this);
+					return true; //avvisa di rimuovere l'altro carnivoro, cioe' l'attaccato (perdente)
 				}
 				else {
 					//il carnivoro perde il combattimento e l'attaccato Carnivoro assorbe l'energia
-					if(super.getEnergia()<=(nemico.getEnergiaMax() - nemico.getEnergia())) {
+					if(((int)(0.75 * super.getEnergia()))<=(nemico.getEnergiaMax() - nemico.getEnergia())) {
 						nemico.setEnergia(nemico.getEnergia() + ((int)(0.75 * super.getEnergia())));
 					} else {
 						nemico.setEnergia(nemico.getEnergiaMax());
 					}
-					cella.setDinosauro(nemico);
+					return false; //avvisa di rimuovere l'attaccante carnivoro (perdente)
 				}
-			}			
+			}
+			return false; //attenzione a dove posizionare questo
 		}
 	}
 }

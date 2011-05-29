@@ -1,17 +1,23 @@
 package isoladinosauri.modellodati;
 
-import isoladinosauri.Cella;
 
 /**
  * Classe che identifica un dinosauro Erbivoro,
  * differente da Carnivoro per il metodo calcolaForza() e 
  * per il fatto che puo' solo combattere contro Dinosauri
- * invece puo' mangiare Occupanti (Vegetazione a runtime)
+ * invece puo' mangiare Occupanti (Vegetazione a runtime).
  */
 public class Erbivoro extends Dinosauro {
 
-	public Erbivoro(String id, int posX, int posY, int turnoNascita) {
-		super(id, posX, posY, turnoNascita);
+	/**
+	 * @param id identificativo del dinosauro composto da una String di 2 elementi "XY", dove 'X'=id giocatore e 'Y'=numero dinosauro.
+	 * @param riga int che rappresenta la riga della mappa in cui si trova il dinosauro.
+	 * @param colonna int che rappresenta la colonna della mappa in cui si trova il dinosauro.
+	 * @param turnoNascita int che rappresenta il turno della partita in cui e' stato creato il Carnivoro.
+	 * 			Lo scopo di questo valore e' quello di rendere molto semplice il calcolo dell'eta' del dinosauro.
+	 */
+	public Erbivoro(String id, int riga, int colonna, int turnoNascita) {
+		super(id, riga, colonna, turnoNascita);
 	}
 
 	@Override
@@ -20,46 +26,46 @@ public class Erbivoro extends Dinosauro {
 	}
 
 	@Override
-	public void mangia(Cella cella) {
-		//mangia un vegetale
-		//NB: passo anche la Cella per sapere dove si trova il vegetale
-		//in modo che possa rimuoverli nel caso uno dei 2 muoia/si esaurisca
+	public boolean mangia(Occupante occupante) {
+		//questo metodo e' chiamato SOLO se this si e' mosso su una cella con un occupante.
+		//se e' un vegetale la mangio e restituisco true o false in base al fatto che potrei non averlo
+		
 		//mangio tutto il vegetale
-		Occupante occupante = cella.getOccupante();
-
 		if (occupante instanceof Vegetale) {
 			Vegetale vegetale = (Vegetale)occupante;
 			if(vegetale.getEnergia()<=(super.getEnergiaMax() - super.getEnergia())) {
 				super.setEnergia(super.getEnergia() + vegetale.getEnergia());
-				//rimuovo il vegetale perche' mangiato tutto
-				cella.setOccupante(null);
+				return true; //avvisa di rimuovere il vegetale
 			}
+			
 			//mangio solo una parte del vegetale	 
 			else {
 				// il vegetale sara' consumato della diff dell'energia max e quella attuale del dino
 				vegetale.setEnergia(vegetale.getEnergia() - (super.getEnergiaMax() - super.getEnergia()));
 				//il dinosauro avra' la sua energia al massimo
 				super.setEnergia(super.getEnergiaMax());
+				return false; //avvisa di NON rimuovere il vegetale
 			}
 		}
+		return false;
 	}
 
 	@Override
-	public void combatti(Cella cella)  {
-		Dinosauro dinosauro =  cella.getDinosauro();
+	public boolean combatti(Dinosauro dinosauro)  {
+		//e' il dinosauro erbivoro a muoversi su una cella per combattere con un CARNIVORO
 		Carnivoro nemico = (Carnivoro)dinosauro;
 		if(this.calcolaForza()>=nemico.calcolaForza()) {
 			//l'erbivoro vince il combattimento e sconfigge il carnivoro, ma non lo mangia
-			cella.setDinosauro(this);
+			return true; //avvisa di rimuovere il carnivoro, cioe' l'attaccato
 		}
 		else {
 			//l'erbivoro perde il combattimento e l'attaccato Carnivoro lo mangia
-			if(super.getEnergia()<=(nemico.getEnergiaMax() - nemico.getEnergia())) {
+			if(((int)(0.75 * super.getEnergia()))<=(nemico.getEnergiaMax() - nemico.getEnergia())) {
 				nemico.setEnergia(nemico.getEnergia() + ((int)(0.75 * super.getEnergia())));
 			} else {
 				nemico.setEnergia(nemico.getEnergiaMax());
 			}
-			cella.setDinosauro(nemico);
+			return false; //avvida di rimuovere l'erbivoro, cioe' l'attaccante
 		}
 	}
 

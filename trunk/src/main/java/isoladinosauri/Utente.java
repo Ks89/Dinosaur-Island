@@ -2,11 +2,12 @@ package isoladinosauri;
 
 /**
  * Questa classe viene utilizzata solo per gestire 
- * il nomeUtente e la password dell'utente su cui 
- * puo' essere poi creato un giocatore in una partita
+ * il nome e la password dell'Utente su cui 
+ * puo' essere poi creato un giocatore in una partita.
  * La differenza e' che Utente identifica l'ACCOUNT
  * del giocatore, mentre la classe Giocatore l'identita'
- * creata dall'Utente nella partita in corso.
+ * creata dall'Utente nella partita in corso,
+ * cioe' quella associata alla specie.
  */
 public class Utente {
 	
@@ -14,28 +15,53 @@ public class Utente {
 	private String nomeUtente;
 	private String password;
 	
+	/**
+	 * @param nomeUtente String per stabilire il nome per il login dell'Utente.
+	 * @param password String per stabilire la password per il login dell'Utente.
+	 */
 	public Utente(String nomeUtente, String password) {
 		this.setNomeUtente(nomeUtente);
 		this.setPassword(password);
 	}
 	
+	/**
+	 * @return giocatore indica il Giocatore associato all'Utente.
+	 */
 	public Giocatore getGiocatore() {
-		return giocatore;
+		return this.giocatore;
 	}
 
+	/**
+	 * @param giocatore imposta il Giocatore associato all'Utente.
+	 */
 	public void setGiocatore(Giocatore giocatore) {
 		this.giocatore = giocatore;
 	}
 	
+	/**
+	 * @return nomeUtente String che indica il nome dell'Utente.
+	 */
 	public String getNomeUtente() {
-		return nomeUtente;
+		return this.nomeUtente;
 	}
+	
+	/**
+	 * @param nomeUtente String che imposta il nome dell'Utente.
+	 */
 	public void setNomeUtente(String nomeUtente) {
 		this.nomeUtente = nomeUtente;
 	}
+	
+	/**
+	 * @return password String che indica la password dell'Utente.
+	 */
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
+	
+	/**
+	 * @param password String che imposta la password dell'Utente.
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
