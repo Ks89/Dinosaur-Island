@@ -14,7 +14,7 @@ public class PosizionaVegetazione {
 	
 	/** 
 	 * Metodo per posizionare in modo casuale la Vegetazione su una mappa 40x40 con gia' terra (t), acqua (a) e carogne (c).
-	 * @param mappa - Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
+	 * @param mappa Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
 	 */
 	public void posizionaVegetazione (String[][] mappa) {
 		//carico la vegetazione nella mappa
@@ -47,7 +47,7 @@ public class PosizionaVegetazione {
 	
 	/**
 	 * Metodo per verificare la validita' della mappa, cioe' conta il numero di celle per ogni tipo.
-	 * @param mappa - Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
+	 * @param mappa Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
 	 * @return Un array di 4 elementi con i risultati della verifica, composto cosi': 
 	 * 		[0] - acqua, 
 	 * 		[1] - terra, 

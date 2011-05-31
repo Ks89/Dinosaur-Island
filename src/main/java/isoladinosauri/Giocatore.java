@@ -139,7 +139,9 @@ public class Giocatore {
 		//array che indica quali id dei giocatori sono disponibili nella partita
 		int[] posizioni = {1,2,3,4,5,6,7,8};
 		//se non ci sono giocatori di certo quello nuovo sara' il primo
-		if(this.partita.getGiocatori().isEmpty()) return 1;
+		if(this.partita.getGiocatori().isEmpty()) {
+			return 1;
+		}
 		else { 
 			for(int j=0;j<this.partita.getGiocatori().size();j++) {
 				for(int i=0;i<8;i++) {
@@ -167,7 +169,9 @@ public class Giocatore {
 		//uguale a generaIdGiocatore() ma sta volta lavoro sui char, perche' l'id del dinosauro
 		//e' il carattere [1] nel campo della classe Dinosauro
 		char[] posizioni = {'1','2','3','4','5'};
-		if(this.getDinosauri().isEmpty()) return 1;
+		if(this.getDinosauri().isEmpty()) {
+			return 1;
+		}
 		else {
 			for(int j=0;j<this.getDinosauri().size();j++) {
 				for(int i=0;i<5;i++) {
@@ -305,7 +309,9 @@ public class Giocatore {
 			if((this.getDinosauri().size() + this.getUova().size()) < 5 ) {
 				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna());
 				return true;
-			} else return false; //squadra completa e non posso creare altri dinosauri deponendo uova	
+			} else {
+				return false; //squadra completa e non posso creare altri dinosauri deponendo uova	
+			}
 		} else { //il dinosauro muore perche' non ha sufficiente energia
 			this.rimuoviDinosauro(dinosauro);	
 			return false;
