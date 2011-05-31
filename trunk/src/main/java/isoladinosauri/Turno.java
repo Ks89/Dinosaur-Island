@@ -589,5 +589,26 @@ public class Turno {
 		} while(stato==false);
 		System.out.println("Nuovo elemento in: " + nuovaRiga + "," + nuovaColonna);
 	}
+	
+	//FIXME inserire questo metodo alla fine di ogni turno della partita e testarlo
+	/**
+	 * Metodo che scansiona tutta la mappa di gioco in cerca di Carogne
+	 * con energia =0 per cancellarle e ricrearle nella mappa
+	 * @param mappa Array bidimensionale per Celle che contiene la mappa del gioco.
+	 */
+	public void ricreaCarogne(Cella[][] mappa) {
+		for(int i=0;i<40;i++) {
+			for(int j=0;j<40;j++) {
+				if(mappa[i][j]!=null && (mappa[i][j].getOccupante() instanceof Carogna)) {
+					Carogna carogna = (Carogna)mappa[i][j].getOccupante();
+					if(carogna.getEnergia()<=0) {
+						System.out.println("carogna riposizionate");
+						this.riposizionaOccupante(i, j, new Carogna());
+						mappa[i][j].setOccupante(null);
+					}
+				}
+			}
+		}
+	}
 
 }

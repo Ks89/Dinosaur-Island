@@ -12,6 +12,11 @@ import isoladinosauri.modellodati.Vegetale;
 public class Isola {
 
 	private static final int MAX = 40;
+	private static final String TERRA = new String(" . ");
+	private static final String ACQUA = new String("   ");
+	private static final String VEGETAZIONE = new String(" v ");
+	private static final String CAROGNA = new String(" c ");
+	
 	private Cella[][] mappa; 
 	
 
@@ -88,21 +93,21 @@ public class Isola {
 			}
 			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
-					System.out.print("   ");
+					System.out.print(ACQUA);
 				} else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
 					if(cella.getDinosauro()!=null) {
 						System.out.print(cella.getDinosauro().getId() + " ");
 					} else {
 						if(cella.getOccupante() instanceof Carogna) {
-							System.out.print(" c ");
+							System.out.print(CAROGNA);
 						}
 						if(cella.getOccupante() instanceof Vegetale) {
-							System.out.print(" v ");
+							System.out.print(VEGETAZIONE);
 						}
 						if(!(cella.getOccupante() instanceof Vegetale) &&
 								!(cella.getOccupante() instanceof Carogna)) {
-							System.out.print(" . ");
+							System.out.print(TERRA);
 						}
 					}
 
@@ -140,21 +145,21 @@ public class Isola {
 			for(int j=0;j<MAX;j++) {
 				if(giocatore.getMappaVisibile()[i][j]==true) {
 					if (mappa[i][j] == null) { //e' acqua
-						System.out.print("   ");
+						System.out.print(ACQUA);
 					} else { //se e' terra puo' essere carogna o vegetale
 						Cella cella = mappa[i][j];
 						if(cella.getDinosauro()!=null) {
 							System.out.print(cella.getDinosauro().getId() + " ");
 						} else {
 							if(cella.getOccupante() instanceof Carogna) {
-								System.out.print(" c ");
+								System.out.print(CAROGNA);
 							}
 							if(cella.getOccupante() instanceof Vegetale) {
-								System.out.print(" v ");
+								System.out.print(VEGETAZIONE);
 							}
 							if(!(cella.getOccupante() instanceof Vegetale) &&
 									!(cella.getOccupante() instanceof Carogna)) {
-								System.out.print(" . ");
+								System.out.print(TERRA);
 							}
 						}
 
@@ -195,7 +200,7 @@ public class Isola {
 			}
 			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
-					System.out.print("   ");
+					System.out.print(ACQUA);
 				} else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
 					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
@@ -213,14 +218,14 @@ public class Isola {
 							System.out.print(cella.getDinosauro().getId() + " ");
 						} else {
 							if(cella.getOccupante() instanceof Carogna) {
-								System.out.print(" c ");
+								System.out.print(CAROGNA);
 							}
 							if(cella.getOccupante() instanceof Vegetale) {
-								System.out.print(" v ");
+								System.out.print(VEGETAZIONE);
 							}
 							if(!(cella.getOccupante() instanceof Vegetale) &&
 									!(cella.getOccupante() instanceof Carogna)) {
-								System.out.print(" . ");
+								System.out.print(TERRA);
 							}
 						}
 
@@ -259,7 +264,7 @@ public class Isola {
 			}
 			for(int j=0;j<MAX;j++) {
 				if (mappa[i][j] == null) { //e' acqua
-					System.out.print("   ");
+					System.out.print(ACQUA);
 				}
 				else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
@@ -275,15 +280,15 @@ public class Isola {
 						} else {
 							if(cella.getOccupante() instanceof Carogna)
 							{
-								System.out.print(" c ");
+								System.out.print(CAROGNA);
 							}
 							if(cella.getOccupante() instanceof Vegetale)
 							{
-								System.out.print(" v ");
+								System.out.print(VEGETAZIONE);
 							}
 							if(!(cella.getOccupante() instanceof Vegetale) &&
 									!(cella.getOccupante() instanceof Carogna)) {
-								System.out.print(" . ");
+								System.out.print(TERRA);
 							}
 						}
 					}

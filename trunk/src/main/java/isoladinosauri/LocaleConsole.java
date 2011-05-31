@@ -6,6 +6,7 @@ import isoladinosauri.modellodati.Vegetale;
 
 import java.util.Scanner;
 
+
 public class LocaleConsole {
 
 	/**
@@ -59,6 +60,7 @@ public class LocaleConsole {
 			System.out.println("[5]: Stampa tutte le mappe utili per i test[OK]");
 			scelta1 = input.nextInt();
 			conteggioDinosauro=0;
+			t.ricreaCarogne(i.getMappa());
 			switch(scelta1) {
 			case 1 :
 				//aggiungo un giocatore
@@ -301,12 +303,12 @@ public class LocaleConsole {
 			if(scelta1==3) {
 				turnoCorrente++;
 				p.incrementaEtaGiocatori();
+				cresciEconsuma(p);
 			}
 			System.out.println("Classifica aggiornata e le uova sono state schiuse");
 			p.nascitaDinosauro(turnoCorrente);
 			c.aggiornaClassificaStati();
 			c.stampaClassifica();
-			cresciEconsuma(p);
 
 		} while(uscita==false);
 	}

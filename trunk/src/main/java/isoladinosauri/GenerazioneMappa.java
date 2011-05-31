@@ -28,8 +28,8 @@ public class GenerazioneMappa {
 		PosizionaVegetazione tv = new PosizionaVegetazione();
 		tv.posizionaVegetazione(mappa);
 		return mappa;
-//		this.salvaMappa(mappa);
-//		this.stampaMappa(mappa);
+		//		this.salvaMappa(mappa);
+		//		this.stampaMappa(mappa);
 
 	}
 
@@ -41,7 +41,9 @@ public class GenerazioneMappa {
 		int cont=0;
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
-				if(mappa[i][j].equals("c")) cont++;
+				if(mappa[i][j].equals("c")) {
+					cont++;
+				}
 			}
 		}
 		System.out.println(cont);
@@ -99,15 +101,25 @@ public class GenerazioneMappa {
 			numeroraggiungibili=0;
 			//Inizializzazione mappa
 			for(int i=0;i<=39;i++) {
-				for(int j=0;j<=39;j++) mappa[i][j]=" ";
+				for(int j=0;j<=39;j++) {
+					mappa[i][j]=" ";
+				}
 
 			}
-			
+
 			//Disegno il contorno d'acqua dell isola
-			for(int j=0;j<=39;j++) mappa[0][j]="a";
-			for(int j=0;j<=39;j++) mappa[39][j]="a";
-			for(int i=0;i<=39;i++) mappa[i][0]="a";
-			for(int i=0;i<=39;i++) mappa[i][39]="a";
+			for(int j=0;j<=39;j++) {
+				mappa[0][j]="a";
+			}
+			for(int j=0;j<=39;j++) {
+				mappa[39][j]="a";
+			}
+			for(int i=0;i<=39;i++) {
+				mappa[i][0]="a";
+			}
+			for(int i=0;i<=39;i++) {
+				mappa[i][39]="a";
+			}
 
 			/*
 			 * Per fare in modo che l'acqua sia del 20 percento e 
@@ -131,11 +143,11 @@ public class GenerazioneMappa {
 			 * terzo (2+0,3+1)
 			 * E cosi' via
 			 */
-			
+
 			//ottengo l'array di forme di acqua da inserire
 			ArrayList<String[]> arrayForme = this.ottieniFormeAcqua();
-			
-			
+
+
 			/*
 			 * Uno alla volta inserisco nella mappa
 			 * tutti gli elementi contenuti nella 
@@ -177,10 +189,19 @@ public class GenerazioneMappa {
 					for(i=0;i<arraydistringhe.length;i++){
 						offsetx=Integer.parseInt(arraydistringhe[i].charAt(0)+"");
 						offsety=Integer.parseInt(arraydistringhe[i].charAt(1)+"");
-						if((x+offsetx)>39) posNonConcessa=true;
-						else if((y+offsety)>39) posNonConcessa=true;
-						else if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) posNonConcessa=true;
-						else if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) posNonConcessa=true;
+						if((x+offsetx)>39) {
+							posNonConcessa=true;
+						} else { if((y+offsety)>39) {
+							posNonConcessa=true;
+						} else { if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) {
+							posNonConcessa=true;
+						} else { 
+							if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) {
+								posNonConcessa=true;
+							}
+						}
+						}
+						}
 					} //chiusura FOR
 
 				}//chiusura WHILE
@@ -198,8 +219,12 @@ public class GenerazioneMappa {
 					offsety=Integer.parseInt(arraydistringhe[i].charAt(1)+"");
 
 					mappa[x+offsetx][y+offsety]="a";
-					if(offsetx==0)mappa[x-1][y+offsety]="b"; 
-					if(offsety==0)mappa[x+offsetx][y-1]="b";
+					if(offsetx==0) {
+						mappa[x-1][y+offsety]="b"; 
+					}
+					if(offsety==0) {
+						mappa[x+offsetx][y-1]="b";
+					}
 					mappa[x+offsetx+1][y+offsety]="b";
 					mappa[x+offsetx][y+offsety+1]="b";
 				}
@@ -217,15 +242,26 @@ public class GenerazioneMappa {
 			 * un "fossato" di guardia per evitare l'unione di
 			 * due pozze d'acqua
 			 */
-			for(int j=0;j<=39;j++) mappa[0][j]="a";
-			for(int j=0;j<=39;j++) mappa[39][j]="a";
-			for(int i=0;i<=39;i++) mappa[i][0]="a";
-			for(int i=0;i<=39;i++) mappa[i][39]="a";
+			for(int j=0;j<=39;j++) {
+				mappa[0][j]="a";
+			}
+			for(int j=0;j<=39;j++) {
+				mappa[39][j]="a";
+			}
+			for(int i=0;i<=39;i++) {
+				mappa[i][0]="a";
+			}
+			for(int i=0;i<=39;i++) {
+				mappa[i][39]="a";
+			}
 
 			//Eliminazione dei fossati di guardia
 			for(int i=0;i<=39;i++) {
-				for(int j=0;j<=39;j++)
-					if (mappa[i][j]=="b")mappa[i][j]=" " ;
+				for(int j=0;j<=39;j++) {
+					if (mappa[i][j].equals("b")) {
+						mappa[i][j]=" " ;
+					}
+				}
 			}
 
 			/*
@@ -241,7 +277,7 @@ public class GenerazioneMappa {
 
 			int j;
 			for (j=1;j<39;j++){
-				if (mappa[1][j]==" ") {
+				if (mappa[1][j].equals(" ")) {
 					break;
 				}
 			}
@@ -256,40 +292,44 @@ public class GenerazioneMappa {
 			boolean modificato;
 			do{
 				modificato=false;
-				for(int i=0;i<39;i++){
-					for(j=0;j<39;j++){
-						if (mappa[i][j]=="t") {
-							if (mappa[i+1][j]==" ") {
+				for(int i=0;i<39;i++) {
+					for(j=0;j<39;j++) {
+						if (mappa[i][j].equals("t")) {
+							if (mappa[i+1][j].equals(" ")) {
 								mappa[i+1][j]="t";
 								modificato=true;
 							}
 
-							if (mappa[i-1][j]==" "){ 
+							if (mappa[i-1][j].equals(" ")) { 
 								mappa[i-1][j]="t";
 								modificato=true;
 							}
-							if (mappa[i][j+1]==" "){ 
+							if (mappa[i][j+1].equals(" ")) { 
 								mappa[i][j+1]="t";
 								modificato=true;
 							}
-							if (mappa[i][j-1]==" "){ 
+							if (mappa[i][j-1].equals(" ")) { 
 								mappa[i][j-1]="t";
 								modificato=true;
 							}
 						}//Chiusura IF
 					}    //Chiusura FOR
 				}		 //Chiusura FOR
-			}while (modificato==true); //CHIUSURA DO-WHILE
+			} while (modificato==true); //CHIUSURA DO-WHILE
 
 			//Conta il numero di t
 			for(int i=0;i<39;i++) {
-				for(int k=0;k<39;k++) if (mappa[i][k]=="t") numeroraggiungibili++;
+				for(int k=0;k<39;k++) {
+					if (mappa[i][k]=="t") {
+						numeroraggiungibili++;
+					}
+				}
 			}
 
 		}while (numeroraggiungibili!=1280);
 		return mappa;
 	}
-	
+
 	/**
 	 * Metodo che inserire in un ArrayList degli array si String contenti le coordinare delle celle di acqua che fanno
 	 * parte di una determinata forma.
@@ -342,43 +382,43 @@ public class GenerazioneMappa {
 		return arrayForme;
 	}
 
-//	private void salvaMappa(String[][] mappa) {
-//		//salvo la mappa
-//		try{
-//			Formatter out = new Formatter("mappaTest.txt");
-//			//attenzione qui prima di modificare il codice c'era salvaRiga= new String(); e non null
-//			String salvaRiga = null;
-//			for(int i=0;i<40;i++) {
-//				for(int j=0;j<40;j++) {
-//					salvaRiga = salvaRiga + mappa[i][j];
-//				}
-//				out.format("%s\n", salvaRiga);
-//				salvaRiga="";
-//			}
-//
-//			out.close();
-//		}
-//		catch (SecurityException securityException)
-//		{
-//			System.err.println("Non hai accesso al file");
-//			System.err.println("Il programma e' stato terminato");
-//		}
-//		catch (FileNotFoundException filesNotFoundException)
-//		{
-//			System.err.println("Errore nella creazione del file");
-//			System.err.println("Il programma e' stato terminato");
-//		}
-//	}
+	//	private void salvaMappa(String[][] mappa) {
+	//		//salvo la mappa
+	//		try{
+	//			Formatter out = new Formatter("mappaTest.txt");
+	//			//attenzione qui prima di modificare il codice c'era salvaRiga= new String(); e non null
+	//			String salvaRiga = null;
+	//			for(int i=0;i<40;i++) {
+	//				for(int j=0;j<40;j++) {
+	//					salvaRiga = salvaRiga + mappa[i][j];
+	//				}
+	//				out.format("%s\n", salvaRiga);
+	//				salvaRiga="";
+	//			}
+	//
+	//			out.close();
+	//		}
+	//		catch (SecurityException securityException)
+	//		{
+	//			System.err.println("Non hai accesso al file");
+	//			System.err.println("Il programma e' stato terminato");
+	//		}
+	//		catch (FileNotFoundException filesNotFoundException)
+	//		{
+	//			System.err.println("Errore nella creazione del file");
+	//			System.err.println("Il programma e' stato terminato");
+	//		}
+	//	}
 
-//	//metodo stampa mappa
-//	private void stampaMappa(String mappa [][]){
-//		for(int i=0;i<=39;i++) {
-//			for(int j=0;j<=39;j++) {
-//				System.out.print(mappa[i][j]+" ");
-//			}
-//			System.out.println();
-//		}
-//	}
+	//	//metodo stampa mappa
+	//	private void stampaMappa(String mappa [][]){
+	//		for(int i=0;i<=39;i++) {
+	//			for(int j=0;j<=39;j++) {
+	//				System.out.print(mappa[i][j]+" ");
+	//			}
+	//			System.out.println();
+	//		}
+	//	}
 
 
 }
