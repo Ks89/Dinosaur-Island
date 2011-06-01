@@ -36,13 +36,11 @@ public class Giocatore {
 	/**
 	 * Costruttore che assegna gli id, inzializza tutti i campi di Giocatore, crea un Dinosauro ed illumina l'area intorno al esso.
 	 * @param partita riferiemento alla Partita.
-	 * @param utente String che rappresenta il nome dell'Utente associato al Giocatore.
 	 * @param turnoNascita int che rappresenta il tuno di nascita del Giocatore.
 	 * @param nomeSpecie String che rappresenta il nome della specie.
 	 * @param tipoSpecie String che rappresenta il tipo della specie. Puo' essere "carnivoro" o "erbivoro".
 	 */
-	public Giocatore(Partita partita, Utente utente, int turnoNascita, String nomeSpecie, String tipoSpecie) {
-		this.utente = utente;
+	public Giocatore(Partita partita, int turnoNascita, String nomeSpecie, String tipoSpecie) {
 		this.partita = partita;
 		this.etaAttualeGiocatore=0;
 		this.turnoNascita = turnoNascita;
@@ -84,20 +82,6 @@ public class Giocatore {
 
 		//inizializzo l'array per le uova, ovviamente parte da vuoto perche' non ho uova all'inizio
 		this.uova = new ArrayList<String>();
-	}
-
-	/**
-	 * @return Il riferimento all'Utente associato al Giocatore.
-	 */
-	public Utente getUtente() {
-		return utente;
-	}
-
-	/**
-	 * @param utente riferimento all'Utente per essegnarlo al Giocatore.
-	 */
-	public void setUtente(Utente utente) {
-		this.utente = utente;
 	}
 	
 	//***********************************************************************************************************************
@@ -391,6 +375,20 @@ public class Giocatore {
 	 */
 	public void setNomeSpecie(String nomeSpecie) {
 		this.nomeSpecie = nomeSpecie;
+	}
+	
+	/**
+	 * @return L'Utente con il nome della specie del Giocatore.
+	 */
+	public Utente getUtente() {
+		return utente;
+	}
+
+	/**
+	 * @param utente Utente per impostare l'Utente associato al Giocatore.
+	 */
+	public void setUtente(Utente utente) {
+		this.utente = utente;
 	}
 
 }

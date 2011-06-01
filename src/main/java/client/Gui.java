@@ -111,7 +111,7 @@ public class Gui {
 					public void actionPerformed(ActionEvent e) { 
 						frameGiocatore.dispose();
 						utente = new Utente(user.getText(), password.getText());
-						giocatore = new Giocatore(partita, utente, turnoPartita, specie.getText(), tipo.getText());
+						giocatore = new Giocatore(partita, turnoPartita, specie.getText(), tipo.getText());
 						dino = giocatore.getDinosauri().get(0);
 						inizializzaGrafica();
 					}
@@ -174,7 +174,7 @@ public class Gui {
 						partita.setTurnoCorrente(t);
 						partita.getGiocatori().clear();
 						utente = new Utente(user.getText(), password.getText());
-						giocatore = new Giocatore(partita, utente, turnoPartita, specie.getText(), tipo.getText());
+						giocatore = new Giocatore(partita, turnoPartita, specie.getText(), tipo.getText());
 						dino = giocatore.getDinosauri().get(0);
 						//						mappaPanel= creaMappa(mappa);
 						//						applicaRaggiungibilita(0);

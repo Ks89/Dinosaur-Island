@@ -85,7 +85,8 @@ public class LocaleConsole {
 					tipoDinosauro = "erbivoro";
 				}
 				Utente utente = new Utente(nickname,password);
-				Giocatore giocatore =  new Giocatore(p, utente, turnoCorrente, nomeSpecie, tipoDinosauro);
+				Giocatore giocatore =  new Giocatore(p, turnoCorrente, nomeSpecie, tipoDinosauro);
+				giocatore.setUtente(utente);
 				c.aggiungiTuplaClassifica(giocatore);
 				break;
 			case 2 :

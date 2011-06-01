@@ -11,7 +11,6 @@ package isoladinosauri;
  */
 public class Utente {
 	
-	private Giocatore giocatore;
 	private String nomeUtente;
 	private String password;
 	
@@ -24,19 +23,6 @@ public class Utente {
 		this.setPassword(password);
 	}
 	
-	/**
-	 * @return Il Giocatore associato all'Utente.
-	 */
-	public Giocatore getGiocatore() {
-		return this.giocatore;
-	}
-
-	/**
-	 * @param giocatore imposta il Giocatore associato all'Utente.
-	 */
-	public void setGiocatore(Giocatore giocatore) {
-		this.giocatore = giocatore;
-	}
 	
 	/**
 	 * @return Una String che indica il nome dell'Utente.
