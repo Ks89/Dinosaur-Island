@@ -13,8 +13,8 @@ import javax.swing.*;
  */
 public class Main {
 
-
-	private final static JFrame window = new JFrame("Isola Dinosauri BETA1");
+	private static final String HOME = "Home";
+	private static final JFrame window = new JFrame("Isola Dinosauri BETA1");
 	private static Container contentPane = window.getContentPane();
 	private static CardLayout cardLayout = new CardLayout();
 
@@ -51,7 +51,7 @@ public class Main {
 
 		localePanel.add(lineaComando);
 		localePanel.add(createButton("GUI Locale"));
-		localePanel.add(createButton("Home"));
+		localePanel.add(createButton("HOME"));
 
 		JPanel localeGUIPanel = new JPanel(new GridLayout(4,1));
 		JLabel localeGUI = new JLabel("Modalita' caricamento mappa");
@@ -74,7 +74,7 @@ public class Main {
 
 		
 		localeGUIPanel.add(createButton("Generazione casuale"));
-		localeGUIPanel.add(createButton("Home"));
+		localeGUIPanel.add(createButton("HOME"));
 
 		
 		JPanel socketPanel = new JPanel(new GridLayout(4,1));
@@ -83,7 +83,7 @@ public class Main {
 		socketPanel.add(socket);
 		socketPanel.add(createButton("Linea di comando"));
 		socketPanel.add(createButton("GUI"));
-		socketPanel.add(createButton("Home"));
+		socketPanel.add(createButton("HOME"));
 
 		JPanel rmiPanel = new JPanel(new GridLayout(4,1));
 		JLabel rmi = new JLabel("RMI");
@@ -91,10 +91,10 @@ public class Main {
 		rmiPanel.add(rmi);
 		rmiPanel.add(createButton("Linea di comando"));
 		rmiPanel.add(createButton("GUI"));
-		rmiPanel.add(createButton("Home"));
+		rmiPanel.add(createButton("HOME"));
 
 		contentPane.setLayout(cardLayout);
-		contentPane.add(homePanel, "Home");
+		contentPane.add(homePanel, "HOME");
 		contentPane.add(localePanel, "Locale");
 		contentPane.add(socketPanel, "Socket");
 		contentPane.add(rmiPanel, "Rmi");

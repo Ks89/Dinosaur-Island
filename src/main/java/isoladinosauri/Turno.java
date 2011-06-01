@@ -258,14 +258,14 @@ public class Turno {
 		maxC = mappaMovimento[0].length;
 
 		//cerco le coordinate fittizie (partenzaDinoRiga,partenzaDinoColonna) del dinosauro nella sottomappa
-		for(i=0,trovato=false; i<maxR && trovato==false; i++) {
-			for(j=0; j<maxC && trovato==false; j++) {
+		for(i=0,trovato=false; i<maxR && !trovato; i++) {
+			for(j=0; j<maxC && !trovato; j++) {
 				if(mappaMovimento[i][j]==0) {
 					trovato = true;
 				}
 			}
 		}
-		if(trovato==true){    	
+		if(trovato){    	
 			partenzaDinoRiga = i-1;
 			partenzaDinoColonna = j-1;
 
@@ -290,7 +290,7 @@ public class Turno {
 				} else {
 					rigaGiu=riga+1;
 				}
-				for(i=rigaSu,trovato=false; i<=rigaGiu && trovato==false; i++) {
+				for(i=rigaSu,trovato=false; i<=rigaGiu && !trovato; i++) {
 					if(colonna-1<0) { // controllo di non uscire fuori dalle colonne della mappa
 						colonnaSx=colonna;
 					} else {
@@ -301,7 +301,7 @@ public class Turno {
 					} else {
 						colonnaDx=colonna+1;
 					}
-					for(j=colonnaSx; j<=colonnaDx && trovato==false; j++) {
+					for(j=colonnaSx; j<=colonnaDx && !trovato; j++) {
 						if(mappaMovimento[i][j] == cont-1) { // se trovo una cella contenente un numero di passi inferiori a quello corrente
 							trovato=true;
 							mappaMovimento[i][j] -= 7; // sottraggo 7 x marcare la strada
@@ -345,7 +345,7 @@ public class Turno {
 				boolean risultato = this.combatti(mosso, riga, colonna);
 				if(destinazione.getOccupante()!=null) {
 					//mangio l'occupante, distinguendo se vegetazione o carogna
-					if(risultato==false || this.mangiaOccupante(mosso, riga, colonna)==false) {
+					if(!(risultato && this.mangiaOccupante(mosso, riga, colonna))) {
 						risultato=false;
 					}
 				}
@@ -386,7 +386,7 @@ public class Turno {
 			} else
 				//eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo
 				//con un erbivoro o una vegetazione con un carnivoro
-				if(dinosauro.aggCordinate(riga, colonna)==true) {
+				if(dinosauro.aggCordinate(riga, colonna)) {
 					destinazione.setDinosauro(dinosauro);
 					mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 					return true;
@@ -412,8 +412,8 @@ public class Turno {
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = mosso.getRiga();
 		int vecchiaColonna = mosso.getColonna();
-		if(mosso.aggCordinate(riga, colonna)==true) {
-			if(mosso.mangia(destinazione.getOccupante())==true) {
+		if(mosso.aggCordinate(riga, colonna)) {
+			if(mosso.mangia(destinazione.getOccupante())) {
 				//se l'azione "mangia" ha esaurito tutta l'energia dell'occupante,
 				//quest'ultimo deve essere rimosso dalla cella e ne deve essere riscreato
 				//uno nuovo con energia al max in un punto a caso della mappa 
@@ -503,10 +503,10 @@ public class Turno {
 			attaccante = (Erbivoro)mosso;
 		}
 
-		if(attaccante.aggCordinate(riga, colonna)==true) {
+		if(attaccante.aggCordinate(riga, colonna)) {
 			//esegue il comattimento e stabilisce in vincitore in base al risultato del metodo
 			//restituisce true se vince l'attaccante o false se vince l'attaccato (nemico)
-			if(attaccante.combatti(destinazione.getDinosauro())==true) {
+			if(attaccante.combatti(destinazione.getDinosauro())) {
 				destinazione.setDinosauro(attaccante);
 			} else {
 				destinazione.setDinosauro(attaccato);
@@ -549,7 +549,7 @@ public class Turno {
 		int vecchiaRiga = dinosauro.getRiga();
 		int vecchiaColonna = dinosauro.getColonna();
 
-		if(dinosauro.aggCordinate(riga, colonna)==true) {
+		if(dinosauro.aggCordinate(riga, colonna)) {
 			destinazione.setDinosauro(dinosauro);
 			mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 			return true;
@@ -586,7 +586,7 @@ public class Turno {
 				this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna].setOccupante(occupante);
 				stato=true;
 			}
-		} while(stato==false);
+		} while(!stato);
 		System.out.println("Nuovo elemento in: " + nuovaRiga + "," + nuovaColonna);
 	}
 	

@@ -28,11 +28,8 @@ public class CaricamentoMappa {
 	 * @return La mappa di gioco costituita da un array bidimensionali di Celle.
 	 */
 	public Cella[][] caricaDaFile() {
-		BufferedReader br;
-		try
-		{  	
-			FileReader fileReader = new FileReader("mappaTestAcquaUovo.txt");
-			 br = new BufferedReader(fileReader);
+		try {  	
+			BufferedReader br = new BufferedReader(new FileReader("mappaTestAcquaUovo.txt"));
 			String riga = br.readLine();
 			StringTokenizer st = null;	
 			String cellaLetta;
@@ -46,12 +43,11 @@ public class CaricamentoMappa {
 				riga = br.readLine();
 			}
 			br.close();
-		}
-		catch(IOException ioException)
-		{
+		}	
+		catch(IOException ioException) {
 			System.err.println("Errore lettura file.");
 		}
-		return mappa;
+		return mappa.clone();
 	}
 
 	
@@ -67,7 +63,7 @@ public class CaricamentoMappa {
 				this.assegnaCelle(input[i][j], i, j);
 			}
 		}
-		return mappa;
+		return mappa.clone();
 	}
 	
 	

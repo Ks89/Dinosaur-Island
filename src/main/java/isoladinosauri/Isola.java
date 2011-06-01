@@ -12,10 +12,10 @@ import isoladinosauri.modellodati.Vegetale;
 public class Isola {
 
 	private static final int MAX = 40;
-	private static final String TERRA = new String(" . ");
-	private static final String ACQUA = new String("   ");
-	private static final String VEGETAZIONE = new String(" v ");
-	private static final String CAROGNA = new String(" c ");
+	private static final String TERRA = " . ";
+	private static final String ACQUA = "   ";
+	private static final String VEGETAZIONE = " v ";
+	private static final String CAROGNA = " c ";
 	
 	private Cella[][] mappa; 
 	
@@ -24,15 +24,15 @@ public class Isola {
 	 * Costruttore per inizializzare la mappa.
 	 * @param mappa Array bidimensionali di Celle per impostare la mappa.
 	 */
-	public Isola(Cella[][] mappa) {
-		this.mappa = mappa;
+	public Isola(Cella[][] mappa) { //FIXME, attenzione tenere d'occhio
+		this.mappa = mappa.clone();
 	}
 	
 	/**
 	 * @return Un array bidimensionale di Celle che rappresenta la mappa di gioco.
 	 */
 	public Cella[][] getMappa() {
-		return mappa;        
+		return mappa.clone();        
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class Isola {
 	 * Metodo per stampare la mappa di Gioco senza l'energia degli elementi.
 	 */
 	public void stampaMappaRidotta() {
-		System.out.print("   ");
+		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");
@@ -127,7 +127,7 @@ public class Isola {
 	public void stampaMappaRidottaVisibilita(Giocatore giocatore) {
 		//metodo che esiste solo per testare il caricamento
 		//presto sara' rimosso e trasformato in test junit
-		System.out.print("   ");
+		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");
@@ -143,7 +143,7 @@ public class Isola {
 				System.out.print(i + " ");
 			}
 			for(int j=0;j<MAX;j++) {
-				if(giocatore.getMappaVisibile()[i][j]==true) {
+				if(giocatore.getMappaVisibile()[i][j]) {
 					if (mappa[i][j] == null) { //e' acqua
 						System.out.print(ACQUA);
 					} else { //se e' terra puo' essere carogna o vegetale
@@ -165,7 +165,7 @@ public class Isola {
 
 					}
 				} else {
-					System.out.print("   ");
+					System.out.print(ACQUA);
 				}
 			}
 			System.out.println();
@@ -183,7 +183,7 @@ public class Isola {
 	 * @param raggiungibilita array bidimensionale di int che rappresenta la mappa di raggiuigibilita'.
 	 */
 	public void stampaMappaRaggiungibilita(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]raggiungibilita) {
-		System.out.print("   ");
+		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");
@@ -247,7 +247,7 @@ public class Isola {
 	 * @param stradaPercorsa array bidimensionale di int che rappresenta la strada percorsa dal Dinosauto durante uno spostamento.
 	 */
 	public void stampaMappaStradaPercorsa(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]stradaPercorsa) {
-		System.out.print("   ");
+		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
 			if(j<10) {
 				System.out.print("0" + j + " ");

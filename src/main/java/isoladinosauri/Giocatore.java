@@ -239,7 +239,7 @@ public class Giocatore {
 	 */
 	public void rimuoviDinosauro(Dinosauro dinosauro, Cella cella) {
 		boolean stato = this.dinosauri.remove(dinosauro);
-		if(stato==true) {
+		if(stato) {
 			//dinosauro rimosso correttamente
 			//lo cancello anche dalla mappa
 			cella.setDinosauro(null);
@@ -256,7 +256,7 @@ public class Giocatore {
 	 */
 	public void rimuoviDinosauro(Dinosauro dinosauro) {
 		Cella cella = this.partita.getIsola().getMappa()[dinosauro.getRiga()][dinosauro.getColonna()];
-		if(this.dinosauri.remove(dinosauro)==true) {
+		if(this.dinosauri.remove(dinosauro)) {
 			//dinosauro rimosso correttamente
 			//lo cancello anche dalla mappa
 			cella.setDinosauro(null);
@@ -376,8 +376,7 @@ public class Giocatore {
 	public boolean[][] getMappaVisibile() {
 		//su consiglio di Sonar ritorno un oggetto clonato per una questione
 		//di sicurezza
-		boolean[][] mappaReturn = mappaVisibile.clone();
-		return mappaReturn;
+		return mappaVisibile.clone();
 	}
 
 	/**
