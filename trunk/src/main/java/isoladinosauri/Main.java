@@ -51,7 +51,7 @@ public class Main {
 
 		localePanel.add(lineaComando);
 		localePanel.add(createButton("GUI Locale"));
-		localePanel.add(createButton("HOME"));
+		localePanel.add(createButton(HOME));
 
 		JPanel localeGUIPanel = new JPanel(new GridLayout(4,1));
 		JLabel localeGUI = new JLabel("Modalita' caricamento mappa");
@@ -74,7 +74,7 @@ public class Main {
 
 		
 		localeGUIPanel.add(createButton("Generazione casuale"));
-		localeGUIPanel.add(createButton("HOME"));
+		localeGUIPanel.add(createButton(HOME));
 
 		
 		JPanel socketPanel = new JPanel(new GridLayout(4,1));
@@ -83,7 +83,7 @@ public class Main {
 		socketPanel.add(socket);
 		socketPanel.add(createButton("Linea di comando"));
 		socketPanel.add(createButton("GUI"));
-		socketPanel.add(createButton("HOME"));
+		socketPanel.add(createButton(HOME));
 
 		JPanel rmiPanel = new JPanel(new GridLayout(4,1));
 		JLabel rmi = new JLabel("RMI");
@@ -91,10 +91,10 @@ public class Main {
 		rmiPanel.add(rmi);
 		rmiPanel.add(createButton("Linea di comando"));
 		rmiPanel.add(createButton("GUI"));
-		rmiPanel.add(createButton("HOME"));
+		rmiPanel.add(createButton(HOME));
 
 		contentPane.setLayout(cardLayout);
-		contentPane.add(homePanel, "HOME");
+		contentPane.add(homePanel, HOME);
 		contentPane.add(localePanel, "Locale");
 		contentPane.add(socketPanel, "Socket");
 		contentPane.add(rmiPanel, "Rmi");
