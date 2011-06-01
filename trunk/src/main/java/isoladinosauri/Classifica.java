@@ -49,7 +49,7 @@ public class Classifica {
 	/**
 	 * Metodo che serve per aggiungere elementi nella classifica.
 	 * Deve esssre usato solo per inserire nuovi Giocatori e per aggiornare i punteggi.
-	 * Se gli si passa un Giocatore nuovo, lo inserisce, se giˆ presente ne aggiorna il punteggio.
+	 * Se gli si passa un Giocatore nuovo, lo inserisce, se gia' presente ne aggiorna il punteggio.
 	 * Per gestire lo stato online/offline richiama automaticamente il metodo privato aggiornaClassificaStati().
 	 * @param giocatore riferimento al Giocatore da inserire nella Classifica.
 	 */

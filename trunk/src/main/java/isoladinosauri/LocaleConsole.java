@@ -194,9 +194,10 @@ public class LocaleConsole {
 									//illumino la strada
 									for(int w=0;w<40;w++) {
 										for(int j=0;j<40;j++) {
-											if((w>=origineRigaStrada && w<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada) &&
-													stradaPercorsa[w-origineRigaStrada][j-origineColonnaStrada]<0) {
-												t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), w, j, raggio);
+											if((w>=origineRigaStrada && w<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada)) {
+												if(stradaPercorsa[w-origineRigaStrada][j-origineColonnaStrada]<0) {
+													t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), w, j, raggio);
+												}
 											}
 										}
 									}
@@ -210,7 +211,7 @@ public class LocaleConsole {
 									}
 
 //									spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
-								}while(spostDino==false);
+								}while(!spostDino);
 
 								System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
 								i.stampaMappaRidotta();
@@ -229,7 +230,7 @@ public class LocaleConsole {
 							switch(scelta)  {								
 							case 1 :
 								//cresci
-								if(dino.aumentaDimensione()==true) {
+								if(dino.aumentaDimensione()) {
 									System.out.println("Il dinosauro " + dino.getId() + " e' ora di dimensione: " + (dino.getEnergiaMax()/1000));
 									int raggio = dino.calcolaRaggioVisibilita();
 									t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), dino.getRiga(), dino.getColonna(), raggio);
@@ -243,7 +244,7 @@ public class LocaleConsole {
 								break;
 							case 2 :
 								//deponi
-								if((p.getGiocatori().get(conteggioGiocatori).eseguiDeposizionedeponiUovo(dino))==false) {
+								if(!(p.getGiocatori().get(conteggioGiocatori).eseguiDeposizionedeponiUovo(dino))) {
 									System.out.println("Errore deposizione, possibili motivi: energia insufficiente, squadra dei dinosauri completa");
 									//									if(p.getGiocatori().get(conteggioGiocatori).getDinosauri().isEmpty()) {
 									//										conteggioDinosauro=0;
@@ -310,7 +311,7 @@ public class LocaleConsole {
 			c.aggiornaClassificaStati();
 			c.stampaClassifica();
 
-		} while(uscita==false);
+		} while(!uscita);
 	}
 
 	private static void cresciEconsuma(Partita p) {

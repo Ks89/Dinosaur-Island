@@ -61,7 +61,7 @@ public class Partita {
 		for(int j=0;j<40;j++) {
 			for(int i=0;i<40;i++) {
 				if(mappa[i][j]!=null && mappa[i][j].getDinosauro()!=null && 
-						giocatore.getDinosauri().contains(mappa[i][j].getDinosauro())==true) {
+						giocatore.getDinosauri().contains(mappa[i][j].getDinosauro())) {
 					mappa[i][j].setDinosauro(null);
 				}		
 			}
@@ -148,7 +148,7 @@ public class Partita {
 						dinosauro = new Erbivoro(idDinosauro,posizione[0], posizione[1], turnoNascita);
 					}
 				}
-				if(this.getGiocatore(i).aggiungiDinosauro(dinosauro)==true) {
+				if(this.getGiocatore(i).aggiungiDinosauro(dinosauro)) {
 					this.getIsola().getMappa()[posizione[0]][posizione[1]].setDinosauro(dinosauro);	
 					this.getGiocatore(i).rimuoviUova();
 				} else {

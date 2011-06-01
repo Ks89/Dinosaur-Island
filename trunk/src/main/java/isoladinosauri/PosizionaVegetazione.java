@@ -9,8 +9,8 @@ import java.util.Random;
  */
 public class PosizionaVegetazione {
 
-	private final int MAX = 40;
-	private final int VEGETAZIONE = 512;
+	private static final int MAX = 40;
+	private static final int VEGETAZIONE = 512;
 	
 	/** 
 	 * Metodo per posizionare in modo casuale la Vegetazione su una mappa 40x40 con gia' terra (t), acqua (a) e carogne (c).

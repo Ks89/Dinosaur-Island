@@ -145,7 +145,7 @@ public class GenerazioneMappa {
 			 */
 
 			//ottengo l'array di forme di acqua da inserire
-			ArrayList<String[]> arrayForme = this.ottieniFormeAcqua();
+			String[][] arrayForme = this.ottieniFormeAcqua();
 
 
 			/*
@@ -153,9 +153,9 @@ public class GenerazioneMappa {
 			 * tutti gli elementi contenuti nella 
 			 * struttura arrayforme
 			 */
-			for(int numerofigure=0;numerofigure<arrayForme.size();numerofigure++){
+			for(int numerofigure=0;numerofigure<arrayForme.length;numerofigure++){
 
-				String arraydistringhe[]=arrayForme.get(numerofigure);
+				String arraydistringhe[]=arrayForme[numerofigure];
 
 				/*
 				 *cordinate generate a caso
@@ -181,7 +181,7 @@ public class GenerazioneMappa {
 				 */
 				boolean posNonConcessa=true;
 
-				while (posNonConcessa==true){
+				while (posNonConcessa){
 					posNonConcessa=false;
 					x=random.nextInt(38);
 					y=random.nextInt(38);
@@ -315,12 +315,12 @@ public class GenerazioneMappa {
 						}//Chiusura IF
 					}    //Chiusura FOR
 				}		 //Chiusura FOR
-			} while (modificato==true); //CHIUSURA DO-WHILE
+			} while (modificato); //CHIUSURA DO-WHILE
 
 			//Conta il numero di t
 			for(int i=0;i<39;i++) {
 				for(int k=0;k<39;k++) {
-					if (mappa[i][k]=="t") {
+					if (mappa[i][k].equals("t")) {
 						numeroraggiungibili++;
 					}
 				}
@@ -335,8 +335,9 @@ public class GenerazioneMappa {
 	 * parte di una determinata forma.
 	 * @return Un ArrayList di array di String contenente tutte le forme di acqua.
 	 */
-	private ArrayList<String[]> ottieniFormeAcqua() {
-		ArrayList<String[]> arrayForme =new ArrayList<String[]>();
+	private String[][] ottieniFormeAcqua() {
+//		ArrayList<String[]> arrayForme =new ArrayList<String[]>();
+		String[][] arrayForme = new String[18][18];
 		String formacinque[]={"00","10","01","11","20"};
 		String formacinquebis[]={"00","10","20","30","40"};
 		String formasei[]={"00","01","10","11","20","21"};
@@ -361,24 +362,24 @@ public class GenerazioneMappa {
 		 * dati di tipo ArrayList che puo' contenere
 		 * array di stringhe come oggetti
 		 */
-		arrayForme.add(formacinque);
-		arrayForme.add(formacinquebis);
-		arrayForme.add(formasei);
-		arrayForme.add(formaseibis);
-		arrayForme.add(formasette);
-		arrayForme.add(formasettebis);
-		arrayForme.add(formaotto);
-		arrayForme.add(formaottobis);
-		arrayForme.add(formanove);
-		arrayForme.add(formanovebis);
-		arrayForme.add(formadieci);
-		arrayForme.add(formaundici);
-		arrayForme.add(formaundicibis);
-		arrayForme.add(formaundicitris);
-		arrayForme.add(formadodici);
-		arrayForme.add(formadodicitris);
-		arrayForme.add(formadodicibis);
-		arrayForme.add(formaquindici);
+		arrayForme[0] = formacinque;
+		arrayForme[1] = formacinquebis;
+		arrayForme[2] = formasei;
+		arrayForme[3] = formaseibis;
+		arrayForme[4] = formasette;
+		arrayForme[5] = formasettebis;
+		arrayForme[6] = formaotto;
+		arrayForme[7] = formaottobis;
+		arrayForme[8] = formanove;
+		arrayForme[9] = formanovebis;
+		arrayForme[10] = formadieci;
+		arrayForme[11] = formaundici;
+		arrayForme[12] = formaundicibis;
+		arrayForme[13] = formaundicitris;
+		arrayForme[14] = formadodici;
+		arrayForme[15] = formadodicitris;
+		arrayForme[16] = formadodicibis;
+		arrayForme[17] = formaquindici;
 		return arrayForme;
 	}
 

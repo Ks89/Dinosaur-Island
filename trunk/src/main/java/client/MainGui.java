@@ -1,7 +1,7 @@
 package client;
 
 
-public class MainGui {
+class MainGui { //FIXME
 
 	public static void main (String[] args) {
 		
