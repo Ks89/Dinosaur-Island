@@ -42,6 +42,7 @@ public class Client {
 				System.out.println("4 - @accessoPartita");
 				System.out.println("5 - @uscitaPartita");
 				System.out.println("6 - @listaGiocatori");
+				System.out.println("7 - @logout");
 				System.out.println("9 - termina client");
 				scelta = input.nextInt();
 				switch(scelta) {
@@ -89,6 +90,12 @@ public class Client {
 					token = keyboardReader.readLine();
 					request="@listaGiocatori,token="+token;
 					break;
+				case 7:
+					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					request="@logout,token="+token;
+					break;
 				case 9:
 					bufferedWriter.flush();
 					break;
@@ -97,7 +104,7 @@ public class Client {
 					System.out.println("scelta non consentita\n");
 					break;
 				}
-				if(scelta==1 || scelta==2 || scelta ==3 || scelta ==4 || scelta ==5 || scelta ==6) {
+				if(scelta==1 || scelta==2 || scelta ==3 || scelta ==4 || scelta ==5 || scelta ==6 || scelta ==7) {
 					System.out.println("Sending request to server: " + request);
 					bufferedWriter.write(request);
 					bufferedWriter.newLine();

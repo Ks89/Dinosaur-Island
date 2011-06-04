@@ -21,196 +21,156 @@ public class ClientHandler extends Thread {
 		
 	}
 
-	public String creaUtente(String comando, StringTokenizer st) {
-		StringTokenizer string = null;
-		String parametro;
-		String nickname="";
-		String password="";
-		String risposta="";
-//FIXME: tradurre tutte le StringTokenizer in .split()
-		comando=st.nextToken(); // comando: user=U,pass=P
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken(); // string: user
-		if(parametro.equals("user")) {
-			nickname=string.nextToken();
-		}
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("pass")) {
-			password=string.nextToken();
-			//cerco nel file Utenti.txt se l'utente e' gia' esistente
-			try {
-				FileReader fileReader = new FileReader("Utenti.txt");
-				BufferedReader br;
-				br = new BufferedReader(fileReader);
-				String rigaFile = br.readLine();
-				boolean trovato=false;
-				while(rigaFile!=null) {
-					if(rigaFile.split(" ")[0].equals(nickname)) {
-						trovato=true;
-						risposta="@no,@usernameOccupato";
-						break;
-					}
-					rigaFile = br.readLine();
+	public String creaUtente(String request) {
+		String nickname = new String("");
+		String password = new String("");
+		String answer = new String("");
+
+		nickname = request.split(",")[1].split("=")[1];
+		password = request.split(",")[2].split("=")[1];
+		//cerco nel file Utenti.txt se l'utente e' gia' esistente
+		try {
+			FileReader fileReader = new FileReader("Utenti.txt");
+			BufferedReader br;
+			br = new BufferedReader(fileReader);
+			String rigaFile = br.readLine();
+			boolean trovato=false;
+			while(rigaFile!=null) {
+				if(rigaFile.split(" ")[0].equals(nickname)) {
+					trovato=true;
+					answer="@no,@usernameOccupato";
+					break;
 				}
-				if(!trovato) { //inserisco il nuovo utente
-					risposta="@ok";
-					FileWriter fileUtenti = new FileWriter ("Utenti.txt",true); //true=append
-					fileUtenti.write(nickname+" "+password+"\n");
-					fileUtenti.close();
-				}
-//				Utente utente = new Utente(nickname,password);
+				rigaFile = br.readLine();
 			}
-			catch(IOException ioException)
-			{
-				System.err.println(ERRORE);
+			if(!trovato) { //inserisco il nuovo utente
+				answer="@ok";
+				FileWriter fileUtenti = new FileWriter ("Utenti.txt",true); //true=append
+				fileUtenti.write(nickname+" "+password+"\n");
+				fileUtenti.close();
 			}
+			//				Utente utente = new Utente(nickname,password);
 		}
-		return risposta;
+		catch(IOException ioException)
+		{
+			System.err.println(ERRORE);
+		}
+		return answer;
 	}
 	
-	public String login(String comando, StringTokenizer st) {
-		StringTokenizer string = null;
-		String parametro;
-		String nickname="";
-		String password="";
-		String token="";
-		String risposta="";
+	public String login(String request) {
+		String nickname = new String("");
+		String password = new String("");
+		String token = new String("");
+		String answer = new String("");
 
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("user")) {
-			nickname=string.nextToken();
-		}
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("pass")) {
-			password=string.nextToken();
-			//verifico se c'e' nel file Utenti.txt
-			try {
-				FileReader fileUtenti = new FileReader("Utenti.txt");
-				BufferedReader br;
-				br = new BufferedReader(fileUtenti);
-				String rigaFile = br.readLine();
+		nickname = request.split(",")[1].split("=")[1];
+		password = request.split(",")[2].split("=")[1];
 
-				boolean trovato=false;
-				while(rigaFile!=null) {
-					if(rigaFile.split(" ")[0].equals(nickname) && rigaFile.split(" ")[1].equals(password) ) {
-						trovato=true;
-						token=nickname+"-"+password;
-						break;
-					}
-					rigaFile = br.readLine();
-				}
-				br.close();
-				if(trovato) {
-					//cerco se il token e' gia' loggato
-					FileReader fileToken = new FileReader("Token.txt");
-					br = new BufferedReader(fileToken);
-					rigaFile = br.readLine();
+		//verifico se c'e' nel file Utenti.txt
+		try {
+			FileReader fileUtenti = new FileReader("Utenti.txt");
+			BufferedReader br;
+			br = new BufferedReader(fileUtenti);
+			String rigaFile = br.readLine();
 
-					boolean trovatoToken=false;
-					while(rigaFile!=null) {
-						if(rigaFile.split(" ")[1].equals(token)) {
-							trovatoToken=true;
-							break;
-						}
-						rigaFile = br.readLine();
-					}
-					br.close();
-					
-					if(!trovatoToken) {
-						//aggiorno il file Token.txt
-						FileWriter fileTokenAgg = new FileWriter ("Token.txt",true); //true=append
-						fileTokenAgg.write(nickname+" "+token+"\n");
-						fileTokenAgg.close();
-						risposta="@ok,"+token;
-					}
-					else {
-						risposta="@no,@UTENTE_GIA_LOGGATO";
-					}
+			boolean trovato=false;
+			while(rigaFile!=null) {
+				if(rigaFile.split(" ")[0].equals(nickname) && rigaFile.split(" ")[1].equals(password) ) {
+					trovato=true;
+					token=nickname+"-"+password;
+					break;
 				}
-				else if(!trovato) {
-					risposta="@no,@autenticazioneFallita";
-				}
+				rigaFile = br.readLine();
 			}
-			catch(IOException ioException)
-			{
-				System.err.println(ERRORE);
-			}
-		}
-		return risposta;
-	}
-	
-	public String creaRazza(String comando, StringTokenizer st) {
-		StringTokenizer string = null;
-		String parametro;
-		String token="";
-		String nomeRazza="";
-		String tipoRazza="";
-		String risposta="";
-
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("token")) {
-			token=string.nextToken();
-		}
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("nome")) {
-//			nomeRazza=string.nextToken();
-			//verifico se c'e' il token nel file Token.txt
-			try {
+			br.close();
+			if(trovato) {
+				//cerco se il token e' gia' loggato
 				FileReader fileToken = new FileReader("Token.txt");
-				BufferedReader br;
 				br = new BufferedReader(fileToken);
-				String rigaFile = br.readLine();
+				rigaFile = br.readLine();
 
-				boolean trovato=false;
+				boolean trovatoToken=false;
 				while(rigaFile!=null) {
-					if(rigaFile.split(" ")[1].equals(token) ) {
-						trovato=true;
-						risposta="@ok";
+					if(rigaFile.split(" ")[1].equals(token)) {
+						trovatoToken=true;
 						break;
 					}
 					rigaFile = br.readLine();
 				}
 				br.close();
-				if(trovato) {
-					//TODO: gestione creazione razza
+
+				if(!trovatoToken) {
+					//aggiorno il file Token.txt
+					FileWriter fileTokenAgg = new FileWriter ("Token.txt",true); //true=append
+					fileTokenAgg.write(nickname+" "+token+"\n");
+					fileTokenAgg.close();
+					answer="@ok,"+token;
 				}
-				else if(!trovato) {
-					risposta="@no,@tokenNonValido";
+				else {
+					answer="@no,@UTENTE_GIA_LOGGATO";
 				}
 			}
-			catch(IOException ioException)
-			{
-				System.err.println(ERRORE);
+			else if(!trovato) {
+				answer="@no,@autenticazioneFallita";
 			}
 		}
-		return risposta;
+		catch(IOException ioException)
+		{
+			System.err.println(ERRORE);
+		}
+		return answer;
 	}
 	
-	public String accessoPartita(String comando, StringTokenizer st) {
+	public String creaRazza(String request) {
 
-		StringTokenizer string = null;
-		String parametro;
-		String nomeUtente="";
-		String token="";
-		String risposta="";
-		int nGiocatori=0;
+		String token = new String("");
+		String nomeRazza = new String("");
+		String tipoRazza = new String("");
+		String answer = new String("");
 
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("token")) {
-			token=string.nextToken();
+		token = request.split(",")[1].split("=")[1];
+		nomeRazza = request.split(",")[2].split("=")[1];
+		tipoRazza = request.split(",")[3].split("=")[1];
+		//verifico se c'e' il token nel file Token.txt
+		try {
+			FileReader fileToken = new FileReader("Token.txt");
+			BufferedReader br;
+			br = new BufferedReader(fileToken);
+			String rigaFile = br.readLine();
+
+			boolean trovato=false;
+			while(rigaFile!=null) {
+				if(rigaFile.split(" ")[1].equals(token) ) {
+					trovato=true;
+					answer = "@ok";
+					break;
+				}
+				rigaFile = br.readLine();
+			}
+			br.close();
+			if(trovato) {
+				//TODO: gestione creazione razza, bisogna creare prima un giocatore dato che la razza (o specie) appartiene a lui
+			}
+			else if(!trovato) {
+				answer = "@no,@tokenNonValido";
+			}
 		}
+		catch(IOException ioException)
+		{
+			System.err.println(ERRORE);
+		}
+		return answer;
+	}
+	
+	public String accessoPartita(String request) {
+
+		String nomeUtente = new String("");
+		String token = new String("");
+		String answer = new String("");
+		int nGiocatori = 0;
+
+		token = request.split(",")[1].split("=")[1];
 		try { // cerco se il token e' valido
 			FileReader fileToken = new FileReader("Token.txt");
 			BufferedReader br;
@@ -260,39 +220,32 @@ public class ClientHandler extends Thread {
 					FileWriter fileTokenInPartitaWR = new FileWriter ("TokenInPartita.txt",true); //true=append
 					fileTokenInPartitaWR.write(nomeUtente+" "+token+"\n");
 					fileTokenInPartitaWR.close();
-					risposta="@ok";
+					answer = "@ok";
 				}
 				else if(!trovato) {
-					risposta="@no,@tokenNonValido";
+					answer = "@no,@tokenNonValido";
 				}
 				else if(nGiocatori>=8) {
-					risposta="@no,@troppiGiocatori";
+					answer = "@no,@troppiGiocatori";
 				}
 			}	
 			else {
-				risposta="@no,@ACCESSO_GIA_EFFETTUATO";
+				answer = "@no,@ACCESSO_GIA_EFFETTUATO";
 			}
 		}
 		catch(IOException ioException)
 		{
 			System.err.println(ERRORE);
 		}
-		return risposta;
+		return answer;
 	}
 	
-	public String uscitaPartita(String comando, StringTokenizer st) {
+	public String uscitaPartita(String request) {
 
-		StringTokenizer string = null;
-		String parametro;
-		String token="";
-		String risposta="";
+		String token = new String("");
+		String answer = new String("");
 
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("token")) {
-			token=string.nextToken();
-		}
+		token = request.split(",")[1].split("=")[1];
 		try { // cerco se il token e' in partita
 			FileReader fileTokenInPartita = new FileReader("TokenInPartita.txt");
 			BufferedReader br;
@@ -315,7 +268,7 @@ public class ClientHandler extends Thread {
 
 				fileTokenInPartita = new FileReader("TokenInPartita.txt");
 				FileWriter fileTmpToken = new FileWriter ("TmpToken.txt",true); //true=append
-				
+
 				br = new BufferedReader(fileTokenInPartita);
 				rigaFile = br.readLine();
 
@@ -329,40 +282,34 @@ public class ClientHandler extends Thread {
 				fileTmpToken.close();
 
 				//elimino il vecchio TokenInPartita.txt e poi rinomino il TmpToken.txt in TokenInPartita.txt
-			
+
 				File daEliminare = new File("TokenInPartita.txt");
 				if(daEliminare.exists()) {
 					daEliminare.delete();
 				}
-				
+
 				File fileNomeVecchio = new File("TmpToken.txt");
 				File fileNomeNuovo = new File("TokenInPartita.txt");
 				fileNomeVecchio.renameTo(fileNomeNuovo);
-				risposta="@ok";
+				answer = "@ok";
 			}
 			else if(!trovato) {
-				risposta="@no,@tokenNonValido";
+				answer = "@no,@tokenNonValido";
 			}
 		}
 		catch(IOException ioException)
 		{
 			System.err.println(ERRORE);
 		}
-		return risposta;
+		return answer;
 	}
 	
-	public String listaGiocatori(String comando, StringTokenizer st) {
-		StringTokenizer string = null;
-		String parametro;
-		String token="";
-		String risposta="";
+	public String listaGiocatori(String request) {
 
-		comando=st.nextToken();
-		string = new StringTokenizer(comando,"=");
-		parametro=string.nextToken();
-		if(parametro.equals("token")) {
-			token=string.nextToken();
-		}
+		String token = new String("");
+		String answer = new String("");
+
+		token = request.split(",")[1].split("=")[1];
 		//verifico se c'e' nel file Token.txt
 		try {
 			FileReader fileToken = new FileReader("Token.txt");
@@ -390,66 +337,133 @@ public class ClientHandler extends Thread {
 					rigaFile = br.readLine();
 				}
 				br.close();
-				risposta="@listaGiocatori"+listaGiocatori;
+				answer = "@listaGiocatori"+listaGiocatori;
 			}
 			else if(!trovato) {
-				risposta="@no,@tokenNonValido";
+				answer = "@no,@tokenNonValido";
 			}
 		}
 		catch(IOException ioException)
 		{
 			System.err.println(ERRORE);
 		}
-		return risposta;
+		return answer;
+	}
+	
+	public String logout(String request) {
+		
+		String token = new String("");
+		String answer = new String("");
+
+		token = request.split(",")[1].split("=")[1];
+
+		//verifico se c'e' nel file Token.txt
+		try {
+			FileReader fileToken = new FileReader("Token.txt");
+			BufferedReader br;
+			br = new BufferedReader(fileToken);
+			String rigaFile = br.readLine();
+
+			boolean trovato=false;
+			while(rigaFile!=null) {
+				if(rigaFile.split(" ")[1].equals(token) ) {
+					trovato=true;
+					break;
+				}
+				rigaFile = br.readLine();
+			}
+			br.close();
+			if(trovato) {
+				//aggiorno il file Token.txt cancellando il token che vuole fare il logout
+				//copio i token escluso quello che devo eliminare in un file tmp
+
+				fileToken = new FileReader("Token.txt");
+				FileWriter fileTmpTokenLogout = new FileWriter ("TmpTokenLogout.txt",true); //true=append
+
+				br = new BufferedReader(fileToken);
+				rigaFile = br.readLine();
+
+				while(rigaFile!=null) {
+					if(rigaFile.split(" ")[1].equals(token)!=true) {
+						fileTmpTokenLogout.write(rigaFile+"\n");
+					}
+					rigaFile = br.readLine();
+				}
+				br.close();
+				fileTmpTokenLogout.close();
+
+				//elimino il vecchio Token.txt e poi rinomino il TmpTokenLogout.txt in Token.txt
+
+				File daEliminare = new File("Token.txt");
+				if(daEliminare.exists()) {
+					daEliminare.delete();
+				}
+
+				File fileNomeVecchio = new File("TmpTokenLogout.txt");
+				File fileNomeNuovo = new File("Token.txt");
+				fileNomeVecchio.renameTo(fileNomeNuovo);
+				answer = "@ok";
+			}
+			else if(!trovato) {
+				answer = "@no,@tokenNonValido";
+			}
+		}
+		catch(IOException ioException)
+		{
+			System.err.println(ERRORE);
+		}
+		return answer;
 	}
 	
 	public void run() {
-		StringTokenizer st = null;
+		
 		String comando = new String("");
+		String answer = new String("");
+		
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			while (true) {
 				String request = bufferedReader.readLine();
 				if(request!=null) {
-					st = new StringTokenizer(request,",");
-					comando = st.nextToken();
+					comando = request.split(",")[0];
 				}
-				String risposta;
-				
 				//FIXME
 //				if (comando == null) {
 //					System.out.println("Client closed connection.");
 //					break;
 //				} else 
 				if (comando.equals("@creaUtente")) {
-					risposta=creaUtente(comando,st);
-					bufferedWriter.write(risposta);
+					answer = creaUtente(request);
+					bufferedWriter.write(answer);
 				}
 				else if (comando.equals("@login")) {
-					risposta=login(comando,st);
-					bufferedWriter.write(risposta);
+					answer=login(request);
+					bufferedWriter.write(answer);
 				}
 				else if (comando.equals("@creaRazza")) {
-					risposta=creaRazza(comando,st);
-					bufferedWriter.write(risposta);
+					answer=creaRazza(request);
+					bufferedWriter.write(answer);
 				}
 				else if (comando.equals("@accessoPartita")) {
-					risposta=accessoPartita(comando,st);
-					bufferedWriter.write(risposta);
+					answer=accessoPartita(request);
+					bufferedWriter.write(answer);
 				}
 				else if (comando.equals("@uscitaPartita")) {
-					risposta=uscitaPartita(comando,st);
-					bufferedWriter.write(risposta);
+					answer=uscitaPartita(request);
+					bufferedWriter.write(answer);
 				}
 				else if (comando.equals("@listaGiocatori")) {
-					risposta=listaGiocatori(comando,st);
-					bufferedWriter.write(risposta);
+					answer=listaGiocatori(request);
+					bufferedWriter.write(answer);
+				}
+				else if (comando.equals("@logout")) {
+					answer=logout(request);
+					bufferedWriter.write(answer);
 				}
 				else {
 					bufferedWriter.write("@unknownCommand");
 				}
-
 				bufferedWriter.newLine();
 				bufferedWriter.flush();
 			}
