@@ -449,7 +449,7 @@ public class ClientHandler extends Thread {
 					}
 				}
 				else {
-					//TODO: ?? dalle specifiche: ''..altrimenti non si è in partita, e ciò è definito dal simbolo +'' ??
+					//TODO: ?? dalle specifiche: ''..altrimenti non si e' in partita, e cio' e' definito dal simbolo +'' ??
 				}
 				answer = "@listaDinosauri"+listaDino;
 			}
