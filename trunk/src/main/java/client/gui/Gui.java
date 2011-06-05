@@ -7,8 +7,10 @@ import isoladinosauri.Isola;
 import isoladinosauri.Partita;
 import isoladinosauri.Turno;
 import isoladinosauri.Utente;
+import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
+import isoladinosauri.modellodati.Erbivoro;
 import isoladinosauri.modellodati.Vegetale;
 
 import java.awt.Color;
@@ -19,17 +21,18 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+/**
+ *	Classe principale che si occupa di creare la grafica dell'applicazione (lato client).
+ */
 public class Gui {
 
 	/*
 	 * TODO sistemare la javadoc
-	 * FIXME il pannello dati viene aggiornato solo col dinosauro "0", se ne faccio nascere uno e lo seleziono
-	 * 	non viene refreshato.
-	 * FIXME se faccio nascere un dinosauro non gli viene applicata la visibilita senza fare un clic per poterlo muovere
-	 * FIXME se clicco al di fuori dell'area raggiungibile in una zona gia esplorata mi setta le scrollbar lo stesso
-	 * nonstante non sia raggiungibile
-	*/
-	
+	 * FIXME se muovo un dinosauro appena nato dall'uovo il panel dati non si aggiorna
+	 * FIXME un dinosauro puo' muoversi anche su se stesso o su uno della sua squadra mangiandolo, bisogna
+	 * 		far si che mangia o cmq lo spostamento funzioni solo se nella destinazione ci sia un dinosauro di altri giocatori
+	 */
+
 	private static final int MAX = 40;
 	private JButton[][] mappaGui = new JButton[MAX][MAX];
 
@@ -39,7 +42,6 @@ public class Gui {
 
 	private JFrame frame;
 	private Dinosauro dino;
-	private JMenuBar bar;
 	private JScrollPane mappaPanel;
 	private CaricamentoMappa cm;
 	private JPanel datiPanel;
@@ -49,15 +51,21 @@ public class Gui {
 	private int indiceDino; 
 	private int turnoNascita;
 
+	private Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro1.png"));
+	private Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro1.png"));
+	private Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
+	
 	private Partita partita;
 	private Turno t;
 	private Isola isola;
 	private DatiGui datiGui;
 	private MappaGui mg;
 
-	
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Costruttore della classe Gui che inizializza la mappa, l'Isola, la Partita ed il Turno.
+	 */
 	public Gui () {
 		this.cm = new CaricamentoMappa();
 		this.mappa = cm.caricaDaFile();
@@ -65,17 +73,15 @@ public class Gui {
 		this.partita = new Partita(isola);
 		this.t = new Turno(partita);
 		partita.setTurnoCorrente(t);
-		this.bar = new JMenuBar();
 	}
-	public JButton[][] getMappaGui() {
-		return mappaGui;
-	}
-
-	public void setMappaGui(JButton[][] mappaGui) {
-		this.mappaGui = mappaGui;
-	}
-
-
+	
+	/**
+	 * Metodo che si occupa di impostare il giocatore.
+	 * @param user String che rappresenta il nome dell'utente al momento del login.
+	 * @param password String che rappresenta la password dell'utente al momento del login.
+	 * @param specie String che rappresenta il nome della specie del Giocatore.
+	 * @param tipo boolean che rappresenta in caso di 'true' un carnivoro, in caso di 'false' un erbivoro.
+	 */
 	public void setGiocatore(String user, String password, String specie, boolean tipo) {
 		new Utente(user, password);
 		String tipoDinosauro;
@@ -90,134 +96,39 @@ public class Gui {
 		this.inizializzaGrafica();
 		mg.setScrollBar(dino.getRiga(), dino.getColonna());
 	}
-	
 
-	//**********************menu JFrame**********************
-	private JMenuBar menuGrafica() {
-		JMenu fileMenu = new JMenu("File"); 
-		fileMenu.setMnemonic('F'); //imposta il mnemonic ad F
-
-		//crea la voce About
-		//Icon immagine4 = new ImageIcon(getClass().getResource("info_icon.png"));
-		JMenuItem aboutItem = new JMenuItem("Info..."/*,immagine4*/);
-		aboutItem.setMnemonic('I'); //imposta mnemonic
-		fileMenu.add(aboutItem); //aggiunge la voce al menu file
-		aboutItem.addActionListener(
-				new ActionListener() //classe inner anonima
-				{
-					public void actionPerformed(ActionEvent event)
-					{//mostra un messaggio quando l'untente sceglie about...
-						JOptionPane.showMessageDialog(null,"Isola Dei Dinosauri BETA1\nCreato da 766172 e 7xxxxx\n(C) 2011","About",JOptionPane.PLAIN_MESSAGE);
-					}
-				}
-		);
-		//crea la voce exit
-		//		Icon immagine5 = new ImageIcon(getClass().getResource("Exit_icon.jpg"));
-		JMenuItem exitItem = new JMenuItem("Exit"/*,immagine5*/);
-		exitItem.setMnemonic('E');
-		fileMenu.add(exitItem);
-		exitItem.addActionListener(
-				new ActionListener()
-				{
-					public void actionPerformed(ActionEvent event)
-					{
-						frame.dispose();
-					}
-				}
-		);
-
-		//crea il nuovo menu Operazioni
-		JMenu operazMenu = new JMenu("Operazioni");
-		operazMenu.setMnemonic('O');
-//		Icon refreshImmagine = new ImageIcon(ClassLoader.getSystemResource("refresh.png"));
-		JMenuItem refreshElemento = new JMenuItem("Rigenera Mappa"/*,refreshImmagine*/);
-		refreshElemento.setMnemonic('R'); //imposta mnemonic
-		operazMenu.add(refreshElemento); //aggiunge la voce al menu Operazioni
-//		refreshItem.addActionListener(
-//				new ActionListener() //classe inner anonima
-//				{
-//					public void actionPerformed(ActionEvent event)
-//					{
-//						//rigenera mappa
-//						mappa = cm.caricaDaFile();
-//						isola = new Isola(mappa);
-//						partita = new Partita(isola);
-//						t = new Turno(partita);
-//						partita.setTurnoCorrente(t);
-//						partita.getGiocatori().clear();
-//						utente = new Utente(user.getText(), password.getText());
-//						giocatore = new Giocatore(partita, turnoPartita, specie.getText(), tipo.getText());
-//						dino = giocatore.getDinosauri().get(indiceDino);
-//						//						mappaPanel= creaMappa(mappa);
-//						//						applicaRaggiungibilita(0);
-//						//						applicaVisibilita(0);
-//						frame.removeAll();
-//						bar.removeAll();
-//						inizializzaGrafica();
-//						//						frame.repaint();
-//
-//						//fare in modo che mappaGui cambi e si aggiorni e poi chiamare un repaint come fatto col JButton cresci
-//
-//					}
-//				}
-//		);
-		//crea la voce Salva partita
-		operazMenu.addSeparator();
-		JMenuItem saveItem = new JMenuItem("Salva partita");
-		saveItem.setMnemonic('S'); //imposta mnemonic
-		operazMenu.add(saveItem); //aggiunge la voce al menu Operazioni
-		saveItem.addActionListener(
-				new ActionListener() //classe inner anonima
-				{
-					public void actionPerformed(ActionEvent event)
-					{
-						//Inserire salvataggio partita
-					}
-				}
-		);
-		JMenuItem loadItem = new JMenuItem("Carica...");
-		loadItem.setMnemonic('C'); //imposta mnemoic
-		operazMenu.add(loadItem);
-		loadItem.addActionListener(
-				new ActionListener() //classe inner anonima
-				{
-					public void actionPerformed(ActionEvent event)
-					{
-						//carica da file
-					}
-				}
-		);
-		//aggiunge il menu File alla barra appena creata
-		bar.add(fileMenu);
-		bar.add(operazMenu);
-		return bar;
-
-	}
-	//********************************************************
-
+	/**
+	 * Metodo che inizializza la grafica, creando un frame ed aggiungendovi i vari JPanel e menu.
+	 */
 	private void inizializzaGrafica() {
-
 		frame = new JFrame("Isola dei dinosauri BETA1");
 		frame.setLayout(new FlowLayout()); //imposto il Layout a griglia
 		//		frame.setMinimumSize(new Dimension(1025,637));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.setResizable(false);
+		//		frame.setResizable(false);
 		mg = new MappaGui(this,giocatore,datiGui);
 		mappaPanel= mg.creaMappa(mappa);
 		this.setMappaGui(mg.getMappaGui());
-		
+
 		infoPanel = this.creaRiassuntoDati(indiceDino);
-		
+
 		frame.add(infoPanel);
 		frame.add(mappaPanel);
-		frame.setJMenuBar(this.menuGrafica());
+		
+		MenuGui menuGui = new MenuGui(frame);		
+		frame.setJMenuBar(menuGui.getMenu());
 
 		this.assegnaTurni();
 
 		frame.pack();
 		frame.setVisible(true);
 	}
-	
+
+	/**
+	 * Metodo che crea il JPanel con le informazioni sul Dinosauro e sul Giocatore.
+	 * @param indiceDino int che rappresenta il numero del Dinosauro.
+	 * @return Un JPanel contenente il riassunto della situazione del Giocatore e del suo Dinosauro selezionato con indiceDino.
+	 */
 	private JPanel creaRiassuntoDati(int indiceDino) {
 		datiPanel = datiGui.creaDati(indiceDino,giocatore);
 		infoPanel = new JPanel();
@@ -227,12 +138,19 @@ public class Gui {
 		return infoPanel;
 	}
 
+	
+	/**
+	 * Metodo che si occupa di assegnare i Turni.
+	 */
 	public void assegnaTurni() {
 		mg.applicaRaggiungibilita(indiceDino,giocatore,t);
 		mg.applicaVisiblita(giocatore, t);
 	}
 
-
+	/**
+	 * Metodo che crea il JPanel contenente i pulsanti per far crescere, deporre e selezionare un Dinosauro.
+	 * @return Un JPanel contenente i pulsanti per far crescere, deporre e selezionare un Dinosauro.
+	 */
 	private JPanel azioni() {
 		JPanel panelAzioni = new JPanel();
 		panelAzioni.setLayout(new GridLayout(4,1));
@@ -260,12 +178,11 @@ public class Gui {
 							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
 							mg.applicaVisiblita(giocatore, t);
 							datiGui.aggiornaDati(indiceDino, giocatore);
-//							datiPanel = datiGui.ricreaDatiPanel(indiceDino);
-//							datiGui.setPosizione(dino.getRiga(),dino.getColonna());
 						}
 						else {
 							partita.getGiocatori().get(0).rimuoviDinosauro(dino);
-							System.out.println("Non e' stato possibile far crescere il dinosauro: " + dino.getId());
+							mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
+							JOptionPane.showMessageDialog(null, "Non e' stato possibile eseguire l'azione di crescita\nDinosauro rimosso!");
 						}
 
 					}
@@ -275,22 +192,30 @@ public class Gui {
 		deponi.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						dino.setEnergia(5000);
-						dino.setEnergiaMax(5000);
+//						dino.setEnergia(5000);
+//						dino.setEnergiaMax(5000);
 						if((giocatore.eseguiDeposizionedeponiUovo(dino))) {
+							int raggio = dino.calcolaRaggioVisibilita();
+							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
 							mg.applicaVisiblita(giocatore, t);
 							partita.nascitaDinosauro(turnoNascita);
 							for(int i=0;i<40;i++) {
 								for(int j=0;j<40;j++) {
-									if(mappa[i][j] !=null && mappa[i][j].getDinosauro()!=null) mappaGui[i][j].setBackground(Color.YELLOW);
+									if(mappa[i][j] !=null && mappa[i][j].getDinosauro()!=null) {
+										if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
+											mappaGui[i][j].setIcon(carnivoroIcona);
+										} else {
+											if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
+												mappaGui[i][j].setIcon(erbivoroIcona);
+											}
+										}
+									}
 								}
 							}
-							System.out.println("dino1 :" + giocatore.getDinosauri().get(0).getId());
-							System.out.println("dino2 :" + giocatore.getDinosauri().get(1).getId());
-//							frame.repaint();
 						} else {
+							mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
 							JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
-									"possibili motivi: \nenergia insufficiente\nsquadra dei dinosauri completa!");
+							"possibili motivi: \nenergia insufficiente\nsquadra dei dinosauri completa!");
 						}
 						datiGui.aggiornaDati(indiceDino, giocatore);
 					}
@@ -306,6 +231,7 @@ public class Gui {
 						mg.applicaRaggiungibilita(indiceDino, giocatore, t);
 						mg.setScrollBar(dino.getRiga(), dino.getColonna());
 						mg.applicaVisiblita(giocatore, t);
+						datiGui.aggiornaDati(indiceDino, giocatore);
 						System.out.println("slezionato: " + indiceDino);
 					}
 				}
@@ -314,6 +240,13 @@ public class Gui {
 	}
 
 
+	/**
+	 * Metodo per trovare un Dinosauro all'interno della mappa 'stradaPercorsa'.
+	 * @param stradaPercorsa array bidimensionale di int che rappresenta la strada percorsa tramite numeri negativi crescenti da -7.
+	 * @return Un array di int con:
+	 * 				[0] - la riga del Dinosauro trovato, 
+	 * 				[1] - la colonna del Dinosauro trovato.	
+	 */
 	private static int[] trovaDinosauroStrada (int[][] stradaPercorsa) {
 		int j,w;
 		int[] uscita = {0,0};
@@ -329,6 +262,11 @@ public class Gui {
 		return uscita;
 	}
 
+	/**
+	 * Metoco per eseguire il movimento di un Dinosauro.
+	 * @param rigaCliccata int che rappreseta la riga della cella cliccata nella mappa del gioco.
+	 * @param colonnaCliccata int che rappreseta la colonna della cella cliccata nella mappa del gioco.
+	 */
 	void eseguiMovimento(int rigaCliccata, int colonnaCliccata) {
 
 		int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getRiga(), dino.getColonna());
@@ -373,9 +311,10 @@ public class Gui {
 		//illumino la strada
 		for(int f=0;f<40;f++) {
 			for(int j=0;j<40;j++) {
-				if((f>=origineRigaStrada && f<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada) &&
-						stradaPercorsa[f-origineRigaStrada][j-origineColonnaStrada]<0) {
-					t.illuminaMappa(partita.getGiocatori().get(0), f, j, raggio);
+				if((f>=origineRigaStrada && f<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada)) {
+					if(stradaPercorsa[f-origineRigaStrada][j-origineColonnaStrada]<0) {
+						t.illuminaMappa(partita.getGiocatori().get(0), f, j, raggio);
+					}
 				}
 			}
 		}
@@ -390,8 +329,8 @@ public class Gui {
 		//		mg.resetRaggiungibilita();
 		mg.applicaVisiblita(giocatore, t);
 		mg.applicaRaggiungibilita(indiceDino, giocatore, t);
-		
-		
+
+
 		if(mappa[vecchiaRiga][vecchiaColonna]!=null) {
 			if(mappa[vecchiaRiga][vecchiaColonna].getOccupante() instanceof Vegetale) {
 				mappaGui[vecchiaRiga][vecchiaColonna].setBackground(Color.GREEN);
@@ -405,30 +344,14 @@ public class Gui {
 		}
 	}
 	
-	public Giocatore getGiocatore() {
-		return giocatore;
-	}
-	
-	public void setGiocatore(Giocatore giocatore) {
-		this.giocatore = giocatore;
-	}
-	
-	public int getIndiceDino() {
-		return indiceDino;
-	}
-	
-	public void setIndiceDino(int indiceDino) {
-		this.indiceDino = indiceDino;
-	}
-	
-	public Turno getT() {
-		return t;
-	}
-	
-	public void setT(Turno t) {
-		this.t = t;
-	}
-	
+	/**
+	 * Metodo per ottenere i dati nella vista di raggiungibilita'.
+	 * @return un array di int con:
+	 * 			[0] - riga d'inizio vista,
+	 * 			[1] - colonna d'inizio vista,
+	 * 			[2] - riga di fine vista,
+	 * 			[3] - colonna di fine vista.
+	 */
 	public int[] getDatiRaggiungibilita () {
 		int rigaDino = giocatore.getDinosauri().get(indiceDino).getRiga();
 		int colonnaDino = giocatore.getDinosauri().get(indiceDino).getColonna();
@@ -441,5 +364,61 @@ public class Gui {
 		datiRaggiungibilita[2] = rigaDino + (raggiungibile.length - coordinate[0] - 1); //riga fine
 		datiRaggiungibilita[3] = colonnaDino + (raggiungibile[0].length - coordinate[1] - 1); //colonna fine
 		return datiRaggiungibilita;
+	}
+
+	/**
+	 * @return Il Giocatore.
+	 */
+	public Giocatore getGiocatore() {
+		return giocatore;
+	}
+
+	/**
+	 * @param giocatore Riferimento al Giocatore.
+	 */
+	public void setGiocatore(Giocatore giocatore) {
+		this.giocatore = giocatore;
+	}
+
+	/**
+	 * @return Un int che rappresenta il numero del Dinosauro nella propria squadra.
+	 */
+	public int getIndiceDino() {
+		return indiceDino;
+	}
+
+	/**
+	 * @param indiceDino int per impostare il numero del Dinosauro nella propria squadra.
+	 */
+	public void setIndiceDino(int indiceDino) {
+		this.indiceDino = indiceDino;
+	}
+
+	/**
+	 * @return Il Turno corrente.
+	 */
+	public Turno getT() {
+		return t;
+	}
+
+	/**
+	 * @param t riferimento al Tunro corrente.
+	 */
+	public void setT(Turno t) {
+		this.t = t;
+	}
+	
+	/**
+	 * @return Un array bidimensionale contenente la mappa da gioco di JButton.
+	 */
+	public JButton[][] getMappaGui() {
+		return mappaGui.clone();
+	}
+
+	/**
+	 * @param mappaGui array bidimensionale per impostare la mappa di JButton.
+	 */
+	public void setMappaGui(JButton[][] mappaGui) {
+		this.mappaGui = mappaGui.clone();
 	}
 }

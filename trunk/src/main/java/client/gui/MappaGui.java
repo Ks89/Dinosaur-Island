@@ -3,17 +3,20 @@ package client.gui;
 import isoladinosauri.Cella;
 import isoladinosauri.Giocatore;
 import isoladinosauri.Turno;
+import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Carogna;
+import isoladinosauri.modellodati.Erbivoro;
 import isoladinosauri.modellodati.Vegetale;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -71,30 +74,20 @@ public class MappaGui {
 	 * @return Un JScrollPane contenente la mappa di gioco.
 	 */
 	public JScrollPane creaMappa(Cella[][] mappa) {
-		this.mappa = mappa;
+		this.mappa = mappa.clone();
 		//crea la finestra
 		JPanel panelMappa = new JPanel();
-		//		panel.setLayout(null);
 		panelMappa.setLayout(new GridLayout(41,41)); //imposto il Layout a griglia
-		//		panel.setMinimumSize(new Dimension(3025,2637));
 
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
 				mappaGui[i][j] = new JButton ();
-				mappaGui[i][j].setText("       ");
-				mappaGui[i][j].setFont(new Font("Brush Script MT",0, 80 ));
 				mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 				mappaGui[i][j].setOpaque(true);
-				if(mappa[i][j]==null) {
-					mappaGui[i][j].setBackground(Color.BLUE);
-				} else {
-					mappaGui[i][j].setBackground(Color.GRAY);
-				}
 				mappaGui[i][j].addMouseListener(new GestioneMouse());
 			}
-
 		}
-		
+
 		for(int i=MAX-1;i>=0;i--) {
 			JLabel label = new JLabel();
 			label.setText("" + (i));
@@ -149,26 +142,41 @@ public class MappaGui {
 	 * @param t riferimento al Turno in corso.
 	 */
 	public void applicaVisiblita(Giocatore giocatore, Turno t) {
+
 		boolean[][] visibilita = giocatore.getMappaVisibile();
-		
-//		Icon vegetaleIcona = new ImageIcon(getClass().getResource("vegetale.png"));
-		
+
+		Icon carognaIcona = new ImageIcon(this.getClass().getResource("/carogna1.png"));
+		Icon vegetaleIcona = new ImageIcon(this.getClass().getResource("/vegetale1.png"));
+		Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
+		Icon acquaIcona = new ImageIcon(this.getClass().getResource("/acqua.png"));
+		Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro1.png"));
+		Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro1.png"));
+
 		for(int i=MAX-1;i>=0;i--) {
 			for(int j=0;j<MAX;j++) {
+				mappaGui[i][j].setPreferredSize(new Dimension(158,103));
+				mappaGui[i][j].setMinimumSize(new Dimension(158,103));
+				mappaGui[i][j].setMaximumSize(new Dimension(158,103));
 				if(visibilita[i][j]) {
 					if(mappa[i][j]==null) {
-						mappaGui[i][j].setBackground(Color.BLUE);
+						mappaGui[i][j].setIcon(acquaIcona);
 					} else {
 						if(mappa[i][j].getDinosauro()!=null) {
-							mappaGui[i][j].setBackground(Color.YELLOW);
+							if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
+								mappaGui[i][j].setIcon(carnivoroIcona);
+							} else {
+								if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
+									mappaGui[i][j].setIcon(erbivoroIcona);
+								}
+							}
 						} else {
 							if(mappa[i][j].getOccupante() instanceof Carogna) {
-								mappaGui[i][j].setBackground(Color.PINK);
+								mappaGui[i][j].setIcon(carognaIcona);
 							} else {
 								if(mappa[i][j].getOccupante() instanceof Vegetale) {
-									mappaGui[i][j].setBackground(Color.GREEN);
+									mappaGui[i][j].setIcon(vegetaleIcona);
 								} else {
-									mappaGui[i][j].setBackground(Color.GRAY);
+									mappaGui[i][j].setIcon(terraIcona);
 								}
 							}
 						}
@@ -280,26 +288,27 @@ public class MappaGui {
 			//FIXME
 			if(mappa[rigaClic][colonnaClic]!=null && rigaClic>=datiRaggiungibilita[0] &&
 					rigaClic <=datiRaggiungibilita[2] && colonnaClic>=datiRaggiungibilita[1] && colonnaClic<=datiRaggiungibilita[3]) {
-				gui.eseguiMovimento(rigaClic,colonnaClic);
-				gui.assegnaTurni();
-				System.out.println(rigaClic + "," + colonnaClic);
-				setScrollBar(rigaClic,colonnaClic);
+//				if(rigaClic!=dino.getRiga() || colonnaClic!=dino.getColonna {
+					gui.eseguiMovimento(rigaClic,colonnaClic);
+					gui.assegnaTurni();
+					System.out.println(rigaClic + "," + colonnaClic);
+					setScrollBar(rigaClic,colonnaClic);
 			} else {
 				JOptionPane.showMessageDialog(null, "Errore! Posizione non concessa!");
 			}
 			dg.aggiornaDati(indiceDino, giocatore);
 		}
-		
+
 		public void mouseEntered(MouseEvent e) {
-			
+
 		}
-		
+
 		public void mouseExited(MouseEvent e) {
 
 		}
-		
+
 		public void mousePressed(MouseEvent e) {
-			
+
 		}
 
 		public void mouseReleased(MouseEvent e) {
