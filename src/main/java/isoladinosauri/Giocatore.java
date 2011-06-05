@@ -24,7 +24,7 @@ public class Giocatore {
 	private int turnoNascita; //turno di nascita del giocatore
 	private String nomeSpecie;
 	private List<Dinosauro> dinosauri; //squadra di dinosauri del giocatore
-	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se � false)
+	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se e' false)
 	private List<String> uova; //e' un array di uova del giocatore che viene svuotato alla fine di ogni giro dei giocatori
 
 	//ATTENZIONE: SOLO IL PRIMO DINOSAURO DEL GIOCATORE E' POSIZIONATO A CASO NELLA MAPPA
