@@ -36,8 +36,6 @@ public class LoginGui {
 	private JButton accedi;
 	
 
-
-
 	/**
 	 * Costruttore che viene inizializzato con la classe Gui.
 	 * @param gui

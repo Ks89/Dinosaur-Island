@@ -57,7 +57,9 @@ public class Erbivoro extends Dinosauro {
 		if(dinosauro instanceof Carnivoro) {
 			nemico = (Carnivoro)dinosauro;
 		} else {
-			nemico = (Erbivoro)dinosauro;
+//			if(dinosauro instanceof Erbivoro) { 
+				nemico = (Erbivoro)dinosauro;
+//			}
 		}
 		
 		if(this.calcolaForza()>=nemico.calcolaForza()) {
@@ -71,7 +73,7 @@ public class Erbivoro extends Dinosauro {
 			} else {
 				nemico.setEnergia(nemico.getEnergiaMax());
 			}
-			return false; //avvida di rimuovere l'erbivoro, cioe' l'attaccante
+			return false; //avvisa di rimuovere l'erbivoro, cioe' l'attaccante
 		}
 	}
 

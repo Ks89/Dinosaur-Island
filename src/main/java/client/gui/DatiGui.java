@@ -32,7 +32,7 @@ public class DatiGui {
 	/**
 	 * Costruttore della classe DatiGui che si occupa di inizializzare tutte le JLabel
 	 * contenenti le informazioni sul Giocatore e sui Dinosauri.
-	 * @param giocatore Giocatore alla quale e' asssegnato il Turno.
+	 * @param giocatore Giocatore alla quale e' assegnato il Turno.
 	 */
 	public DatiGui() {
 		this.nomeGiocatoreRis = new JLabel();
@@ -123,8 +123,6 @@ public class DatiGui {
 		creaDatiPanel.add(energia);
 		creaDatiPanel.add(energiaRis);
 
-		System.out.println("nuova energia" + dino.getEnergiaMax());
-
 		JLabel energiaMax = new JLabel(" EnergiaMax: ");
 		creaDatiPanel.add(energiaMax);
 		creaDatiPanel.add(energiaMaxRis);
@@ -137,7 +135,6 @@ public class DatiGui {
 		creaDatiPanel.add(pos);
 		creaDatiPanel.add(posRis);
 
-//		creaDatiPanel.repaint();
 		return creaDatiPanel;
 	}	
 }
