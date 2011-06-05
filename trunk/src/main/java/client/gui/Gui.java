@@ -27,10 +27,13 @@ import javax.swing.*;
 public class Gui {
 
 	/*
-	 * TODO sistemare la javadoc
 	 * FIXME se muovo un dinosauro appena nato dall'uovo il panel dati non si aggiorna
 	 * FIXME un dinosauro puo' muoversi anche su se stesso o su uno della sua squadra mangiandolo, bisogna
 	 * 		far si che mangia o cmq lo spostamento funzioni solo se nella destinazione ci sia un dinosauro di altri giocatori
+	 * FIXME sarebbe bello che se il dinosauro va su una cella con u vegetale ed e' erbivoro. Facendo la crescita automaticamente mangia
+	 * 		l'occupante e assorbe l'energia senza dover fare altre azioni di movimento ecc...
+	 * TODO fare menu a tendina per selezionare i dinosauri e far si che nel menu appaiano gli id dei dinosauri e non i numeri
+	 * 		direttamente.
 	 */
 
 	private static final int MAX = 40;
@@ -51,8 +54,8 @@ public class Gui {
 	private int indiceDino; 
 	private int turnoNascita;
 
-	private Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro1.png"));
-	private Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro1.png"));
+	private Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro.png"));
+	private Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro.png"));
 	private Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
 	
 	private Partita partita;

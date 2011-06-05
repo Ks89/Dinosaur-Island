@@ -132,8 +132,8 @@ public class MappaGui {
 	 * @param colonna int che rappresenta la colonna in cui si trova il Dinosauro.
 	 */
 	public void setScrollBar(int riga, int colonna) {
-		verticalScrollBar.setValue(4305 - (riga * 103) - 51 - 206 - 206);
-		horizontalScrollBar.setValue((colonna * 158) - 158 - 79);
+		verticalScrollBar.setValue(4305 - (riga * 103) - 463);
+		horizontalScrollBar.setValue((colonna * 158) - 237);
 	}
 
 	/**
@@ -145,12 +145,16 @@ public class MappaGui {
 
 		boolean[][] visibilita = giocatore.getMappaVisibile();
 
-		Icon carognaIcona = new ImageIcon(this.getClass().getResource("/carogna1.png"));
-		Icon vegetaleIcona = new ImageIcon(this.getClass().getResource("/vegetale1.png"));
+		Icon erb_carIcona = new ImageIcon(this.getClass().getResource("/erb-car.png"));
+		Icon erb_vegIcona = new ImageIcon(this.getClass().getResource("/erb-veg.png"));
+		Icon carn_carIcona = new ImageIcon(this.getClass().getResource("/carn-car.png"));
+		Icon carn_vegIcona = new ImageIcon(this.getClass().getResource("/carn-veg.png"));
+		Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro.png"));
+		Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro.png"));
+		Icon carognaIcona = new ImageIcon(this.getClass().getResource("/car.png"));
+		Icon vegetaleIcona = new ImageIcon(this.getClass().getResource("/veg.png"));
 		Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
 		Icon acquaIcona = new ImageIcon(this.getClass().getResource("/acqua.png"));
-		Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro1.png"));
-		Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro1.png"));
 
 		for(int i=MAX-1;i>=0;i--) {
 			for(int j=0;j<MAX;j++) {
@@ -163,10 +167,27 @@ public class MappaGui {
 					} else {
 						if(mappa[i][j].getDinosauro()!=null) {
 							if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
-								mappaGui[i][j].setIcon(carnivoroIcona);
+								if(mappa[i][j].getOccupante() instanceof Vegetale) {
+									mappaGui[i][j].setIcon(carn_vegIcona);
+								} else {
+									if(mappa[i][j].getOccupante() instanceof Carogna) {
+										mappaGui[i][j].setIcon(carn_carIcona);
+									} else {
+										mappaGui[i][j].setIcon(carnivoroIcona);
+									}
+								}
+								
 							} else {
 								if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
-									mappaGui[i][j].setIcon(erbivoroIcona);
+									if(mappa[i][j].getOccupante() instanceof Vegetale) {
+										mappaGui[i][j].setIcon(erb_vegIcona);
+									} else {
+										if(mappa[i][j].getOccupante() instanceof Carogna) {
+											mappaGui[i][j].setIcon(erb_carIcona);
+										} else {
+											mappaGui[i][j].setIcon(erbivoroIcona);
+										}
+									}
 								}
 							}
 						} else {
@@ -224,10 +245,10 @@ public class MappaGui {
 				if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
 					if((raggiungibile[i - inizioRiga][j - inizioColonna]!=9) &&
 							(raggiungibile[i - inizioRiga][j - inizioColonna]!=8)) {
-						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.RED,3));
+						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
 					} 
 					if(raggiungibile[i - inizioRiga][j - inizioColonna]==0) {
-						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.RED,3));
+						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
 					}
 				} else {
 					mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
