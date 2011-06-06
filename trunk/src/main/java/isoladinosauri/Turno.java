@@ -138,7 +138,7 @@ public class Turno {
 	//*******************************************************************************************************************
 	//***************************************RAGGIUNGIBILITA E STRADA PERCORSA*******************************************
 	//*******************************************************************************************************************
-	
+
 	/**
 	 * Metodo che restituisce una mappa bidimensionale con all'interno un intero che
 	 * rappresenta il numero di passi necessari per raggiungere tale posizione: 
@@ -278,7 +278,7 @@ public class Turno {
 
 			riga = arrivoDinoRiga;
 			colonna = arrivoDinoColonna;
-			
+
 			for(cont=passiDaPercorrere; cont>0; cont--) { //parto dalla destinazione e torno verso la partenza
 				if(riga-1<0) { // controllo di non uscire fuori dalle righe della mappa
 					rigaSu=riga;
@@ -339,7 +339,7 @@ public class Turno {
 		if(destinazione==null) {
 			return false;
 		} else {
-			//XXX questa e' la logica per far si che dopo al combattimento si possa anche mangiare l'occupante
+			//questa e' la logica per far si che dopo al combattimento si possa anche mangiare l'occupante
 			if(destinazione.getDinosauro()!=null) {
 				//combatto col dinosauro presente nella cella di destinazione
 				boolean risultato = this.combatti(mosso, riga, colonna);
@@ -361,7 +361,7 @@ public class Turno {
 			}
 		}
 	}
-	
+
 	/**
 	 * Metodo per far mangiare al Dinosauro il Vegetale o la Carogna
 	 * @param dinosauro Dinosauro che esegue lo spostamento.
@@ -421,7 +421,7 @@ public class Turno {
 				this.riposizionaOccupante(riga, colonna, new Carogna());
 			}
 			destinazione.setDinosauro(mosso);
-			
+
 			//XXX l'if sotto e' importantissimo!!! Esso controlla se il dinosauro sta mangiando
 			//l'occupante dopo un'azione di movimento o se invece il dinosauro ha prima combattuto
 			//con un altro dino e poi nella sua destinazione ha mangiato l'occupante sulla sua stessa
@@ -454,6 +454,10 @@ public class Turno {
 
 		System.out.println("coordinate partenza: " + vecchiaRiga + "," + vecchiaColonna + "coord arrivo: " + riga + "," + colonna);
 
+		if(partita.identificaDinosauro(dinosauro).equals(partita.identificaDinosauro(destinazione.getDinosauro()))) {
+			System.out.println("Non puoi combattere con un tuo Dinosauro");
+			return false;
+		}
 		//controllo di che tipo e' il dinosauro attaccante
 		//se e' carnivoro posso mangiare qualunque altro dinosauro
 		if(dinosauro instanceof Carnivoro) {
@@ -467,8 +471,7 @@ public class Turno {
 			if(destinazione.getDinosauro() instanceof Erbivoro) {
 				System.out.println("Impossibile muoversi su un altro dinosauro erbivoro");
 				return false;
-			}
-			else { //combatto contro un carnivoro
+			} else { //combatto contro un carnivoro
 				Erbivoro attaccante = (Erbivoro)dinosauro; 
 				return this.spostamentoConDinosauro(attaccante, riga, colonna);
 			}
@@ -532,7 +535,7 @@ public class Turno {
 	}
 
 
-	
+
 
 	/**
 	 * Metodo che esegue un semplice spostamento del Dinosauro su una cella della mappa
@@ -589,7 +592,7 @@ public class Turno {
 		} while(!stato);
 		System.out.println("Nuovo elemento in: " + nuovaRiga + "," + nuovaColonna);
 	}
-	
+
 	//FIXME inserire questo metodo alla fine di ogni turno della partita e testarlo
 	/**
 	 * Metodo che scansiona tutta la mappa di gioco in cerca di Carogne
