@@ -310,14 +310,18 @@ public class MappaGui {
 			if(mappa[rigaClic][colonnaClic]!=null && rigaClic>=datiRaggiungibilita[0] &&
 					rigaClic <=datiRaggiungibilita[2] && colonnaClic>=datiRaggiungibilita[1] && colonnaClic<=datiRaggiungibilita[3]) {
 //				if(rigaClic!=dino.getRiga() || colonnaClic!=dino.getColonna {
+					gui.setIndiceDino(indiceDino);
 					gui.eseguiMovimento(rigaClic,colonnaClic);
 					gui.assegnaTurni();
 					System.out.println(rigaClic + "," + colonnaClic);
+					System.out.println("indiceDino movimento" + indiceDino);
+					System.out.println("indiceDino movimento GUI" + gui.getIndiceDino());
 					setScrollBar(rigaClic,colonnaClic);
 			} else {
 				JOptionPane.showMessageDialog(null, "Errore! Posizione non concessa!");
 			}
 			dg.aggiornaDati(indiceDino, giocatore);
+			System.out.println("indice dino: " + indiceDino);
 		}
 
 		public void mouseEntered(MouseEvent e) {
@@ -337,4 +341,18 @@ public class MappaGui {
 		}
 	}
 
+	/**
+	 * @return Un int che rappresenta l'indice del Dinosauro selezionato.
+	 */
+	public int getIndiceDino() {
+		return indiceDino;
+	}
+
+	/**
+	 * @param indiceDino int per impostare l'indice del Dinosauro selezionato.
+	 */
+	public void setIndiceDino(int indiceDino) {
+		this.indiceDino = indiceDino;
+	}
+	
 }

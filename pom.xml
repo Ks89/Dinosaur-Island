@@ -52,7 +52,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>isoladinosauri.Partita</mainClass>
+							<mainClass>client.gui.MainGui</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

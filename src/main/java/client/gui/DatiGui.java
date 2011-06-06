@@ -56,7 +56,6 @@ public class DatiGui {
 	 */
 	public void aggiornaDati(int indiceDino, Giocatore giocatore) {
 		this.dino = giocatore.getDinosauri().get(indiceDino);
-		System.out.println("enmax: "+ (dino.getEnergiaMax() / 1000));
 		this.nomeGiocatoreRis.setText(giocatore.getIdGiocatore() + "");
 		this.nomeSpecieRis.setText(giocatore.getNomeSpecie());
 		this.etaRis.setText(giocatore.getEtaAttuale() + "");
