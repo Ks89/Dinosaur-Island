@@ -10,9 +10,17 @@ import isoladinosauri.ClientHandler;
 public class ServerMultiClient {
 
 	private int port;
+	private Partita partita;
 
 	public ServerMultiClient(int port) {
 		this.port = port;
+		GenerazioneMappa gm = new GenerazioneMappa();
+		CaricamentoMappa cm = new CaricamentoMappa();
+		Cella[][] mappaCelle = cm.caricaMappa(gm.creaMappaCasuale());
+		this.partita = new Partita(new Isola(mappaCelle));
+		Turno t = new Turno(partita);
+		Classifica c = new Classifica(partita);
+		partita.setTurnoCorrente(t);
 	}
 
 	public void runServer() throws IOException {
@@ -22,7 +30,7 @@ public class ServerMultiClient {
 			try {
 				Socket socket = serverSocket.accept();
 				System.out.println("Client connected, creating new client handler.");
-				new ClientHandler(socket).start();
+				new ClientHandler(socket, partita).start();
 			} catch (IOException e) {
 				System.out.println("Error while waiting for a connection.");
 			}

@@ -18,7 +18,7 @@ public class Client {
 		this.port = port;
 	}
 	
-	public void runClient() throws UnknownHostException, IOException, InterruptedException {
+	public void runClient() throws IOException, InterruptedException {
 		System.out.println("Connecting to server. Host: " + host + " - port: " + port);
 		Socket socket = new Socket(host, port);
 		System.out.println("Connected.");
@@ -31,11 +31,12 @@ public class Client {
 		String password;
 		String token;
 		String nomeRazza;
+		String idDino;
 		String tipoRazza;
 		int scelta=0;
 		Scanner input = new Scanner(System.in);
 		while (true){
-			while(scelta!=9) {
+			while(scelta!=99) {
 				System.out.println("1 - @creaUtente");
 				System.out.println("2 - @login");
 				System.out.println("3 - @creaRazza");
@@ -44,7 +45,13 @@ public class Client {
 				System.out.println("6 - @listaGiocatori");
 				System.out.println("7 - @logout");
 				System.out.println("8 - @mappaGenerale");
-				System.out.println("9 - termina client");
+				System.out.println("9 - @listaDinosauri");
+				System.out.println("10 - @vistaLocale");
+				System.out.println("11 - @statoDinosauro");
+				System.out.println("12 - @movimentoDinosauro");
+				System.out.println("13 - @crescitaDinosauro");
+				System.out.println("14 - @deponiUovo");
+				System.out.println("99 - termina client");
 				scelta = input.nextInt();
 				switch(scelta) {
 				case 1:
@@ -105,13 +112,53 @@ public class Client {
 					break;
 				case 9:
 					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					request="@listaDinosauri,token="+token;
+					break;
+				case 10:
+					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					System.out.println("idDino: ");
+					idDino = keyboardReader.readLine();
+					request="@vistaLocale,token="+token+",idDino="+idDino;
+					break;
+				case 11:
+					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					System.out.println("idDino: ");
+					idDino = keyboardReader.readLine();
+					request="@statoDinosauro,token="+token+",idDino="+idDino;
+					break;
+				case 12: //movimento dinosauro
+					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					System.out.println("idDino: ");
+					idDino = keyboardReader.readLine();
+					System.out.println("destinazione: ");
+					String destinazione = keyboardReader.readLine();
+					request="@muoviDinosauro,token=" + token + ",idDino=" + idDino + ",dest={" + destinazione + "}";
+					break;
+				case 13:
+					//TODO crescita
+					break;	
+				case 14:
+					bufferedWriter.flush();
+					System.out.println("token: ");
+					token = keyboardReader.readLine();
+					System.out.println("idDino: ");
+					idDino = keyboardReader.readLine();
+					request="@deponiUovo,token="+token+",idDino="+idDino;
 					break;
 				default:
 					bufferedWriter.flush();
 					System.out.println("scelta non consentita\n");
 					break;
 				}
-				if(scelta==1 || scelta==2 || scelta ==3 || scelta ==4 || scelta ==5 || scelta ==6 || scelta ==7 || scelta ==8) {
+				if(scelta!=99) {
 					System.out.println("Sending request to server: " + request);
 					bufferedWriter.write(request);
 					bufferedWriter.newLine();
