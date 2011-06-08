@@ -32,6 +32,9 @@ import javax.swing.JScrollPane;
 public class MappaGui {
 
 	private static final int MAX = 40;
+	private static final int NONRAGG = 9;
+	private static final int ACQUA = 8;
+	
 	private JButton[][] mappaGui;
 	private Gui gui;
 	private Cella[][] mappa;
@@ -145,16 +148,17 @@ public class MappaGui {
 
 		boolean[][] visibilita = giocatore.getMappaVisibile();
 
-		Icon erb_carIcona = new ImageIcon(this.getClass().getResource("/erb-car.png"));
-		Icon erb_vegIcona = new ImageIcon(this.getClass().getResource("/erb-veg.png"));
-		Icon carn_carIcona = new ImageIcon(this.getClass().getResource("/carn-car.png"));
-		Icon carn_vegIcona = new ImageIcon(this.getClass().getResource("/carn-veg.png"));
+		Icon erbcarIcona = new ImageIcon(this.getClass().getResource("/erb-car.png"));
+		Icon erbvegIcona = new ImageIcon(this.getClass().getResource("/erb-veg.png"));
+		Icon carncarIcona = new ImageIcon(this.getClass().getResource("/carn-car.png"));
+		Icon carnvegIcona = new ImageIcon(this.getClass().getResource("/carn-veg.png"));
 		Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro.png"));
 		Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro.png"));
 		Icon carognaIcona = new ImageIcon(this.getClass().getResource("/car.png"));
 		Icon vegetaleIcona = new ImageIcon(this.getClass().getResource("/veg.png"));
 		Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
 		Icon acquaIcona = new ImageIcon(this.getClass().getResource("/acqua.png"));
+		
 
 		for(int i=MAX-1;i>=0;i--) {
 			for(int j=0;j<MAX;j++) {
@@ -162,30 +166,46 @@ public class MappaGui {
 				mappaGui[i][j].setMinimumSize(new Dimension(158,103));
 				mappaGui[i][j].setMaximumSize(new Dimension(158,103));
 				if(visibilita[i][j]) {
+					//imposto il tooltip alla cella
 					if(mappa[i][j]==null) {
 						mappaGui[i][j].setIcon(acquaIcona);
 					} else {
 						if(mappa[i][j].getDinosauro()!=null) {
 							if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
 								if(mappa[i][j].getOccupante() instanceof Vegetale) {
-									mappaGui[i][j].setIcon(carn_vegIcona);
+									mappaGui[i][j].setIcon(carnvegIcona);
+									Vegetale vegetale = (Vegetale)mappa[i][j].getOccupante();
+									mappaGui[i][j].setToolTipText("Energia Vegetale: " + vegetale.getEnergia() + 
+											"\n Dimensione Dinosauro: " + mappa[i][j].getDinosauro().getEnergia());
 								} else {
 									if(mappa[i][j].getOccupante() instanceof Carogna) {
-										mappaGui[i][j].setIcon(carn_carIcona);
+										mappaGui[i][j].setIcon(carncarIcona);
+										Carogna carogna = (Carogna)mappa[i][j].getOccupante();
+										mappaGui[i][j].setToolTipText("Energia Carogna: " + carogna.getEnergia() + 
+												"\n Dimensione Dinosauro: " + mappa[i][j].getDinosauro().getEnergia());
+
 									} else {
 										mappaGui[i][j].setIcon(carnivoroIcona);
+										mappaGui[i][j].setToolTipText("Dimensione Dinosauro: " + mappa[i][j].getDinosauro().getEnergia());
 									}
 								}
 								
 							} else {
 								if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
 									if(mappa[i][j].getOccupante() instanceof Vegetale) {
-										mappaGui[i][j].setIcon(erb_vegIcona);
+										mappaGui[i][j].setIcon(erbvegIcona);
+										Vegetale vegetale = (Vegetale)mappa[i][j].getOccupante();
+										mappaGui[i][j].setToolTipText("Energia Vegetale: " + vegetale.getEnergia() + 
+												"\n Dimensione Dinosauro: " + mappa[i][j].getDinosauro().getEnergia());
 									} else {
 										if(mappa[i][j].getOccupante() instanceof Carogna) {
-											mappaGui[i][j].setIcon(erb_carIcona);
+											mappaGui[i][j].setIcon(erbcarIcona);
+											Carogna carogna = (Carogna)mappa[i][j].getOccupante();
+											mappaGui[i][j].setToolTipText("Energia Carogna: " + carogna.getEnergia() + 
+													"\n Dimensione Dinosauro: " + mappa[i][j].getDinosauro().getEnergia());
 										} else {
 											mappaGui[i][j].setIcon(erbivoroIcona);
+											mappaGui[i][j].setToolTipText("Dimensione Dinosauro: " + mappa[i][j].getDinosauro().getEnergia());
 										}
 									}
 								}
@@ -193,9 +213,13 @@ public class MappaGui {
 						} else {
 							if(mappa[i][j].getOccupante() instanceof Carogna) {
 								mappaGui[i][j].setIcon(carognaIcona);
+								Carogna carogna = (Carogna)mappa[i][j].getOccupante();
+								mappaGui[i][j].setToolTipText("Energia Carogna: " + carogna.getEnergia());
 							} else {
 								if(mappa[i][j].getOccupante() instanceof Vegetale) {
 									mappaGui[i][j].setIcon(vegetaleIcona);
+									Vegetale vegetale = (Vegetale)mappa[i][j].getOccupante();
+									mappaGui[i][j].setToolTipText("Energia Vegetale: " + vegetale.getEnergia());
 								} else {
 									mappaGui[i][j].setIcon(terraIcona);
 								}
@@ -221,6 +245,28 @@ public class MappaGui {
 			}
 		}
 	}
+	
+	/**
+	 * Metodo per rinizializzare la mappa dopo aver deposto un uovo, in pratica aggiorna
+	 * la mappa di gioco andando a verificare dove ci sono nuovi dinosauri nati.
+	 * @param carnivoroIcona Icon che rappresenta l'icona del Dinosauro Carnivoro.
+	 * @param erbivoroIcona Icon che rappresenta l'icona del Dinosauro Erbivoro.
+	 */
+	public void rinizializzaMappa(Icon carnivoroIcona, Icon erbivoroIcona) {
+		for(int i=0;i<40;i++) {
+			for(int j=0;j<40;j++) {
+				if(mappa[i][j] !=null && mappa[i][j].getDinosauro()!=null) {
+					if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
+						mappaGui[i][j].setIcon(carnivoroIcona);
+					} else {
+						if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
+							mappaGui[i][j].setIcon(erbivoroIcona);
+						}
+					}
+				}
+			}
+		}
+	}
 
 
 	/**
@@ -243,8 +289,8 @@ public class MappaGui {
 		for(int i=MAX-1;i>=0;i--) {
 			for(int j=0;j<MAX;j++) {
 				if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
-					if((raggiungibile[i - inizioRiga][j - inizioColonna]!=9) &&
-							(raggiungibile[i - inizioRiga][j - inizioColonna]!=8)) {
+					if((raggiungibile[i - inizioRiga][j - inizioColonna]!=NONRAGG) &&
+							(raggiungibile[i - inizioRiga][j - inizioColonna]!=ACQUA)) {
 						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
 					} 
 					if(raggiungibile[i - inizioRiga][j - inizioColonna]==0) {
@@ -267,15 +313,6 @@ public class MappaGui {
 	public int[] trovaDinosauro (int[][] raggiungibile) {
 		int j,w;
 		int[] uscita = {0,0};
-		for(j=0;j<raggiungibile.length;j++) {
-			for(w=0;w<raggiungibile[0].length;w++) {
-				System.out.print(raggiungibile[j][w] + " ");
-			}
-			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
-
 		for(j=0;j<raggiungibile.length;j++) {
 			for(w=0;w<raggiungibile[0].length;w++) {
 				if(raggiungibile[j][w]==0) {
@@ -306,22 +343,17 @@ public class MappaGui {
 			}
 
 			int[] datiRaggiungibilita = gui.getDatiRaggiungibilita();
-			//FIXME
+			
 			if(mappa[rigaClic][colonnaClic]!=null && rigaClic>=datiRaggiungibilita[0] &&
 					rigaClic <=datiRaggiungibilita[2] && colonnaClic>=datiRaggiungibilita[1] && colonnaClic<=datiRaggiungibilita[3]) {
-//				if(rigaClic!=dino.getRiga() || colonnaClic!=dino.getColonna {
 					gui.setIndiceDino(indiceDino);
 					gui.eseguiMovimento(rigaClic,colonnaClic);
 					gui.assegnaTurni();
-					System.out.println(rigaClic + "," + colonnaClic);
-					System.out.println("indiceDino movimento" + indiceDino);
-					System.out.println("indiceDino movimento GUI" + gui.getIndiceDino());
 					setScrollBar(rigaClic,colonnaClic);
 			} else {
 				JOptionPane.showMessageDialog(null, "Errore! Posizione non concessa!");
 			}
 			dg.aggiornaDati(indiceDino, giocatore);
-			System.out.println("indice dino: " + indiceDino);
 		}
 
 		public void mouseEntered(MouseEvent e) {

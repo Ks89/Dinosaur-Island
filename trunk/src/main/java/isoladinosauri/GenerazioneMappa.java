@@ -12,6 +12,9 @@ import java.util.Random;
 public class GenerazioneMappa {
 
 	private static final int MAX = 40;
+	private static final int CAROGNE = 20;
+	private static final int RAGGIUNGIBILI = 1280;
+	private static final int NUMFORME = 18;
 
 	/**
 	 * Metodo per generare la mappa in modo 'presuo-casuale'.
@@ -43,7 +46,6 @@ public class GenerazioneMappa {
 				}
 			}
 		}
-		System.out.println(cont);
 	}
 
 	/**
@@ -61,7 +63,7 @@ public class GenerazioneMappa {
 				mappa[riga][colonna] = "c";
 				cont++;
 			}
-		} while(cont<20);
+		} while(cont<CAROGNE);
 		return mappa;
 	}
 
@@ -97,24 +99,24 @@ public class GenerazioneMappa {
 		do{
 			numeroraggiungibili=0;
 			//Inizializzazione mappa
-			for(int i=0;i<=39;i++) {
-				for(int j=0;j<=39;j++) {
+			for(int i=0;i<MAX;i++) {
+				for(int j=0;j<MAX;j++) {
 					mappa[i][j]=" ";
 				}
 
 			}
 
 			//Disegno il contorno d'acqua dell isola
-			for(int j=0;j<=39;j++) {
+			for(int j=0;j<MAX;j++) {
 				mappa[0][j]="a";
 			}
-			for(int j=0;j<=39;j++) {
+			for(int j=0;j<MAX;j++) {
 				mappa[39][j]="a";
 			}
-			for(int i=0;i<=39;i++) {
+			for(int i=0;i<MAX;i++) {
 				mappa[i][0]="a";
 			}
-			for(int i=0;i<=39;i++) {
+			for(int i=0;i<MAX;i++) {
 				mappa[i][39]="a";
 			}
 
@@ -239,22 +241,22 @@ public class GenerazioneMappa {
 			 * un "fossato" di guardia per evitare l'unione di
 			 * due pozze d'acqua
 			 */
-			for(int j=0;j<=39;j++) {
+			for(int j=0;j<MAX;j++) {
 				mappa[0][j]="a";
 			}
-			for(int j=0;j<=39;j++) {
+			for(int j=0;j<MAX;j++) {
 				mappa[39][j]="a";
 			}
-			for(int i=0;i<=39;i++) {
+			for(int i=0;i<MAX;i++) {
 				mappa[i][0]="a";
 			}
-			for(int i=0;i<=39;i++) {
+			for(int i=0;i<MAX;i++) {
 				mappa[i][39]="a";
 			}
 
 			//Eliminazione dei fossati di guardia
-			for(int i=0;i<=39;i++) {
-				for(int j=0;j<=39;j++) {
+			for(int i=0;i<MAX;i++) {
+				for(int j=0;j<MAX;j++) {
 					if (mappa[i][j].equals("b")) {
 						mappa[i][j]=" " ;
 					}
@@ -273,7 +275,7 @@ public class GenerazioneMappa {
 			 */
 
 			int j;
-			for (j=1;j<39;j++){
+			for (j=1;j<MAX-1;j++){
 				if (mappa[1][j].equals(" ")) {
 					break;
 				}
@@ -289,8 +291,8 @@ public class GenerazioneMappa {
 			boolean modificato;
 			do{
 				modificato=false;
-				for(int i=0;i<39;i++) {
-					for(j=0;j<39;j++) {
+				for(int i=0;i<MAX-1;i++) {
+					for(j=0;j<MAX-1;j++) {
 						if (mappa[i][j].equals("t")) {
 							if (mappa[i+1][j].equals(" ")) {
 								mappa[i+1][j]="t";
@@ -315,15 +317,15 @@ public class GenerazioneMappa {
 			} while (modificato); //CHIUSURA DO-WHILE
 
 			//Conta il numero di t
-			for(int i=0;i<39;i++) {
-				for(int k=0;k<39;k++) {
+			for(int i=0;i<MAX-1;i++) {
+				for(int k=0;k<MAX-1;k++) {
 					if (mappa[i][k].equals("t")) {
 						numeroraggiungibili++;
 					}
 				}
 			}
 
-		}while (numeroraggiungibili!=1280);
+		}while (numeroraggiungibili!=RAGGIUNGIBILI);
 		return mappa;
 	}
 
@@ -333,8 +335,7 @@ public class GenerazioneMappa {
 	 * @return Un ArrayList di array di String contenente tutte le forme di acqua.
 	 */
 	private String[][] ottieniFormeAcqua() {
-//		ArrayList<String[]> arrayForme =new ArrayList<String[]>();
-		String[][] arrayForme = new String[18][18];
+		String[][] arrayForme = new String[NUMFORME][NUMFORME];
 		String formacinque[]={"00","10","01","11","20"};
 		String formacinquebis[]={"00","10","20","30","40"};
 		String formasei[]={"00","01","10","11","20","21"};
@@ -410,8 +411,8 @@ public class GenerazioneMappa {
 
 	//	//metodo stampa mappa
 	//	private void stampaMappa(String mappa [][]){
-	//		for(int i=0;i<=39;i++) {
-	//			for(int j=0;j<=39;j++) {
+	//		for(int i=0;i<MAX;i++) {
+	//			for(int j=0;j<MAX;j++) {
 	//				System.out.print(mappa[i][j]+" ");
 	//			}
 	//			System.out.println();

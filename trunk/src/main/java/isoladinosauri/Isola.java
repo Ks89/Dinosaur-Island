@@ -12,6 +12,9 @@ import isoladinosauri.modellodati.Vegetale;
 public class Isola {
 
 	private static final int MAX = 40;
+	private static final int DIECI = 10;
+	private static final int NONRAGG = 9;
+	private static final int CELLACQUA = 8;
 	private static final String TERRA = " . ";
 	private static final String ACQUA = "   ";
 	private static final String VEGETAZIONE = " v ";
@@ -78,7 +81,7 @@ public class Isola {
 	public void stampaMappaRidotta() {
 		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
-			if(j<10) {
+			if(j<DIECI) {
 				System.out.print("0" + j + " ");
 			} else {
 				System.out.print(j + " ");
@@ -86,7 +89,7 @@ public class Isola {
 		}
 		System.out.println();
 		for(int i=0;i<MAX;i++) {
-			if(i<10) {
+			if(i<DIECI) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
@@ -129,7 +132,7 @@ public class Isola {
 		//presto sara' rimosso e trasformato in test junit
 		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
-			if(j<10) {
+			if(j<DIECI) {
 				System.out.print("0" + j + " ");
 			} else {
 				System.out.print(j + " ");
@@ -137,7 +140,7 @@ public class Isola {
 		}
 		System.out.println();
 		for(int i=0;i<MAX;i++) {
-			if(i<10) {
+			if(i<DIECI) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
@@ -185,7 +188,7 @@ public class Isola {
 	public void stampaMappaRaggiungibilita(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]raggiungibilita) {
 		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
-			if(j<10) {
+			if(j<DIECI) {
 				System.out.print("0" + j + " ");
 			} else {
 				System.out.print(j + " ");
@@ -193,7 +196,7 @@ public class Isola {
 		}
 		System.out.println();
 		for(int i=0;i<MAX;i++) {
-			if(i<10) {
+			if(i<DIECI) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
@@ -204,12 +207,12 @@ public class Isola {
 				} else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
 					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
-						if((raggiungibilita[i - inizioRiga][j - inizioColonna]!=9) &&
-								(raggiungibilita[i - inizioRiga][j - inizioColonna]!=8)) {
+						if((raggiungibilita[i - inizioRiga][j - inizioColonna]!=NONRAGG) &&
+								(raggiungibilita[i - inizioRiga][j - inizioColonna]!=CELLACQUA)) {
 							System.out.print(" " + raggiungibilita[i - inizioRiga][j - inizioColonna] + " ");
 						} else { 
-							if(raggiungibilita[i - inizioRiga][j - inizioColonna]==9 ||
-									raggiungibilita[i - inizioRiga][j - inizioColonna]==8) {
+							if(raggiungibilita[i - inizioRiga][j - inizioColonna]==NONRAGG ||
+									raggiungibilita[i - inizioRiga][j - inizioColonna]==CELLACQUA) {
 								System.out.print(" " + raggiungibilita[i - inizioRiga][j - inizioColonna] + " ");
 							}
 						}
@@ -249,7 +252,7 @@ public class Isola {
 	public void stampaMappaStradaPercorsa(int inizioRiga, int inizioColonna, int fineRiga, int fineColonna, int[][]stradaPercorsa) {
 		System.out.print(ACQUA);
 		for(int j=0;j<MAX;j++) {
-			if(j<10) {
+			if(j<DIECI) {
 				System.out.print("0" + j + " ");
 			} else {
 				System.out.print(j + " ");
@@ -257,7 +260,7 @@ public class Isola {
 		}
 		System.out.println();
 		for(int i=0;i<MAX;i++) {
-			if(i<10) {
+			if(i<DIECI) {
 				System.out.print("0" + i + " ");
 			} else {
 				System.out.print(i + " ");
@@ -269,9 +272,9 @@ public class Isola {
 				else { //se e' terra puo' essere carogna o vegetale
 					Cella cella = mappa[i][j];
 					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {	
-						if((stradaPercorsa[i - inizioRiga][j - inizioColonna]!=9) && (stradaPercorsa[i - inizioRiga][j - inizioColonna]!=8)) {
+						if((stradaPercorsa[i - inizioRiga][j - inizioColonna]!=NONRAGG) && (stradaPercorsa[i - inizioRiga][j - inizioColonna]!=CELLACQUA)) {
 							System.out.print(" " + stradaPercorsa[i - inizioRiga][j - inizioColonna] + " ");
-						} else if(stradaPercorsa[i - inizioRiga][j - inizioColonna]==9 || stradaPercorsa[i - inizioRiga][j - inizioColonna]==8) {
+						} else if(stradaPercorsa[i - inizioRiga][j - inizioColonna]==NONRAGG || stradaPercorsa[i - inizioRiga][j - inizioColonna]==CELLACQUA) {
 							System.out.print(" " + stradaPercorsa[i - inizioRiga][j - inizioColonna] + " ");
 						}
 					} else {

@@ -7,13 +7,8 @@ import isoladinosauri.Isola;
 import isoladinosauri.Partita;
 import isoladinosauri.Turno;
 import isoladinosauri.Utente;
-import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
-import isoladinosauri.modellodati.Erbivoro;
-import isoladinosauri.modellodati.Vegetale;
 
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -29,13 +24,18 @@ import javax.swing.*;
 public class Gui {
 
 	/*
+	 * TODO fare + immagini coi dinosauri con sovraimpresso nel png il livello con tutte le combinazioni
+	 * TODO ridimensionare un pelo le celle e le immagini nelle celle per far si che l'area di spostamento del carnivoro sia visibile
 	 * FIXME se muovo un dinosauro appena nato dall'uovo il panel dati non si aggiorna
 	 * FIXME sarebbe bello che se il dinosauro va su una cella con u vegetale ed e' erbivoro. Facendo la crescita automaticamente mangia
 	 * 		l'occupante e assorbe l'energia senza dover fare altre azioni di movimento ecc...
 	 * TODO il menu a tendina non agiorna subito il panel laterale indicando il dinosauro
+	 * FIXME quando depongo e il nascituro va su una cella con carogna o vegetale la cella viene settata con solo il dinosauro
+	 * 		perche' non ho fatto tutti gli if del caso
 	 */
 
 	private static final int MAX = 40;
+	private static final int MAXDINO = 5;
 	private JButton[][] mappaGui = new JButton[MAX][MAX];
 
 	private int turnoPartita;
@@ -101,15 +101,14 @@ public class Gui {
 	}
 
 	public void inizializzaSceltaDino(Giocatore giocatore) {
-		String[] listaDino = new String[5];
+		String[] listaDino = new String[MAXDINO];
 		sceltaDinosauro.removeAllItems();
 		for(int i=0;i<giocatore.getDinosauri().size();i++) {
 			listaDino[i] = giocatore.getDinosauri().get(i).getId();
-			System.out.println("X: " + listaDino[i] );
 			sceltaDinosauro.addItem(listaDino[i]);
 		}
 		//		sceltaDinosauro = new JComboBox(listaDino); 
-		sceltaDinosauro.setMaximumRowCount(5);
+		sceltaDinosauro.setMaximumRowCount(MAXDINO);
 	}
 
 	/**
@@ -161,7 +160,7 @@ public class Gui {
 		mg.applicaRaggiungibilita(indiceDino,giocatore,t);
 		mg.applicaVisiblita(giocatore, t);
 	}
-	
+
 	/**
 	 * Metodo che crea il JPanel contenente i pulsanti per far crescere, deporre e selezionare un Dinosauro.
 	 * @return Un JPanel contenente i pulsanti per far crescere, deporre e selezionare un Dinosauro.
@@ -187,34 +186,34 @@ public class Gui {
 				new ItemListener() {
 					public void itemStateChanged(ItemEvent event) {
 						String selezionato = (String) sceltaDinosauro.getSelectedItem();
-						System.out.println("selezionato: " + selezionato);
 						int i;
 						for(i=0;i<giocatore.getDinosauri().size();i++) {
-							if(giocatore.getDinosauri().get(i).getId().equals(selezionato)) break;
+							if(giocatore.getDinosauri().get(i).getId().equals(selezionato)) {
+								break;
+							}
 						}
-						System.out.println("posizione: " + i);
 						setIndiceDino(i);
 						mg.setIndiceDino(i);
-						System.out.println("indice DinoY: " + mg.getIndiceDino() + " i:" + i);
-//						datiGui.aggiornaDati(i, giocatore);
+						//						datiGui.aggiornaDati(i, giocatore);
 					}
 				}
 		);
-		
+
 		cresci.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(dino.aumentaDimensione()) {
-							System.out.println("Il dinosauro " + dino.getId() + " e' ora di dimensione: " + (dino.getEnergiaMax()/1000));
+						if(dino.aumentaDimensione()==1) {
 							int raggio = dino.calcolaRaggioVisibilita();
 							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
 							mg.applicaVisiblita(giocatore, t);
 							datiGui.aggiornaDati(indiceDino, giocatore);
 						}
 						else {
-							partita.getGiocatori().get(0).rimuoviDinosauro(dino);
-							mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
-							JOptionPane.showMessageDialog(null, "Non e' stato possibile eseguire l'azione di crescita\nDinosauro rimosso!");
+							if(dino.aumentaDimensione()==-1) {
+								partita.getGiocatori().get(0).rimuoviDinosauro(dino);
+								mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
+								JOptionPane.showMessageDialog(null, "Non e' stato possibile eseguire l'azione di crescita\nDinosauro rimosso!");
+							}
 						}
 
 					}
@@ -226,219 +225,186 @@ public class Gui {
 					public void actionPerformed(ActionEvent e) { 
 						//						dino.setEnergia(5000);
 						//						dino.setEnergiaMax(5000);
-						if((giocatore.eseguiDeposizionedeponiUovo(dino))) {
+						int statoDeposizione = giocatore.eseguiDeposizionedeponiUovo(dino);
+						if(statoDeposizione==1) {
 							int raggio = dino.calcolaRaggioVisibilita();
 							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
 							mg.applicaVisiblita(giocatore, t);
 							partita.nascitaDinosauro(turnoNascita);
 							inizializzaSceltaDino(giocatore);
-							for(int i=0;i<40;i++) {
-								for(int j=0;j<40;j++) {
-									if(mappa[i][j] !=null && mappa[i][j].getDinosauro()!=null) {
-										if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
-											mappaGui[i][j].setIcon(carnivoroIcona);
-										} else {
-											if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
-												mappaGui[i][j].setIcon(erbivoroIcona);
-											}
-										}
-									}
-								}
-							}
+							mg.rinizializzaMappa(carnivoroIcona, erbivoroIcona);
 						} else {
 							mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
-							JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
-							"possibili motivi: \nenergia insufficiente\nsquadra dei dinosauri completa!");
+							if(statoDeposizione==-2) {
+								JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
+								"\nenergia insufficiente!");
+							}
+							if(statoDeposizione==0) {
+								JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
+								"squadra dei dinosauri completa!");
+							}
 						}
 						datiGui.aggiornaDati(indiceDino, giocatore);
 					}
 				}
 		);
 		return panelAzioni;
-}
-
-
-/**
- * Metodo per trovare un Dinosauro all'interno della mappa 'stradaPercorsa'.
- * @param stradaPercorsa array bidimensionale di int che rappresenta la strada percorsa tramite numeri negativi crescenti da -7.
- * @return Un array di int con:
- * 				[0] - la riga del Dinosauro trovato, 
- * 				[1] - la colonna del Dinosauro trovato.	
- */
-private static int[] trovaDinosauroStrada (int[][] stradaPercorsa) {
-	int j,w;
-	int[] uscita = {0,0};
-	for(j=0;j<stradaPercorsa.length;j++) {
-		for(w=0;w<stradaPercorsa[0].length;w++) {
-			if(stradaPercorsa[j][w]==-7) {
-				uscita[0] = j;
-				uscita[1] = w;
-				return uscita;
-			}
-		}
 	}
-	return uscita;
-}
 
-/**
- * Metoco per eseguire il movimento di un Dinosauro.
- * @param rigaCliccata int che rappreseta la riga della cella cliccata nella mappa del gioco.
- * @param colonnaCliccata int che rappreseta la colonna della cella cliccata nella mappa del gioco.
- */
-void eseguiMovimento(int rigaCliccata, int colonnaCliccata) {
 
-	this.dino = giocatore.getDinosauri().get(this.indiceDino);
-	System.out.println("indice dino movimento: " + this.indiceDino);
-	int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getRiga(), dino.getColonna());
-	int[][] stradaPercorsa;
-	int[] coordinate = mg.trovaDinosauro(raggiungibile);
-	int vecchiaRiga = dino.getRiga();
-	int vecchiaColonna = dino.getColonna();
-	System.out.println("Coordinate: " +  coordinate[0] + " " + coordinate[1]);
-	//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
-	System.out.println("Posiz Dino: " + dino.getRiga() + "," + dino.getColonna());
-	int origineRiga = dino.getRiga() - coordinate[0];
-	int origineColonna = dino.getColonna() - coordinate[1];
-	int fineRiga = dino.getRiga() + (raggiungibile.length - coordinate[0] - 1);
-	int fineColonna = dino.getColonna() + (raggiungibile[0].length - coordinate[1] - 1);
-	System.out.println("CoordinateMappa: " +  origineRiga + "," + origineColonna + "   " + fineRiga + "," + fineColonna);
-
-	isola.stampaMappaRaggiungibilita(origineRiga, origineColonna, fineRiga, fineColonna, raggiungibile);
-
-	isola.stampaMappaRidottaVisibilita(partita.getGiocatori().get(0));
-	int riga, colonna;
-
-	System.out.println("Inserisci coordinate come: riga,colonna: ");
-
-	riga = rigaCliccata;
-	colonna = colonnaCliccata;
-
-	System.out.println("->Il dinosauro si muovera' da: (" + dino.getRiga() + "," + dino.getColonna() + ") a: (" + riga + "," + colonna + ")");
-
-	stradaPercorsa = t.ottieniStradaPercorsa(dino.getRiga(), dino.getColonna(),riga, colonna);
-	isola.stampaMappaStradaPercorsa(origineRiga, origineColonna, fineRiga, fineColonna, stradaPercorsa);
-
-	int[] coordinateStrada = trovaDinosauroStrada(stradaPercorsa);
-
-	int origineRigaStrada = dino.getRiga() - coordinateStrada[0];
-	int origineColonnaStrada = dino.getColonna() - coordinateStrada[1];
-	int fineRigaStrada = dino.getRiga() + (stradaPercorsa.length - coordinateStrada[0] - 1);
-	int fineColonnaStrada = dino.getColonna() + (stradaPercorsa[0].length - coordinateStrada[1] - 1);
-
-	System.out.println("origine: " + origineRigaStrada+","+origineColonnaStrada + " fine: "+fineRigaStrada+","+fineColonnaStrada);
-
-	int raggio = dino.calcolaRaggioVisibilita();
-	//illumino la strada
-	for(int f=0;f<40;f++) {
-		for(int j=0;j<40;j++) {
-			if((f>=origineRigaStrada && f<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada)) {
-				if(stradaPercorsa[f-origineRigaStrada][j-origineColonnaStrada]<0) {
-					t.illuminaMappa(partita.getGiocatori().get(0), f, j, raggio);
+	/**
+	 * Metodo per trovare un Dinosauro all'interno della mappa 'stradaPercorsa'.
+	 * @param stradaPercorsa array bidimensionale di int che rappresenta la strada percorsa tramite numeri negativi crescenti da -7.
+	 * @return Un array di int con:
+	 * 				[0] - la riga del Dinosauro trovato, 
+	 * 				[1] - la colonna del Dinosauro trovato.	
+	 */
+	private static int[] trovaDinosauroStrada (int[][] stradaPercorsa) {
+		int j,w;
+		int[] uscita = {0,0};
+		for(j=0;j<stradaPercorsa.length;j++) {
+			for(w=0;w<stradaPercorsa[0].length;w++) {
+				if(stradaPercorsa[j][w]==-7) {
+					uscita[0] = j;
+					uscita[1] = w;
+					return uscita;
 				}
 			}
 		}
+		return uscita;
 	}
 
-	isola.stampaMappaRidottaVisibilita(partita.getGiocatori().get(0));
+	/**
+	 * Metoco per eseguire il movimento di un Dinosauro.
+	 * @param rigaCliccata int che rappreseta la riga della cella cliccata nella mappa del gioco.
+	 * @param colonnaCliccata int che rappreseta la colonna della cella cliccata nella mappa del gioco.
+	 */
+	void eseguiMovimento(int rigaCliccata, int colonnaCliccata) {
+		this.dino = giocatore.getDinosauri().get(this.indiceDino);
+		//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
+		int[][] stradaPercorsa = t.ottieniStradaPercorsa(dino.getRiga(), dino.getColonna(),rigaCliccata, colonnaCliccata);
+		int[] coordinateStrada = trovaDinosauroStrada(stradaPercorsa);
 
-	partita.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
+		int origineRigaStrada = dino.getRiga() - coordinateStrada[0];
+		int origineColonnaStrada = dino.getColonna() - coordinateStrada[1];
+		int fineRigaStrada = dino.getRiga() + (stradaPercorsa.length - coordinateStrada[0] - 1);
+		int fineColonnaStrada = dino.getColonna() + (stradaPercorsa[0].length - coordinateStrada[1] - 1);
 
-	System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
-	isola.stampaMappaRidotta();
-
-	//		mg.resetRaggiungibilita();
-	mg.applicaVisiblita(giocatore, t);
-	mg.applicaRaggiungibilita(indiceDino, giocatore, t);
-
-
-	if(mappa[vecchiaRiga][vecchiaColonna]!=null) {
-		if(mappa[vecchiaRiga][vecchiaColonna].getOccupante() instanceof Vegetale) {
-			mappaGui[vecchiaRiga][vecchiaColonna].setBackground(Color.GREEN);
-		} else {
-			if(mappa[vecchiaRiga][vecchiaColonna].getOccupante() instanceof Carogna) {
-				mappaGui[vecchiaRiga][vecchiaColonna].setBackground(Color.PINK);
+		int raggio = dino.calcolaRaggioVisibilita();
+		//illumino la strada
+		for(int f=0;f<MAX;f++) {
+			for(int j=0;j<MAX;j++) {
+				if((f>=origineRigaStrada && f<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada)) {
+					if(stradaPercorsa[f-origineRigaStrada][j-origineColonnaStrada]<0) {
+						t.illuminaMappa(partita.getGiocatori().get(0), f, j, raggio);
+					}
+				}
 			}
 		}
-	} else {
-		mappaGui[vecchiaRiga][vecchiaColonna].setBackground(Color.BLUE);
+		int stato = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
+		if(stato==-2) {
+			JOptionPane.showMessageDialog(null, "Il Dinosauro e' morto!");
+		} else {
+			if(stato==-1) {
+				JOptionPane.showMessageDialog(null, "Scegliere un'altra destinazione!");
+			} else {
+				if(stato==1) {
+					JOptionPane.showMessageDialog(null, "Tutto ok!");
+				} else {
+					if(stato==0) {
+						JOptionPane.showMessageDialog(null, "Vince attaccato!");
+					} else {
+						if(stato==2) {
+						JOptionPane.showMessageDialog(null, "Vince attaccante!");
+						} else {
+							if(stato==3) {
+								JOptionPane.showMessageDialog(null, "Conbattimento eseguito e mangiato occupante!");
+							}
+						}
+					}
+				}
+			}
+		}
+
+		mg.applicaVisiblita(giocatore, t);
+		mg.applicaRaggiungibilita(indiceDino, giocatore, t);
 	}
-}
 
-/**
- * Metodo per ottenere i dati nella vista di raggiungibilita'.
- * @return un array di int con:
- * 			[0] - riga d'inizio vista,
- * 			[1] - colonna d'inizio vista,
- * 			[2] - riga di fine vista,
- * 			[3] - colonna di fine vista.
- */
-public int[] getDatiRaggiungibilita () {
-	int rigaDino = giocatore.getDinosauri().get(indiceDino).getRiga();
-	int colonnaDino = giocatore.getDinosauri().get(indiceDino).getColonna();
-	int[][] raggiungibile = t.ottieniRaggiungibilita(rigaDino, colonnaDino);
-	int[] coordinate = mg.trovaDinosauro(raggiungibile);
-	//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
-	int[] datiRaggiungibilita = new int[4];
-	datiRaggiungibilita[0] = rigaDino - coordinate[0]; //riga inzio
-	datiRaggiungibilita[1] = colonnaDino - coordinate[1]; //colonna inizio
-	datiRaggiungibilita[2] = rigaDino + (raggiungibile.length - coordinate[0] - 1); //riga fine
-	datiRaggiungibilita[3] = colonnaDino + (raggiungibile[0].length - coordinate[1] - 1); //colonna fine
-	return datiRaggiungibilita;
-}
+	/**
+	 * Metodo per ottenere i dati nella vista di raggiungibilita'.
+	 * @return un array di int con:
+	 * 			[0] - riga d'inizio vista,
+	 * 			[1] - colonna d'inizio vista,
+	 * 			[2] - riga di fine vista,
+	 * 			[3] - colonna di fine vista.
+	 */
+	public int[] getDatiRaggiungibilita () {
+		int rigaDino = giocatore.getDinosauri().get(indiceDino).getRiga();
+		int colonnaDino = giocatore.getDinosauri().get(indiceDino).getColonna();
+		int[][] raggiungibile = t.ottieniRaggiungibilita(rigaDino, colonnaDino);
+		int[] coordinate = mg.trovaDinosauro(raggiungibile);
+		//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
+		int[] datiRaggiungibilita = new int[4];
+		datiRaggiungibilita[0] = rigaDino - coordinate[0]; //riga inzio
+		datiRaggiungibilita[1] = colonnaDino - coordinate[1]; //colonna inizio
+		datiRaggiungibilita[2] = rigaDino + (raggiungibile.length - coordinate[0] - 1); //riga fine
+		datiRaggiungibilita[3] = colonnaDino + (raggiungibile[0].length - coordinate[1] - 1); //colonna fine
+		return datiRaggiungibilita;
+	}
 
-/**
- * @return Il Giocatore.
- */
-public Giocatore getGiocatore() {
-	return giocatore;
-}
+	/**
+	 * @return Il Giocatore.
+	 */
+	public Giocatore getGiocatore() {
+		return giocatore;
+	}
 
-/**
- * @param giocatore Riferimento al Giocatore.
- */
-public void setGiocatore(Giocatore giocatore) {
-	this.giocatore = giocatore;
-}
+	/**
+	 * @param giocatore Riferimento al Giocatore.
+	 */
+	public void setGiocatore(Giocatore giocatore) {
+		this.giocatore = giocatore;
+	}
 
-/**
- * @return Un int che rappresenta il numero del Dinosauro nella propria squadra.
- */
-public int getIndiceDino() {
-	return indiceDino;
-}
+	/**
+	 * @return Un int che rappresenta il numero del Dinosauro nella propria squadra.
+	 */
+	public int getIndiceDino() {
+		return indiceDino;
+	}
 
-/**
- * @param indiceDino int per impostare il numero del Dinosauro nella propria squadra.
- */
-public void setIndiceDino(int indiceDino) {
-	this.indiceDino = indiceDino;
-}
+	/**
+	 * @param indiceDino int per impostare il numero del Dinosauro nella propria squadra.
+	 */
+	public void setIndiceDino(int indiceDino) {
+		this.indiceDino = indiceDino;
+	}
 
-/**
- * @return Il Turno corrente.
- */
-public Turno getT() {
-	return t;
-}
+	/**
+	 * @return Il Turno corrente.
+	 */
+	public Turno getT() {
+		return t;
+	}
 
-/**
- * @param t riferimento al Tunro corrente.
- */
-public void setT(Turno t) {
-	this.t = t;
-}
+	/**
+	 * @param t riferimento al Tunro corrente.
+	 */
+	public void setT(Turno t) {
+		this.t = t;
+	}
 
-/**
- * @return Un array bidimensionale contenente la mappa da gioco di JButton.
- */
-public JButton[][] getMappaGui() {
-	return mappaGui.clone();
-}
+	/**
+	 * @return Un array bidimensionale contenente la mappa da gioco di JButton.
+	 */
+	public JButton[][] getMappaGui() {
+		return mappaGui.clone();
+	}
 
-/**
- * @param mappaGui array bidimensionale per impostare la mappa di JButton.
- */
-public void setMappaGui(JButton[][] mappaGui) {
-	this.mappaGui = mappaGui.clone();
-}
+	/**
+	 * @param mappaGui array bidimensionale per impostare la mappa di JButton.
+	 */
+	public void setMappaGui(JButton[][] mappaGui) {
+		this.mappaGui = mappaGui.clone();
+	}
 }

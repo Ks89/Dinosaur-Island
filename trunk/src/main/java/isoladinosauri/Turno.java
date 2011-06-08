@@ -18,6 +18,9 @@ import isoladinosauri.modellodati.Vegetale;
  */
 public class Turno {
 
+	private static final int NONRAGG = 9;
+	private static final int CELLACQUA = 8;
+	private static final int MAX = 40;
 	private Partita partita;
 
 	/**
@@ -182,9 +185,9 @@ public class Turno {
 		for(int i=0; i<maxR; i++) {
 			for(int j=0; j<maxC; j++) {
 				if(this.partita.getIsola().getMappa()[origineMappaMovimento[0]+i][origineMappaMovimento[1]+j] == null) {
-					mappaMovimento[i][j] = 8; // ACQUA=8
+					mappaMovimento[i][j] = CELLACQUA; // ACQUA=8
 				} else {
-					mappaMovimento[i][j] = 9; // NON RAGGIUNGIBILE = 9
+					mappaMovimento[i][j] = NONRAGG; // NON RAGGIUNGIBILE = 9
 				}
 			}
 		}
@@ -219,7 +222,7 @@ public class Turno {
 							}
 							for(int j=colonnaSx; j<=colonnaDx; j++) {
 								// non c'e' acqua e non c'e' un numero di passi inferiori che mi permettono di raggiungere la cella
-								if(mappaMovimento[i][j] == 9) {
+								if(mappaMovimento[i][j] == NONRAGG) {
 									mappaMovimento[i][j] = passo;
 								}
 							}
@@ -331,32 +334,40 @@ public class Turno {
 	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
-	public boolean spostaDinosauro(Dinosauro mosso, int riga, int colonna) {
+	public int spostaDinosauro(Dinosauro mosso, int riga, int colonna) {
 		//ottengo cella di destinazione, individuata da (riga,colonna)
 		Cella destinazione = this.partita.getIsola().getMappa()[riga][colonna];
 
 		//se nella destinazione c'e' acqua blocca subito il metodo con return false;
 		if(destinazione==null) {
-			return false;
+			return -1; //TODO se c'e' acqua dar uscire -1
 		} else {
 			//questa e' la logica per far si che dopo al combattimento si possa anche mangiare l'occupante
 			if(destinazione.getDinosauro()!=null) {
 				//combatto col dinosauro presente nella cella di destinazione
-				boolean risultato = this.combatti(mosso, riga, colonna);
+				int risultato = this.combatti(mosso, riga, colonna);
 				if(destinazione.getOccupante()!=null) {
 					//mangio l'occupante, distinguendo se vegetazione o carogna
-					if(!(risultato && this.mangiaOccupante(mosso, riga, colonna))) {
-						risultato=false;
+					if(!(risultato!=-2 && risultato!=-1 && risultato!=1 && this.mangiaOccupante(mosso, riga, colonna))) {
+						risultato=3;
 					}
 				}
 				return risultato;	
 			} else {
 				if(destinazione.getOccupante()!=null) {
 					//mangio l'occupante, distinguendo se vegetazione o carogna
-					return this.mangiaOccupante(mosso, riga, colonna);
+					if(this.mangiaOccupante(mosso, riga, colonna)) {
+						return 1;
+					} else {
+						return -2;
+					}
 				} else {
 					//mi sto muovendo su terra semplice
-					return this.spostamentoSuTerreno(mosso, riga, colonna);
+					if(this.spostamentoSuTerreno(mosso, riga, colonna)) {
+						return 1; //spostamento avvenuto correttamente
+					} else {
+						return -2; //dinosauro morto perche' senza energia
+					}
 				}
 			}
 		}
@@ -384,15 +395,15 @@ public class Turno {
 				Erbivoro mosso = (Erbivoro)dinosauro;
 				return this.spostamentoConOccupante(mosso, riga, colonna);
 			} else
-				//eseguo il movimento in una cella in cui c'e' una carogna e io mi muovo
+				//eseguo il movimento in una cella in cui c'e' una carogna e mi muovo
 				//con un erbivoro o una vegetazione con un carnivoro
 				if(dinosauro.aggCordinate(riga, colonna)) {
 					destinazione.setDinosauro(dinosauro);
 					mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-					return true;
+					return true; //spostamento avvenuto correttamente
 				} else {
 					this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
-					return false;					
+					return false; //dinosauro rimosso perche' rimasto senza energia					
 				}
 	}
 
@@ -434,7 +445,7 @@ public class Turno {
 			return true;
 		} else {
 			this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso);
-			return false;	
+			return false;
 		}
 	}
 
@@ -446,7 +457,7 @@ public class Turno {
 	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
-	private boolean combatti(Dinosauro dinosauro, int riga, int colonna) {
+	private int combatti(Dinosauro dinosauro, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = dinosauro.getRiga();
@@ -456,7 +467,7 @@ public class Turno {
 
 		if(partita.identificaDinosauro(dinosauro).equals(partita.identificaDinosauro(destinazione.getDinosauro()))) {
 			System.out.println("Non puoi combattere con un tuo Dinosauro");
-			return false;
+			return -1;  //TODO qui bisogna sollevare destinazione nn valida cioe' -1
 		}
 		//controllo di che tipo e' il dinosauro attaccante
 		//se e' carnivoro posso mangiare qualunque altro dinosauro
@@ -470,7 +481,7 @@ public class Turno {
 			//dovra' scegliere uno nuova destinazione (nel main)
 			if(destinazione.getDinosauro() instanceof Erbivoro) {
 				System.out.println("Impossibile muoversi su un altro dinosauro erbivoro");
-				return false;
+				return -1; //TODO qui bisogna sollevare destinazione nn valida cioe'-1
 			} else { //combatto contro un carnivoro
 				Erbivoro attaccante = (Erbivoro)dinosauro; 
 				return this.spostamentoConDinosauro(attaccante, riga, colonna);
@@ -487,7 +498,7 @@ public class Turno {
 	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
 	 */
-	private boolean spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) {
+	private int spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = mosso.getRiga();
@@ -518,20 +529,23 @@ public class Turno {
 				//ha vinto l'attaccante
 				System.out.println("Rimosso dinosauro attaccato");
 				giocatore.rimuoviDinosauro(attaccato,mappa[vecchiaRiga][vecchiaColonna]);
+				//TODO mettere un return che da 1 cioe' il vincitore e' l'attacacnte
+				return 2;
 			} else { 
 				//vince il dino che si trova sulla cella di destinazione prima del movimento
 				System.out.println("Rimosso dinosauro attaccante");
 				giocatore=this.partita.identificaDinosauro(attaccante);
 				giocatore.rimuoviDinosauro(attaccante,mappa[vecchiaRiga][vecchiaColonna]);
+				//TODO mettere un return che da 1 cioe' il vincitore e' l'attacato
+				return 0;
 			}
-			return true;
 		}
 		else {
 			//il dinosauro muore perche' non ha abbastanza energia per muoversi
 			//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
 			this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante);
-			return false; 					
-		}
+			return -2; // TODO il dinosauro muore perche' nn ha abbastanza energia e si chiama mex mortePerInedia			
+		} 
 	}
 
 
@@ -558,7 +572,7 @@ public class Turno {
 			return true;
 		} else {
 			this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
-			return false;					
+			return false; //dinosauro morto perche' senza energia					
 		}
 	}
 
@@ -581,8 +595,8 @@ public class Turno {
 			occupante = (Carogna)elemento;
 		}
 		do {
-			nuovaRiga = random.nextInt(40);
-			nuovaColonna = random.nextInt(40); 
+			nuovaRiga = random.nextInt(MAX);
+			nuovaColonna = random.nextInt(MAX); 
 			if((nuovaRiga!=riga || nuovaColonna!=colonna) 
 					&& this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna]!=null &&
 					this.partita.getIsola().getMappa()[nuovaRiga][nuovaColonna].getOccupante()==null) {
@@ -600,12 +614,11 @@ public class Turno {
 	 * @param mappa Array bidimensionale per Celle che contiene la mappa del gioco.
 	 */
 	public void ricreaCarogne(Cella[][] mappa) {
-		for(int i=0;i<40;i++) {
-			for(int j=0;j<40;j++) {
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
 				if(mappa[i][j]!=null && (mappa[i][j].getOccupante() instanceof Carogna)) {
 					Carogna carogna = (Carogna)mappa[i][j].getOccupante();
 					if(carogna.getEnergia()<=0) {
-						System.out.println("carogna riposizionate");
 						this.riposizionaOccupante(i, j, new Carogna());
 						mappa[i][j].setOccupante(null);
 					}
