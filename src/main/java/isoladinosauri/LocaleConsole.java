@@ -6,12 +6,12 @@ import isoladinosauri.modellodati.Vegetale;
 
 import java.util.Scanner;
 
-
+/**
+ * Classe richiamata dal main per simulare il gioco in Locale con grafica
+ */
 public class LocaleConsole {
 
-	/**
-	 * Classe richiamata dal main per simulare il gioco in Locale con grafica
-	 */
+	private static final int MAX = 40;
 
 	public void avviaLineaDiComando () {
 		boolean uscita=false;
@@ -147,7 +147,7 @@ public class LocaleConsole {
 							switch(scelta)  {
 							case 1 :
 								//muovi
-																
+
 								int[][] raggiungibile = t.ottieniRaggiungibilita(dino.getRiga(), dino.getColonna());
 								int[][] stradaPercorsa;
 								int[] coordinate = trovaDinosauro(raggiungibile);
@@ -166,7 +166,7 @@ public class LocaleConsole {
 								i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
 								String posMovimento;
 								int riga, colonna;
-								boolean spostDino=false;
+								int statoSpostamento=0;
 								do {
 									System.out.println("Inserisci coordinate come: riga,colonna: ");
 
@@ -193,8 +193,8 @@ public class LocaleConsole {
 
 									int raggio = dino.calcolaRaggioVisibilita();
 									//illumino la strada
-									for(int w=0;w<40;w++) {
-										for(int j=0;j<40;j++) {
+									for(int w=0;w<MAX;w++) {
+										for(int j=0;j<MAX;j++) {
 											if((w>=origineRigaStrada && w<=fineRigaStrada) && (j>=origineColonnaStrada && j<=fineColonnaStrada)) {
 												if(stradaPercorsa[w-origineRigaStrada][j-origineColonnaStrada]<0) {
 													t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), w, j, raggio);
@@ -205,14 +205,31 @@ public class LocaleConsole {
 
 									i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
 
-									if((riga!=dino.getRiga() || colonna!=dino.getColonna()) && raggiungibile[riga-origineRiga][colonna-origineColonna]!=9) {
-										spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
+									statoSpostamento = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
+									if(statoSpostamento==-2) {
+										System.out.println("Dinosauro morto");
 									} else {
-										spostDino=false;
+										if(statoSpostamento==-1) {
+											System.out.println("Scegliere un'altra destinazione!");
+										} else {
+											if(statoSpostamento==1) {
+												System.out.println("Tutto ok!");
+											} else {
+												if(statoSpostamento==0) {
+													System.out.println("Vince attaccato!");
+												} else {
+													if(statoSpostamento==2) {
+														System.out.println("Vince attaccante!");
+													} else {
+														if(statoSpostamento==3) {
+															System.out.println("Combattimento eseguito e mangiato occupante!");
+														}
+													}
+												}
+											}
+										}
 									}
-
-//									spostDino = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
-								}while(!spostDino);
+								}while(statoSpostamento==-2 || statoSpostamento==-1);
 
 								System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
 								i.stampaMappaRidotta();
@@ -220,8 +237,6 @@ public class LocaleConsole {
 							default:
 								break;
 							}
-
-
 
 							System.out.println("Azioni possibili:");
 							System.out.println("[1]: Cresci");
@@ -231,26 +246,24 @@ public class LocaleConsole {
 							switch(scelta)  {								
 							case 1 :
 								//cresci
-								if(dino.aumentaDimensione()) {
+								if(dino.aumentaDimensione()==1) {
 									System.out.println("Il dinosauro " + dino.getId() + " e' ora di dimensione: " + (dino.getEnergiaMax()/1000));
 									int raggio = dino.calcolaRaggioVisibilita();
 									t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), dino.getRiga(), dino.getColonna(), raggio);
 								}
 								else {
-									p.getGiocatori().get(conteggioGiocatori).rimuoviDinosauro(dino);
-									System.out.println("Non e' stato possibile far crescere il dinosauro: " + dino.getId());
-									conteggioDinosauro--;
+									if(dino.aumentaDimensione()==-1) {
+										p.getGiocatori().get(conteggioGiocatori).rimuoviDinosauro(dino);
+										System.out.println("Non e' stato possibile far crescere il dinosauro: " + dino.getId());
+										conteggioDinosauro--;
+									}
 								}
 
 								break;
 							case 2 :
 								//deponi
-								if(!(p.getGiocatori().get(conteggioGiocatori).eseguiDeposizionedeponiUovo(dino))) {
-									System.out.println("Errore deposizione, possibili motivi: energia insufficiente, squadra dei dinosauri completa");
-									//									if(p.getGiocatori().get(conteggioGiocatori).getDinosauri().isEmpty()) {
-									//										conteggioDinosauro=0;
-									//										conteggioGiocatori--;
-									//									}
+								if((p.getGiocatori().get(conteggioGiocatori).eseguiDeposizionedeponiUovo(dino)==1)) {
+									System.out.println("Errore deposizione, possibili motivi: energia insufficiente");
 								}
 								break;
 							default : //passa l'azione per il dinosauro specificato
@@ -316,8 +329,8 @@ public class LocaleConsole {
 	}
 
 	private static void cresciEconsuma(Partita p) {
-		for(int i=0;i<40;i++) {
-			for(int j=0;j<40;j++) {
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
 				if(p.getIsola().getMappa()[i][j]!=null && p.getIsola().getMappa()[i][j].getOccupante()!=null) {
 					if(p.getIsola().getMappa()[i][j].getOccupante() instanceof Vegetale) {
 						Vegetale vegetale = (Vegetale)(p.getIsola().getMappa()[i][j].getOccupante());

@@ -7,14 +7,11 @@ import isoladinosauri.modellodati.Erbivoro;
 import java.util.ArrayList;
 import java.util.List;
 
-
 //FIXME GRAVISSIMO: se c'e' un solo giocatore nella partita e il suo dinosauro muore il programma crasha SEMPRE (MOLTO GRAVE)
 //se invece cancello il giocatore direttamente dal menu, allora non succede nulla. Il bug sta nei cicli dei dinosauri, sugli indici
 //FIXME se muovo e non ho piu energia per farlo il programma non uccide il dino e resta bloccato nel ciclo per inserire le coordinate
 //FIXME una volta che il dinosauro erbivoro va su cella di un carnivoro e perde, il menu' delle azioni non devo apparire piu'
 //FIXME se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
-//TODO mettere la Javadoc (inziato a farlo)
-//FIXME fare in modo che se le carogne arrivanoa  0 di energia sa sole con il consuma, vengano riposizionate in automatico da cariche
 
 /**
  * Classe Partita per la gestione dei giocatori,
@@ -22,6 +19,8 @@ import java.util.List;
  */
 public class Partita {
 
+	private static final int MAX = 40;
+	private static final int MAXGIOC = 8;
 	private Isola isola;
 	private Turno turnoCorrente; //Conserva solo il turno corrente
 	private List<Giocatore> giocatori;
@@ -42,7 +41,7 @@ public class Partita {
 	 * @param giocatore riferimento al Giocatore che deve essere aggiunto in Partita.
 	 */
 	public void aggiungiGiocatore(Giocatore giocatore) {
-		if(this.giocatori.size()<8) {
+		if(this.giocatori.size()<MAXGIOC) {
 			giocatori.add(giocatore);
 		} else { 
 			System.out.println("Impossibile accedere, sono concessi solo 8 giocatori online");
@@ -58,8 +57,8 @@ public class Partita {
 		//ricevo gicatore, cioe' il giocatore che devo cancellare		
 		//rimuovo tutti i dinosauri del giocatore dalla mappa
 		Cella[][] mappa = this.getIsola().getMappa();
-		for(int j=0;j<40;j++) {
-			for(int i=0;i<40;i++) {
+		for(int j=0;j<MAX;j++) {
+			for(int i=0;i<MAX;i++) {
 				if(mappa[i][j]!=null && mappa[i][j].getDinosauro()!=null && 
 						giocatore.getDinosauri().contains(mappa[i][j].getDinosauro())) {
 					mappa[i][j].setDinosauro(null);
@@ -135,7 +134,6 @@ public class Partita {
 				posizione = this.generaCoordinateNascituro(riga,colonna);
 
 				String idDinosauro = this.getGiocatore(i).generaIdDinosauro();
-				System.out.println("id Dino:" + idDinosauro);
 
 				//NB: fare .getDinosauri().get(0) vuol dire  prendere il primo dino del giocatore
 				//solo per vedere se e' carnivoro o erbivoro e quindi per capire il tipo della specie del dinosauro
@@ -182,12 +180,11 @@ public class Partita {
 		int[] estremo; //estremo vista
 		int[] coordinate = new int[2];  //coordinare in cui mettero' il nuovo dinosauro
 
-		for(int i=1; i<40; i++) { //calcola il raggio della visuale
+		for(int i=1; i<MAX; i++) { //calcola il raggio della visuale
 			origine = this.turnoCorrente.ottieniOrigineVisuale(riga, colonna, i);
 			estremo = this.turnoCorrente.ottieniEstremoVisuale(riga, colonna, i);
 			for(int w=origine[0]; w<estremo[0]+1; w++) { //mi muovo sulle righe 
 				for(int j=origine[1]; j<estremo[1]+1; j++) { //mi muovo sulle colonne
-					//					System.out.println(w + "," + j + " " + origine[0] + "," + origine[1] + " " + estremo[0] + "," + estremo[1]);
 					if(this.getIsola().getMappa()[w][j]!=null && this.getIsola().getMappa()[w][j].getDinosauro()==null) {
 						coordinate[0] = w;
 						coordinate[1] = j;

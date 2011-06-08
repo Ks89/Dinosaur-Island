@@ -16,6 +16,9 @@ import java.util.Random;
  */
 public class Giocatore {
 
+	private static final int MAX = 40;
+	private static final int MAXGIOC = 8;
+	private static final int MAXDINO = 5;
 	private Partita partita;
 	private Utente utente;
 
@@ -72,7 +75,7 @@ public class Giocatore {
 
 		//gestione mappa (buio e luce)
 		//non serve inizializzarla perche' e' di default a FALSE
-		this.mappaVisibile = new boolean[40][40];
+		this.mappaVisibile = new boolean[MAX][MAX];
 
 		//illumino la mappa della visibilita' nella zona in cui ho creato il dinosauro
 		//il raggio e' 2 costante, perche' tutti i giocatori appena creati hanno un solo dino e sempre con dimensione =1
@@ -103,10 +106,8 @@ public class Giocatore {
 		Cella cella;
 		Random random = new Random();
 		do {
-			coordinate[0] = random.nextInt(40);
-			coordinate[1] = random.nextInt(40);
-			//			coordinate[0]=8;
-			//			coordinate[1]=14;
+			coordinate[0] = random.nextInt(MAX);
+			coordinate[1] = random.nextInt(MAX);
 			cella = this.partita.getIsola().getMappa()[coordinate[0]][coordinate[1]];
 		} while(cella==null || cella.getDinosauro()!=null);
 		return coordinate;
@@ -128,14 +129,14 @@ public class Giocatore {
 		}
 		else { 
 			for(int j=0;j<this.partita.getGiocatori().size();j++) {
-				for(int i=0;i<8;i++) {
+				for(int i=0;i<MAXGIOC;i++) {
 					//mette a '0' gli id gia' occupati nell'array posizioni[]
 					if(this.partita.getGiocatori().get(j).getIdGiocatore()==posizioni[i]) {
 						posizioni[i]=0;
 					}
 				}
 			} //cerco il primo che non e' '0' nell'array e ritorno l'indice + 1 
-			for(int i=0;i<8;i++) {
+			for(int i=0;i<MAXGIOC;i++) {
 				if(posizioni[i]!=0) {
 					return i+1;
 				}
@@ -158,13 +159,13 @@ public class Giocatore {
 		}
 		else {
 			for(int j=0;j<this.getDinosauri().size();j++) {
-				for(int i=0;i<5;i++) {
+				for(int i=0;i<MAXDINO;i++) {
 					if(this.getDinosauri().get(j).getId().charAt(1)==posizioni[i]) {
 						posizioni[i]='0';
 					}
 				}
 			}
-			for(int i=0;i<5;i++) {
+			for(int i=0;i<MAXDINO;i++) {
 				if(posizioni[i]!='0') {
 					return i+1;
 				}
@@ -177,7 +178,6 @@ public class Giocatore {
 	 * @return Una String contenente l'id del Dinosauro in questa forma: "X": idGiocatore, "Y": numero del Dinosauro.
 	 */
 	public String generaIdDinosauro() {
-//		System.out.println(this.generaIdParziale());
 		return "" + this.getIdGiocatore() + this.generaIdParziale();
 	}
 
@@ -205,7 +205,7 @@ public class Giocatore {
 	 * andato bene, 'false': non e' stato possibile aggiungere il Dinosauro.
 	 */
 	public boolean aggiungiDinosauro(Dinosauro dinosauro) {
-		if(this.dinosauri.size() + this.getUova().size()<5 ) {
+		if(this.dinosauri.size() + this.getUova().size()<MAXDINO ) {
 			this.dinosauri.add(dinosauro);
 		} else {
 			return false; //non posso aggiungere il dinosauro
@@ -285,20 +285,20 @@ public class Giocatore {
 	 * 		abbastanza energia per compiere l'azione e quindi muore,
 	 * 		con 'true' che e' andato tutto bene.
 	 */
-	public boolean eseguiDeposizionedeponiUovo(Dinosauro dinosauro) {
+	public int eseguiDeposizionedeponiUovo(Dinosauro dinosauro) {
 		dinosauro.setEnergia(dinosauro.getEnergia() - 1500);
 		if(dinosauro.getEnergia()>0) {
 			//il dinosauro pu' compiere l'azione di deposizione, ma solo se il num di dino
 			//sommati a quello delle uova (perche' in futuro saranno anch'essi dino) sia <5
-			if((this.getDinosauri().size() + this.getUova().size()) < 5 ) {
+			if((this.getDinosauri().size() + this.getUova().size()) < MAXDINO ) {
 				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna());
-				return true;
+				return 1;
 			} else {
-				return false; //squadra completa e non posso creare altri dinosauri deponendo uova	
+				return 0; //squadra completa e non posso creare altri dinosauri deponendo uova	
 			}
 		} else { //il dinosauro muore perche' non ha sufficiente energia
 			this.rimuoviDinosauro(dinosauro);	
-			return false;
+			return -2;
 		}
 	}
 

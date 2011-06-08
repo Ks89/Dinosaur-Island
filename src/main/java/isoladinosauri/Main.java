@@ -14,15 +14,14 @@ import javax.swing.*;
 public class Main {
 
 	private static final String HOME = "Home";
-	private static final JFrame window = new JFrame("Isola Dinosauri BETA1");
-	private static Container contentPane = window.getContentPane();
+	private static final JFrame frame = new JFrame("Isola Dinosauri");
+	private static Container contentPane = frame.getContentPane();
 	private static CardLayout cardLayout = new CardLayout();
 
 	public static void main (String[] args) {
-		//chiama interfaccia grafica per scegliere il tipo di gioco da lanciare
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setMinimumSize(new Dimension(300,250));
-		window.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setMinimumSize(new Dimension(300,250));
+		frame.setResizable(false);
 
 		JPanel homePanel = new JPanel(new GridLayout(4,1));
 		JLabel titolo = new JLabel("Isola dei dinosauri");
@@ -44,7 +43,7 @@ public class Main {
 					public void actionPerformed(ActionEvent event){
 						LocaleConsole cl = new LocaleConsole();
 						cl.avviaLineaDiComando();
-						window.setVisible(false);
+						frame.setVisible(false);
 					}
 				}
 		);
@@ -66,7 +65,7 @@ public class Main {
 					public void actionPerformed(ActionEvent event){
 //						LocaleGrafica cl = new LocaleGrafica();
 //						cl.grafica();
-//						window.setVisible(false);
+//						frame.setVisible(false);
 					}
 				}
 		);
@@ -100,22 +99,15 @@ public class Main {
 		contentPane.add(rmiPanel, "Rmi");
 		contentPane.add(localeGUIPanel, "GUI Locale");
 		
-		window.pack();
-		window.setVisible(true);
+		frame.pack();
+		frame.setVisible(true);
 	}
 
-//	class ButtonHandler implements ActionListener
-//	{
-//		public void actionPerformed(ActionEvent event)
-//		{
-//			JButton pulsante = (JButton)event.getSource();
-//			pulsante.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-//			window.setBackground(Color.BLACK);
-//			//			ConsoleLocale cl = new ConsoleLocale();
-//			//			cl.avviaLineaDiComando();
-//		}
-//	}
-
+	/**
+	 * Metodo che esegue la creazione di un JButton assegnando come nome e azione la String action ricevuta in ingresso.
+	 * @param action String per impostare il testo nel pulsante e l'actionCommand.
+	 * @return Un JButton con testo e ActionCommand uguali.
+	 */
 	private static JButton createButton(String action) {
 		JButton b = new JButton(action);
 		b.setActionCommand(action);

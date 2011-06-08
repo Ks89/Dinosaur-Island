@@ -83,27 +83,26 @@ public abstract class Dinosauro extends Organismo {
 	
 	/**
 	 * Metodo per aumentare la dimensione del Dinosauro dopo un'azione di crescita.
-	 * @return Un boolean 'true': crescita avvenuta correttamente,
-	 * 			'false': non e' stato possibile far cresce il Dinosauro
-	 * 			perche' e' gia' alla dimensione massima (5).
+	 * @return Un int '1': crescita avvenuta correttamente,
+	 * 			'0': non e' stato possibile far cresce il Dinosauro perche' ha gia' la dimensione massima,
+	 * 			'-1': il Dinosauro non ha l'energia sufficiente per compiere l'azione e deve essere rimosso.
 	 */
-	public boolean aumentaDimensione() {
+	public int aumentaDimensione() {
 		//nel caso in cui la dimensione sia gia' massima
 		//ritorna false perche' non e' in grado di far crescere
 		//la dimensione del dinosauro
 		if(super.getEnergiaMax()/1000 < 5) {
 			if(super.getEnergia()>(super.getEnergiaMax()/2)) {
 				super.setEnergia(super.getEnergia() - super.getEnergiaMax()/2);
-
 				super.setEnergiaMax(1000+super.getEnergiaMax());
-				return true;
+				return 1;
 			} else {
-				return false;
+				//il dinosauro deve morire perche' non ha energia sufficiente per compiere l'azione
+				return -1;
 			}
 		}
 		else {
-			System.out.println("Raggiunta la dimensiona massima, impossibile completare l'operazione");
-			return false; 
+			return 0; 
 		}
 	}
 
@@ -167,21 +166,6 @@ public abstract class Dinosauro extends Organismo {
 	 */
 	public void setTurnoNascita(int turnoNascita) {
 		this.turnoNascita = turnoNascita;
-	}
-
-
-	/**
-	 * @return Un int che indica l'eta' attuale del Dinosauro.
-	 */
-	public int getEtaAttualeDinosauro() {
-		return etaAttualeDinosauro;
-	}
-
-	/**
-	 * @param etaAttualeDinosauro int per stabilire l'eta' attuale del Dinosauro.
-	 */
-	public void setEtaAttualeDinosauro(int etaAttualeDinosauro) {
-		this.etaAttualeDinosauro = etaAttualeDinosauro;
 	}
 
 	/**
