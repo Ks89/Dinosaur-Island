@@ -335,11 +335,6 @@ public class ClientHandler extends Thread {
 			return null;
 		} else {
 			for(i=0; i<this.partita.getGiocatori().size();i++) {
-				System.out.println(partita.getGiocatori());
-				System.out.println(partita.getGiocatori().get(i));
-				System.out.println(partita.getGiocatori().get(i).getUtente());
-				System.out.println(partita.getGiocatori().get(i).getUtente().getNomeUtente());
-
 				if(partita.getGiocatori().get(i).getUtente().getNomeUtente().equals(nomeUtente)) {
 					break;
 				}
@@ -631,29 +626,29 @@ public class ClientHandler extends Thread {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
 
-					if(dinosauro.getEtaDinosauro()>=dinosauro.getDurataVita()) {
+					if(dinosauro.getEtaDinosauro()<dinosauro.getDurataVita()) {
 						int statoCrescita = dinosauro.aumentaDimensione();
 						if(statoCrescita==1) {
 							//azione di crescita eseguita correttamente
 							answer = "@ok";
 						} else {
 							if(statoCrescita==0) {
-								answer = "@no[,@raggiuntaDimensioneMax]";
+								answer = "@no,@raggiuntaDimensioneMax";
 							} else { //se stato crescita e' ==-1 il dinosauro deve essere rimosso perche' sebza energia
-								answer = "@no[,@mortePerInedia]";
+								answer = "@no,@mortePerInedia";
 							}
 						}
 					} else {
-						answer = "@no[,@raggiuntoLimiteMosseDinosauro]";
+						answer = "@no,@raggiuntoLimiteMosseDinosauro";
 					}
 				} else {
-					answer = "@no[,@idNonValido]";
+					answer = "@no,@idNonValido";
 				}
 			} else {
-				answer = "@no[,@nonInPartita]";
+				answer = "@no,@nonInPartita";
 			}
 		} else {
-			answer = "@no[,@tokenNonValido]";
+			answer = "@no,@tokenNonValido";
 		}
 		return answer;
 	}
@@ -662,10 +657,15 @@ public class ClientHandler extends Thread {
 		String token = request.split(",")[1].split("=")[1];
 		String answer = new String();
 		String idDino = request.split(",")[2].split("=")[1];
-		String destinazione = request.split("{")[1].split("}")[0]; //espressa come "X,Y"
+		System.out.println(request);
+		System.out.println(request.split("=")[3]);
+		String destinazione = request.split("=")[3].replace("{","").replace("}", ""); //espressa come "X,Y"
 		int riga = Integer.parseInt(destinazione.split(",")[0]);
 		int colonna = Integer.parseInt(destinazione.split(",")[1]); 
-
+		System.out.println("riga, colonna " + riga + "," + colonna);
+		
+		this.partita.getIsola().stampaMappaRidotta();
+		
 		//verifico se c'e' nel file Token.txt
 		boolean trovatoToken = cercaNelFile("Token.txt",token,null," ",1);
 		boolean trovatoInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
@@ -673,33 +673,36 @@ public class ClientHandler extends Thread {
 			if(trovatoInPartita) {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
-					if(dinosauro.getEtaDinosauro()>=dinosauro.getDurataVita()) {
+					if(dinosauro.getEtaDinosauro()<=dinosauro.getDurataVita()) {
 						int statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dinosauro, riga, colonna);
 						switch(statoMovimento) {
 						case -2:
-							answer = "@no[,@mortePerInedia]";
+							answer = "@no,@mortePerInedia";
 							break;
 						case -1:
-							answer = "@no[,@destinazioneNonValida]";
+							answer = "@no,@destinazioneNonValida";
 							break;
 						case 0:
-							answer = "@ok[,@combattimento,p]";	
+							answer = "@ok,@combattimento,p";	
+							break;
+						case 1:
+							answer = "@ok";
 							break;
 						case 2:
-							answer = "@ok[,@combattimento,v]";
+							answer = "@ok,@combattimento,v";
 							break;
 						}
 					} else {
-						answer = "@no[,@raggiuntoLimiteMosseDinosauro]";
+						answer = "@no,@raggiuntoLimiteMosseDinosauro";
 					}
 				} else {
-					answer = "@no[,@idNonValido]";
+					answer = "@no,@idNonValido";
 				}
 			} else {
-				answer = "@no[,@nonInPartita]";
+				answer = "@no,@nonInPartita";
 			}
 		} else {
-			answer = "@no[,@tokenNonValido]";
+			answer = "@no,@tokenNonValido";
 		}
 		return answer;
 	}
