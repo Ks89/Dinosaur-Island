@@ -11,6 +11,7 @@ public class ServerMultiClient {
 
 	private int port;
 	private Partita partita;
+	private GestioneGiocatori gestioneGiocatori;
 
 	public ServerMultiClient(int port) {
 		this.port = port;
@@ -21,6 +22,7 @@ public class ServerMultiClient {
 		Turno t = new Turno(partita);
 		Classifica c = new Classifica(partita);
 		partita.setTurnoCorrente(t);
+		this.gestioneGiocatori = new GestioneGiocatori();
 	}
 
 	public void runServer() throws IOException {
@@ -30,7 +32,7 @@ public class ServerMultiClient {
 			try {
 				Socket socket = serverSocket.accept();
 				System.out.println("Client connected, creating new client handler.");
-				new ClientHandler(socket, partita).start();
+				new ClientHandler(socket, partita,gestioneGiocatori).start();
 			} catch (IOException e) {
 				System.out.println("Error while waiting for a connection.");
 			}

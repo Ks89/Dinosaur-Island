@@ -2,7 +2,6 @@ package isoladinosauri;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +14,7 @@ import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
 import isoladinosauri.modellodati.Erbivoro;
 import isoladinosauri.modellodati.Vegetale;
+import isoladinosauri.GestioneGiocatori;
 
 public class ClientHandler extends Thread {
 
@@ -22,11 +22,13 @@ public class ClientHandler extends Thread {
 	private static final int MAX = 40;
 	private static final String ERRORE = "Errore lettura file";
 	private Partita partita;
-	private Utente utente;
+//	private Utente utente;
+	private GestioneGiocatori gestioneGiocatori;
 
-	public ClientHandler(Socket socket, Partita partita) {
+	public ClientHandler(Socket socket, Partita partita, GestioneGiocatori gestioneGiocatori) {
 		this.socket = socket;
 		this.partita = partita;
+		this.gestioneGiocatori = gestioneGiocatori;
 	}
 
 	public boolean cercaNelFile(String nomeFileFisico, String parametro1, String parametro2, String carSplit, int posSplit) {
@@ -60,6 +62,31 @@ public class ClientHandler extends Thread {
 		}
 		return trovato;
 	}
+	
+	public String ottieniPassDaFile(String nomeFileFisico,String nomeUtente, String carSplit, int posSplit) {
+	
+		String password = new String();
+		try {
+			FileReader fileReader = new FileReader(nomeFileFisico);
+			BufferedReader br;
+			br = new BufferedReader(fileReader);
+			String rigaFile = br.readLine();
+			rigaFile = br.readLine();
+			while(rigaFile!=null) {
+				if(rigaFile.split(carSplit)[posSplit].equals(nomeUtente)) {
+					password = rigaFile.split(carSplit)[posSplit+1];
+					break;				
+				}
+				rigaFile = br.readLine();
+			}
+			br.close();
+		}
+		catch(IOException ioException)
+		{
+			System.err.println(ERRORE);
+		}
+		return password;
+	}
 
 	public void scriviNelFile(String nomeFileFisico, String riga) {
 		try {
@@ -73,12 +100,57 @@ public class ClientHandler extends Thread {
 		}
 	}
 
+	private Giocatore individuaGiocatore (String nomeUtente) {
+		int i=0;
+		if(this.partita.getGiocatori().isEmpty()) {
+			return null;
+		} else {
+			for(i=0; i<this.partita.getGiocatori().size();i++) {
+				if(this.partita.getGiocatori().get(i).getUtente().getNomeUtente().equals(nomeUtente)) {
+					return this.partita.getGiocatori().get(i);
+				}
+			}
+		}
+		return null;
+	}
+	
+	private boolean verificaIdDinosauro(String id) {
+		if(Integer.parseInt(id)>=11 && Integer.parseInt(id)<=85) {
+			for(int i=0;i<this.partita.getGiocatori().size();i++) {
+				for(int j=0;j<this.partita.getGiocatori().size();j++) {
+					if(this.partita.getGiocatori().get(i).getDinosauri().get(j).getId().equals(id)) {
+						return true;
+					}
+				}
+			}
+		} 
+		return false;
+	}
+	
+	private Dinosauro individuaDinosauro (String id) {
+		if(this.partita.getGiocatori().isEmpty()) {
+			return null;
+		} else {
+			for(int i=0; i<this.partita.getGiocatori().size();i++) {
+				for(int j=0; j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {
+					if(this.partita.getGiocatori().get(i).getDinosauri().get(j).getId().equals(id)) {
+						return this.partita.getGiocatori().get(i).getDinosauri().get(j);
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
 	public String creaUtente(String request) {
 		String answer;
 		String nickname = request.split(",")[1].split("=")[1];
 		String password = request.split(",")[2].split("=")[1];
 
-		//cerco nel file Utenti.txt se l'utente e' gia' esistente
+		// verifico se ci sono gia' utenti registrati nel file e li creo nella classe utente
+//		this.registraUtentiFile("Utenti.txt"," ",0);
+		
+		// verifico se l'utente si trova in partital'utente e' gia' esistente
 		boolean trovato = cercaNelFile("Utenti.txt",nickname,null," ",0);
 		if(trovato) {
 			answer="@no,@usernameOccupato";
@@ -86,28 +158,26 @@ public class ClientHandler extends Thread {
 		else {
 			answer="@ok";
 			scriviNelFile("Utenti.txt",nickname+" "+password+"\n");
-			System.out.println("Dati: " + nickname + "," + password);
-			this.utente = new Utente(nickname,password);
-			System.out.println("Dati: " + this.utente.getNomeUtente() + "," + this.utente.getPassword());
+//			System.out.println("Dati: " + nickname + "," + password);
+//			this.utente = new Utente(nickname,password);
+//			System.out.println("Dati: " + this.utente.getNomeUtente() + "," + this.utente.getPassword());
 		}
 		return answer;
 	}
 
 	public String login(String request) {
-		String token;
 		String answer = new String();	 
 		String nickname = request.split(",")[1].split("=")[1];
 		String password = request.split(",")[2].split("=")[1];
-
+		String token = nickname+"-"+password;
 		//verifico se c'e' nel file Utenti.txt
 		boolean trovato = cercaNelFile("Utenti.txt",nickname,password," ",0);
 		if(trovato) {
-			//cerco se il token e' gia' loggato
-			boolean trovatoToken = cercaNelFile("Token.txt",nickname,null," ",0);
-			if(!trovatoToken) {
-				//aggiorno il file Token.txt
-				token = nickname+"-"+password;
-				scriviNelFile("Token.txt",nickname+" "+token+"\n");
+			boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+			if(!loggato) {
+				//aggiungo l'utente in partita
+				
+				this.gestioneGiocatori.aggiungiTokenLoggati(nickname,token);
 				answer = "@ok,"+token;
 			}
 			else {
@@ -125,18 +195,21 @@ public class ClientHandler extends Thread {
 		String token = request.split(",")[1].split("=")[1];
 		String nomeRazza = request.split(",")[2].split("=")[1];
 		String tipoRazza = request.split(",")[3].split("=")[1];
+		String nomeUtente = token.split("-")[0];
 
-		//verifico se c'e' il token nel file Token.txt
-		boolean trovato = cercaNelFile("Token.txt",token,null," ",1);
-		if(trovato) {
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
 			int turnoCorrente = 1; //solo per test
-			Giocatore giocatore = new Giocatore(this.partita, turnoCorrente, nomeRazza, tipoRazza);
-			giocatore.setUtente(this.utente);
-			System.out.println("Utente: " + this.utente.getNomeUtente());
-			this.partita.aggiungiGiocatore(giocatore);
+			String password = this.ottieniPassDaFile("Utenti.txt", nomeUtente, " ", 0);
+			Utente utente = new Utente(nomeUtente,password);
+			Giocatore giocatore = new Giocatore(turnoCorrente, nomeRazza, tipoRazza);
+			giocatore.setUtente(utente);
+//			System.out.println("Utente: " + this.utente.getNomeUtente());
+			this.gestioneGiocatori.aggiungiGiocatoreCreato(giocatore);
 			answer = "@ok";
 		}
-		else if(!trovato) {
+		else if(!loggato) {
 			answer = "@no,@tokenNonValido";
 		}
 		return answer;
@@ -144,58 +217,37 @@ public class ClientHandler extends Thread {
 
 	public String accessoPartita(String request) {
 
-		String nomeUtente = new String();
 		String answer = new String();
-		int nGiocatori = 0;
+		int k=0;
 
 		String token = request.split(",")[1].split("=")[1];
-		try { // cerco se il token e' valido
-			FileReader fileToken = new FileReader("Token.txt");
-			BufferedReader br = new BufferedReader(fileToken);
-			String rigaFile = br.readLine();
-
-			boolean trovato=false;
-			while(rigaFile!=null) {
-				if(rigaFile.split(" ")[1].equals(token)) {
-					trovato=true;
-					nomeUtente=rigaFile.split(" ")[0];
-					break;
-				}
-				rigaFile = br.readLine();
+		String nomeUtente = token.split("-")[0];
+		// cerco se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			// verifico se il giocatore ha gia' effettuato l'accesso alla partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
 			}
-			br.close();
-
-			// verifico se il giocatore ha gia' effettuato l'accesso
-			boolean trovatoTokenInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-			if(!trovatoTokenInPartita) {
-				//conto il numero di giocatori (token) nel file tokenInPartita
-				FileReader fileTokenInPartitaRD = new FileReader("TokenInPartita.txt");
-				br = new BufferedReader(fileTokenInPartitaRD);
-				rigaFile = br.readLine();
-				while(rigaFile!=null) {
-					nGiocatori++;
-					rigaFile = br.readLine();
-				}
-				br.close();
-				if(trovato && nGiocatori<8) {
-					//aggiorno il file TokenInPartita.txt
-					scriviNelFile("TokenInPartita.txt",nomeUtente+" "+token+"\n");
-					answer = "@ok";
-				}
-				else if(!trovato) {
-					answer = "@no,@tokenNonValido";
-				}
-				else if(nGiocatori>=8) {
-					answer = "@no,@troppiGiocatori";
-				}
-			}	
-			else {
+			int nGiocatori = this.partita.getGiocatori().size();
+			if(!inPartita && nGiocatori<8) {
+				k = this.gestioneGiocatori.indiceGiocatoreCreato(nomeUtente);
+				//aggiungo il giocatore alla partita
+				Giocatore giocatore = this.gestioneGiocatori.ottieniGiocatoriCreati().get(k);
+//				this.partita.aggiungiGiocatore(giocatore);
+				giocatore.aggiungiInPartita(this.partita);
+				answer = "@ok";
+			}
+			else if(nGiocatori>=8) {
+				answer = "@no,@troppiGiocatori";
+			}
+			else if(inPartita){
 				answer = "@no,@ACCESSO_GIA_EFFETTUATO";
 			}
 		}
-		catch(IOException ioException)
-		{
-			System.err.println(ERRORE);
+		else {
+			answer = "@no,@tokenNonValido";
 		}
 		return answer;
 	}
@@ -203,48 +255,24 @@ public class ClientHandler extends Thread {
 	public String uscitaPartita(String request) {
 		String answer = new String();
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
+		int k=0;
 
-		// cerco se il token e' in partita
-		boolean trovato = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-		try {
-			if(trovato) {
-				//aggiorno il file TokenInPartita.txt cancellando il token
-				//copio i token escluso quello che devo eliminare in un file tmp
-
-				FileReader fileTokenInPartita = new FileReader("TokenInPartita.txt");
-				FileWriter fileTmpToken = new FileWriter ("TmpToken.txt",true); //true=append
-
-				BufferedReader br = new BufferedReader(fileTokenInPartita);
-				String rigaFile = br.readLine();
-
-				while(rigaFile!=null) {
-					if(rigaFile.split(" ")[1].equals(token)!=true) {
-						fileTmpToken.write(rigaFile+"\n");
-					}
-					rigaFile = br.readLine();
-				}
-				br.close();
-				fileTmpToken.close();
-
-				//elimino il vecchio TokenInPartita.txt e poi rinomino il TmpToken.txt in TokenInPartita.txt
-
-				File daEliminare = new File("TokenInPartita.txt");
-				if(daEliminare.exists()) {
-					daEliminare.delete();
-				}
-
-				File fileNomeVecchio = new File("TmpToken.txt");
-				File fileNomeNuovo = new File("TokenInPartita.txt");
-				fileNomeVecchio.renameTo(fileNomeNuovo);
-				answer = "@ok";
-			}
-			else if(!trovato) {
-				answer = "@no,@tokenNonValido";
-			}
+		// cerco se il giocatore e' in partita
+		boolean inPartita = false;
+		if(this.individuaGiocatore(nomeUtente)!=null) {
+			inPartita = true;
 		}
-		catch(IOException ioException)
-		{
-			System.err.println(ERRORE);
+		if(inPartita) {
+			//cerco l'indice del giocatore nell'array dei giocatoriCreati
+			k = this.gestioneGiocatori.indiceGiocatoreCreato(nomeUtente);
+			//rimuovo il giocatore dalla partita
+			Giocatore giocatore = this.gestioneGiocatori.ottieniGiocatoriCreati().get(k);
+			this.partita.rimuoviGiocatore(giocatore);
+			answer = "@ok";
+		}
+		else if(!inPartita) {
+			answer = "@no,@tokenNonValido";
 		}
 		return answer;
 	}
@@ -253,30 +281,19 @@ public class ClientHandler extends Thread {
 		String answer = new String();
 
 		String token = request.split(",")[1].split("=")[1];
-		//verifico se c'e' nel file Token.txt
-		boolean trovato = false;
-		trovato = cercaNelFile("Token.txt",token,null," ",1);
-		try {
-			if(trovato) {
-				//accedo al file tokenInPartita.txt per fornire la lista dei giocatori in partita
-				String listaGiocatori = new String ();
-				FileReader fileTokenInPartita = new FileReader("TokenInPartita.txt");
-				BufferedReader br = new BufferedReader(fileTokenInPartita);
-				String rigaFile = br.readLine();
-				while(rigaFile!=null) {
-					listaGiocatori = listaGiocatori.concat(",").concat(rigaFile.split(" ")[0]); //FIXME nn so se va
-					rigaFile = br.readLine();
-				}
-				br.close();
-				answer = "@listaGiocatori"+listaGiocatori;
+		//verifico se e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+
+		if(loggato) {
+			//accedo alla lista dei giocatori per fornire la lista dei giocatori in partita
+			String listaGiocatori = new String ();
+			for(int i=0; i<this.partita.getGiocatori().size(); i++) {
+				listaGiocatori = listaGiocatori.concat(",").concat(this.partita.getGiocatori().get(i).getUtente().getNomeUtente());
 			}
-			else if(!trovato) {
-				answer = "@no,@tokenNonValido";
-			}
+			answer = "@listaGiocatori"+listaGiocatori;
 		}
-		catch(IOException ioException)
-		{
-			System.err.println(ERRORE);
+		else if(!loggato) {
+			answer = "@no,@tokenNonValido";
 		}
 		return answer;
 	}
@@ -284,77 +301,43 @@ public class ClientHandler extends Thread {
 	public String logout(String request) {
 		String answer = new String();
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
+		int k;
 
-		//verifico se c'e' nel file Token.txt
-		boolean trovato = cercaNelFile("Token.txt",token,null," ",1);
-		try {
-			if(trovato) {
-				//aggiorno il file Token.txt cancellando il token che vuole fare il logout
-				//copio i token escluso quello che devo eliminare in un file tmp
-				FileReader fileToken = new FileReader("Token.txt");
-				FileWriter fileTmpTokenLogout = new FileWriter ("TmpTokenLogout.txt",true); //true=append
-
-				BufferedReader br = new BufferedReader(fileToken);
-				String rigaFile = br.readLine();
-
-				while(rigaFile!=null) {
-					if(rigaFile.split(" ")[1].equals(token)!=true) {
-						fileTmpTokenLogout.write(rigaFile+"\n");
-					}
-					rigaFile = br.readLine();
-				}
-				br.close();
-				fileTmpTokenLogout.close();
-
-				//elimino il vecchio Token.txt e poi rinomino il TmpTokenLogout.txt in Token.txt
-
-				File daEliminare = new File("Token.txt");
-				if(daEliminare.exists()) {
-					daEliminare.delete();
-				}
-
-				File fileNomeVecchio = new File("TmpTokenLogout.txt");
-				File fileNomeNuovo = new File("Token.txt");
-				fileNomeVecchio.renameTo(fileNomeNuovo);
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		
+			if(loggato) {
+				//rimuovo il giocatore dalla lista login
+				this.gestioneGiocatori.rimuoviTokenLoggati(nomeUtente,token);
+				//cerco l'indice del giocatore nell'array dei giocatoriCreati
+				k = this.gestioneGiocatori.indiceGiocatoreCreato(nomeUtente);
+				//rimuovo il giocatore dalla partita
+				Giocatore giocatore = this.gestioneGiocatori.ottieniGiocatoriCreati().get(k);
+				this.partita.rimuoviGiocatore(giocatore);
 				answer = "@ok";
 			}
-			else if(!trovato) {
+			else if(!loggato) {
 				answer = "@no,@tokenNonValido";
 			}
-		}
-		catch(IOException ioException)
-		{
-			System.err.println(ERRORE);
-		}
 		return answer;
-	}
-
-	private Giocatore individuaGiocatore (String nomeUtente) {
-		int i=0;
-		if(this.partita.getGiocatori().isEmpty()) {
-			return null;
-		} else {
-			for(i=0; i<this.partita.getGiocatori().size();i++) {
-				if(partita.getGiocatori().get(i).getUtente().getNomeUtente().equals(nomeUtente)) {
-					break;
-				}
-			}
-		}
-		return this.partita.getGiocatori().get(i);
 	}
 
 	public String mappaGenerale(String request) {
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
 		String answer;
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 
-		//verifico se c'e' nel file Token.txt
-		boolean trovatoToken = cercaNelFile("Token.txt",token,null," ",1);
-		if(trovatoToken) {
-			//accedo al file TokenInPartita.txt per verificare se e' in partita
-			boolean trovatoInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-			if(trovatoInPartita) {
-
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			//verifico se e' in partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
+			}
+			if(inPartita) {
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				answer = "@mappaGenerale,{40,40},";
 				//traduco la mappa di tipo Cella in tipo String
@@ -389,19 +372,6 @@ public class ClientHandler extends Thread {
 		return answer;
 	}
 	
-	private boolean verificaIdDinosauro(String id) {
-		if(Integer.parseInt(id)>=11 && Integer.parseInt(id)<=85) {
-			for(int i=0;i<partita.getGiocatori().size();i++) {
-				for(int j=0;j<partita.getGiocatori().size();j++) {
-					if(partita.getGiocatori().get(i).getDinosauri().get(j).getId().equals(id)) {
-						return true;
-					}
-				}
-			}
-		} 
-		return false;
-	}
-	
 	public String listaDinosauri(String request) {
 
 		String token;
@@ -409,12 +379,12 @@ public class ClientHandler extends Thread {
 		String listaDino = new String();
 
 		token = request.split(",")[1].split("=")[1];
-		//verifico se c'e' nel file Token.txt
-		boolean trovato = cercaNelFile("Token.txt",token,null," ",1);
-		if(trovato) {
-			//accedo al file tokenInPartita.txt per verificare se l'utente si trova in partita
-			boolean inPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-			if(inPartita) {
+		String nomeUtente = token.split("-")[0];
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			// verifico se l'utente si trova in partita
+			if(this.individuaGiocatore(nomeUtente)!=null) { //se il giocatore e' in partita
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				for(int k=0; k<giocatore.getDinosauri().size(); k++) {
 					listaDino += ","+giocatore.getDinosauri().get(k).getId();
@@ -425,7 +395,7 @@ public class ClientHandler extends Thread {
 			}
 			answer = "@listaDinosauri"+listaDino;
 		}
-		else if(!trovato) {
+		else if(!loggato) {
 			answer = "@no,@tokenNonValido";
 		}
 		return answer;
@@ -433,26 +403,26 @@ public class ClientHandler extends Thread {
 	
 	public String vistaLocale(String request) {
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
 		String answer = new String();
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 
-		//verifico se c'e' nel file Token.txt
-		boolean trovatoToken = cercaNelFile("Token.txt",token,null," ",1);
-		if(trovatoToken) {
-			//accedo al file TokenInPartita.txt per verificare se e' in partita
-			boolean trovatoInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-			if(trovatoInPartita) {
-
-				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			
+			if(this.individuaGiocatore(nomeUtente)!=null) { //se l'utente si trova in partita
+//				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				Dinosauro dinosauro = this.individuaDinosauro(idDino);
 				if(dinosauro!=null) {
 					int[] vista = partita.getTurnoCorrente().ottieniVisuale(dinosauro.getRiga(), dinosauro.getColonna(), dinosauro.calcolaRaggioVisibilita());
-					int maxR = vista[2]-vista[0];
-					int maxC = vista[3]-vista[1];
-					answer = "@vistaLocale,{"+vista[0]+","+vista[1]+"}"+","+"{"+vista[2]+","+vista[3]+"}";
-					for(int i=maxR-1; i>vista[0]; i--) {
-						for(int j=vista[1]; j<maxC; j++) {
+					
+					answer = "@vistaLocale,{"+vista[0]+","+vista[1]+"}"+","+"{"+vista[2]+","+vista[3]+"},";
+					for(int i=39; i>=0; i--) {
+						for(int j=0; j<40; j++) {
+//					for(int i=vista[2]; i>=vista[0]; i--) {
+//						for(int j=vista[1]; j<vista[3]; j++) {
 							if(mappa[i][j]==null) {
 								answer = answer.concat("[a]");
 							} else {
@@ -492,16 +462,20 @@ public class ClientHandler extends Thread {
 	
 	public String statoDinosauro(String request) {
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
 		String answer = new String();
 //		Cella[][] mappa = this.partita.getIsola().getMappa();
 
-		//verifico se c'e' nel file Token.txt
-		boolean trovatoToken = cercaNelFile("Token.txt",token,null," ",1);
-		if(trovatoToken) {
-			//accedo al file TokenInPartita.txt per verificare se e' in partita
-			boolean trovatoInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-			if(trovatoInPartita) {
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			// verifico se l'utente si trova in partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
+			}
+			if(inPartita) {
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				Dinosauro dinosauro = this.individuaDinosauro(idDino);
 				if(dinosauro!=null) {
@@ -551,17 +525,21 @@ public class ClientHandler extends Thread {
 
 	public String deponiUovo(String request) {
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
 		String idDinoNato =  new String();
 		String answer = new String();
 		//		Cella[][] mappa = this.partita.getIsola().getMappa();
 
-		//verifico se c'e' nel file Token.txt
-		boolean trovatoToken = cercaNelFile("Token.txt",token,null," ",1);
-		if(trovatoToken) {
-			//accedo al file TokenInPartita.txt per verificare se e' in partita
-			boolean trovatoInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-			if(trovatoInPartita) {
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			// verifico se l'utente si trova in partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
+			}
+			if(inPartita) {
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				Dinosauro dinosauro = this.individuaDinosauro(idDino);
 				if(dinosauro!=null) {
@@ -598,31 +576,21 @@ public class ClientHandler extends Thread {
 		return answer;
 	}
 
-	private Dinosauro individuaDinosauro (String id) {
-		if(this.partita.getGiocatori().isEmpty()) {
-			return null;
-		} else {
-			for(int i=0; i<this.partita.getGiocatori().size();i++) {
-				for(int j=0; j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {
-					if(this.partita.getGiocatori().get(i).getDinosauri().get(j).getId().equals(id)) {
-						return this.partita.getGiocatori().get(i).getDinosauri().get(j);
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	public String cresciDinosauro(String request) {
 		String answer = new String();
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
 
-		//verifico se c'e' nel file Token.txt
-		boolean trovatoToken = cercaNelFile("Token.txt",token,null," ",1);
-		boolean trovatoInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-		if(trovatoToken) {
-			if(trovatoInPartita) {
+		// verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		// verifico se l'utente si trova in partita
+		boolean inPartita = false;
+		if(this.individuaGiocatore(nomeUtente)!=null) {
+			inPartita = true;
+		}
+		if(loggato) {
+			if(inPartita) {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
 
@@ -655,6 +623,7 @@ public class ClientHandler extends Thread {
 
 	public String muoviDinosauro(String request) {
 		String token = request.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
 		String answer = new String();
 		String idDino = request.split(",")[2].split("=")[1];
 		System.out.println(request);
@@ -666,11 +635,15 @@ public class ClientHandler extends Thread {
 		
 		this.partita.getIsola().stampaMappaRidotta();
 		
-		//verifico se c'e' nel file Token.txt
-		boolean trovatoToken = cercaNelFile("Token.txt",token,null," ",1);
-		boolean trovatoInPartita = cercaNelFile("TokenInPartita.txt",token,null," ",1);
-		if(trovatoToken) {
-			if(trovatoInPartita) {
+		// verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			// verifico se l'utente si trova in partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
+			}
+			if(inPartita) {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
 					if(dinosauro.getEtaDinosauro()<=dinosauro.getDurataVita()) {
@@ -722,11 +695,11 @@ public class ClientHandler extends Thread {
 				if(request!=null) {
 					comando = request.split(",")[0];
 				}
-				//FIXME
-				//				if (comando == null) {
-				//					System.out.println("Client closed connection.");
-				//					break;
-				//				} else 
+//				FIXME: non si dovrebbe verificare mai, quindi si puo' togliere
+//				if (comando == null) {
+//					System.out.println("Client closed connection.");
+//					break;
+//				} else 
 				if (comando.equals("@creaUtente")) {
 					answer = creaUtente(request);
 					bufferedWriter.write(answer);
