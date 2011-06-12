@@ -20,7 +20,7 @@ public class CaricamentoMappa {
 		mappa = new Cella[MAX][MAX];
 	}
 
-	
+
 	/**
 	 * Metodo che esegue il caricamento della mappa come file di testo e riempie un array bidimensionale con 
 	 * gli elementi letti da tale file. Inolte, richiama i metodi predefiniti per inizializzare l'energiaMax al momento
@@ -28,8 +28,11 @@ public class CaricamentoMappa {
 	 * @return La mappa di gioco costituita da un array bidimensionali di Celle.
 	 */
 	public Cella[][] caricaDaFile() {
+		BufferedReader br = null;
+		FileReader fr = null;
 		try {  	
-			BufferedReader br = new BufferedReader(new FileReader("mappaTestAcquaUovo.txt"));
+			fr = new FileReader("mappaTestAcquaUovo.txt");
+			br = new BufferedReader(fr);
 			String riga = br.readLine();
 			StringTokenizer st = null;	
 			String cellaLetta;
@@ -42,15 +45,28 @@ public class CaricamentoMappa {
 				}
 				riga = br.readLine();
 			}
-			br.close();
+
 		}	
 		catch(IOException ioException) {
 			System.err.println("Errore lettura file.");
+		} finally {
+			try {
+				if(fr!=null) {
+					fr.close();
+				}
+				if(br!=null) {
+
+					br.close();
+				}
+			} catch (IOException e) {
+				System.err.println("Errore chiusura file");
+				e.printStackTrace();
+			}
 		}
 		return mappa.clone();
 	}
 
-	
+
 	/**
 	 * Esegue il caricamento della mappa di Celle da un array di String e tramite il metodo
 	 * assegnaCelle si praoccupa di creare i Vegetali e le Carogne, richiamandone i costruttori.
@@ -65,8 +81,8 @@ public class CaricamentoMappa {
 		}
 		return mappa.clone();
 	}
-	
-	
+
+
 	/**
 	 * Metodo richiamato da caricaMappa per assegnare ad ogni String presente nella mappa letta da file
 	 * l'oggetto Cella che puo' contenere una Carogna o un Vegetale.

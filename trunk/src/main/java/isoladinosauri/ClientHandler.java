@@ -65,7 +65,7 @@ public class ClientHandler extends Thread {
 	
 	public String ottieniPassDaFile(String nomeFileFisico,String nomeUtente, String carSplit, int posSplit) {
 	
-		String password = new String();
+		String password = null;
 		try {
 			FileReader fileReader = new FileReader(nomeFileFisico);
 			BufferedReader br;
@@ -166,7 +166,7 @@ public class ClientHandler extends Thread {
 	}
 
 	public String login(String request) {
-		String answer = new String();	 
+		String answer = null;
 		String nickname = request.split(",")[1].split("=")[1];
 		String password = request.split(",")[2].split("=")[1];
 		String token = nickname+"-"+password;
@@ -191,7 +191,7 @@ public class ClientHandler extends Thread {
 	}
 
 	public String creaRazza(String request) {
-		String answer = new String();
+		String answer = null;
 		String token = request.split(",")[1].split("=")[1];
 		String nomeRazza = request.split(",")[2].split("=")[1];
 		String tipoRazza = request.split(",")[3].split("=")[1];
@@ -217,7 +217,7 @@ public class ClientHandler extends Thread {
 
 	public String accessoPartita(String request) {
 
-		String answer = new String();
+		String answer = null;
 		int k=0;
 
 		String token = request.split(",")[1].split("=")[1];
@@ -253,7 +253,7 @@ public class ClientHandler extends Thread {
 	}
 
 	public String uscitaPartita(String request) {
-		String answer = new String();
+		String answer = null;
 		String token = request.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		int k=0;
@@ -278,7 +278,7 @@ public class ClientHandler extends Thread {
 	}
 
 	public String listaGiocatori(String request) {
-		String answer = new String();
+		String answer = null;
 
 		String token = request.split(",")[1].split("=")[1];
 		//verifico se e' loggato
@@ -286,7 +286,7 @@ public class ClientHandler extends Thread {
 
 		if(loggato) {
 			//accedo alla lista dei giocatori per fornire la lista dei giocatori in partita
-			String listaGiocatori = new String ();
+			String listaGiocatori = null;
 			for(int i=0; i<this.partita.getGiocatori().size(); i++) {
 				listaGiocatori = listaGiocatori.concat(",").concat(this.partita.getGiocatori().get(i).getUtente().getNomeUtente());
 			}
@@ -299,7 +299,7 @@ public class ClientHandler extends Thread {
 	}
 
 	public String logout(String request) {
-		String answer = new String();
+		String answer = null;
 		String token = request.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		int k;
@@ -354,6 +354,8 @@ public class ClientHandler extends Thread {
 								} else {
 									if(mappa[i][j].getOccupante() instanceof Vegetale) {
 										answer = answer.concat("[v]");
+									} else {
+										answer = answer.concat("[t]");
 									}
 								}
 							}
@@ -375,7 +377,7 @@ public class ClientHandler extends Thread {
 	public String listaDinosauri(String request) {
 
 		String token;
-		String answer = new String();
+		String answer = null;
 		String listaDino = new String();
 
 		token = request.split(",")[1].split("=")[1];
@@ -387,7 +389,7 @@ public class ClientHandler extends Thread {
 			if(this.individuaGiocatore(nomeUtente)!=null) { //se il giocatore e' in partita
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				for(int k=0; k<giocatore.getDinosauri().size(); k++) {
-					listaDino += ","+giocatore.getDinosauri().get(k).getId();
+					listaDino.concat(","+giocatore.getDinosauri().get(k).getId());
 				}
 			}
 			else {
@@ -405,7 +407,7 @@ public class ClientHandler extends Thread {
 		String token = request.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
-		String answer = new String();
+		String answer = null;
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 
 		//verifico se l'utente e' loggato
@@ -418,15 +420,15 @@ public class ClientHandler extends Thread {
 				if(dinosauro!=null) {
 					int[] vista = partita.getTurnoCorrente().ottieniVisuale(dinosauro.getRiga(), dinosauro.getColonna(), dinosauro.calcolaRaggioVisibilita());
 					
-					answer = "@vistaLocale,{"+vista[0]+","+vista[1]+"}"+","+"{"+vista[2]+","+vista[3]+"},";
-					for(int i=39; i>=0; i--) {
-						for(int j=0; j<40; j++) {
-//					for(int i=vista[2]; i>=vista[0]; i--) {
-//						for(int j=vista[1]; j<vista[3]; j++) {
+					answer = "@vistaLocale,{"+vista[0]+","+vista[1]+"}"+","+"{"+(vista[2]-vista[0]+1)+","+(vista[3]-vista[1]+1)+"},";
+//					for(int i=39; i>=0; i--) {
+//						for(int j=0; j<40; j++) {
+					for(int i=vista[2]; i>=vista[0]; i--) {
+						for(int j=vista[1]; j<vista[3]+1; j++) {
 							if(mappa[i][j]==null) {
 								answer = answer.concat("[a]");
 							} else {
-								if(mappa[i][j].getOccupante() instanceof Dinosauro) {
+								if(mappa[i][j].getDinosauro()!=null) {
 									answer = answer.concat("[d,").concat(mappa[i][j].getDinosauro().getEnergia()+"").concat("]");
 								} else {	
 									if(mappa[i][j].getOccupante() instanceof Carogna) {
@@ -464,7 +466,7 @@ public class ClientHandler extends Thread {
 		String token = request.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
-		String answer = new String();
+		String answer = null;
 //		Cella[][] mappa = this.partita.getIsola().getMappa();
 
 		//verifico se l'utente e' loggato
@@ -488,7 +490,7 @@ public class ClientHandler extends Thread {
 					}
 					String user = token.split("-")[0];
 					String razza = giocatore.getNomeSpecie();
-					String tipo = new String();
+					String tipo = null;
 					if(dinosauro instanceof Carnivoro) {
 						tipo = "c";
 					} else {
@@ -527,8 +529,8 @@ public class ClientHandler extends Thread {
 		String token = request.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
-		String idDinoNato =  new String();
-		String answer = new String();
+		String idDinoNato = null;
+		String answer = null;
 		//		Cella[][] mappa = this.partita.getIsola().getMappa();
 
 		//verifico se l'utente e' loggato
@@ -577,7 +579,7 @@ public class ClientHandler extends Thread {
 	}
 
 	public String cresciDinosauro(String request) {
-		String answer = new String();
+		String answer = null;
 		String token = request.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String idDino = request.split(",")[2].split("=")[1];
@@ -624,7 +626,7 @@ public class ClientHandler extends Thread {
 	public String muoviDinosauro(String request) {
 		String token = request.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		String answer = new String();
+		String answer = null;
 		String idDino = request.split(",")[2].split("=")[1];
 		System.out.println(request);
 		System.out.println(request.split("=")[3]);
@@ -684,7 +686,7 @@ public class ClientHandler extends Thread {
 
 	public void run() {
 
-		String comando = new String();
+		String comando = null;
 		String answer;
 
 		try {

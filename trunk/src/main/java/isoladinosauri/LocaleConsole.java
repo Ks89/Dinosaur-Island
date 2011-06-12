@@ -85,8 +85,9 @@ public class LocaleConsole {
 					tipoDinosauro = "erbivoro";
 				}
 				Utente utente = new Utente(nickname,password);
-				Giocatore giocatore =  new Giocatore(p, turnoCorrente, nomeSpecie, tipoDinosauro);
+				Giocatore giocatore =  new Giocatore(turnoCorrente, nomeSpecie, tipoDinosauro);
 				giocatore.setUtente(utente);
+				giocatore.aggiungiInPartita(p);
 				c.aggiungiTuplaClassifica(giocatore);
 				break;
 			case 2 :
@@ -205,192 +206,199 @@ public class LocaleConsole {
 
 									i.stampaMappaRidottaVisibilita(p.getGiocatori().get(conteggioGiocatori));
 
-									statoSpostamento = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
-									if(statoSpostamento==-2) {
-										System.out.println("Dinosauro morto");
+									//									try {
+									int stato = p.getTurnoCorrente().spostaDinosauro(dino, riga, colonna);
+									System.out.println(stato);
+									if(stato==0) {
+										System.out.println("Vince attaccato!");
 									} else {
-										if(statoSpostamento==-1) {
-											System.out.println("Scegliere un'altra destinazione!");
+										if(stato==2) {
+											System.out.println("Vince attaccante!");
 										} else {
-											if(statoSpostamento==1) {
-												System.out.println("Tutto ok!");
+											if(stato==-2) {
+												System.out.println("morto!");
 											} else {
-												if(statoSpostamento==0) {
-													System.out.println("Vince attaccato!");
+												if(stato==-1) {
+													System.out.println("acqua!");
 												} else {
-													if(statoSpostamento==2) {
-														System.out.println("Vince attaccante!");
-													} else {
-														if(statoSpostamento==3) {
-															System.out.println("Combattimento eseguito e mangiato occupante!");
-														}
+													if(stato==1) {
+														System.out.println("tutto ok!");
 													}
 												}
 											}
 										}
 									}
-								}while(statoSpostamento==-2 || statoSpostamento==-1);
 
-								System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
-								i.stampaMappaRidotta();
-								break;
-							default:
-								break;
-							}
+										//									} catch (MovimentoException e){
+										//										if(e.getCausa()==MovimentoException.Causa.MORTE) {
+										//											System.out.println("Dinosauro morto");
+										//										}
+										//										if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
+										//											System.out.println("Scegliere un'altra destinazione!");
+										//										}
+										//									}
+									}while(statoSpostamento==-2 || statoSpostamento==-1);
 
-							System.out.println("Azioni possibili:");
-							System.out.println("[1]: Cresci");
-							System.out.println("[2]: Deponi");
-							System.out.println("[3]: Non eseguire l'azione");
-							scelta = input.nextInt();
-							switch(scelta)  {								
-							case 1 :
-								//cresci
-								if(dino.aumentaDimensione()==1) {
-									System.out.println("Il dinosauro " + dino.getId() + " e' ora di dimensione: " + (dino.getEnergiaMax()/1000));
-									int raggio = dino.calcolaRaggioVisibilita();
-									t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), dino.getRiga(), dino.getColonna(), raggio);
+									System.out.println("->Il dinosauro e' ora in: (" + dino.getRiga() + "," + dino.getColonna() + ")");
+									i.stampaMappaRidotta();
+									break;
+								default:
+									break;
 								}
-								else {
-									if(dino.aumentaDimensione()==-1) {
-										p.getGiocatori().get(conteggioGiocatori).rimuoviDinosauro(dino);
-										System.out.println("Non e' stato possibile far crescere il dinosauro: " + dino.getId());
-										conteggioDinosauro--;
+
+								System.out.println("Azioni possibili:");
+								System.out.println("[1]: Cresci");
+								System.out.println("[2]: Deponi");
+								System.out.println("[3]: Non eseguire l'azione");
+								scelta = input.nextInt();
+								switch(scelta)  {								
+								case 1 :
+									//cresci
+									if(dino.aumentaDimensione()==1) {
+										System.out.println("Il dinosauro " + dino.getId() + " e' ora di dimensione: " + (dino.getEnergiaMax()/1000));
+										int raggio = dino.calcolaRaggioVisibilita();
+										t.illuminaMappa(p.getGiocatori().get(conteggioGiocatori), dino.getRiga(), dino.getColonna(), raggio);
 									}
-								}
+									else {
+										if(dino.aumentaDimensione()==-1) {
+											p.getGiocatori().get(conteggioGiocatori).rimuoviDinosauro(dino);
+											System.out.println("Non e' stato possibile far crescere il dinosauro: " + dino.getId());
+											conteggioDinosauro--;
+										}
+									}
 
-								break;
-							case 2 :
-								//deponi
-								if((p.getGiocatori().get(conteggioGiocatori).eseguiDeposizionedeponiUovo(dino)==1)) {
-									System.out.println("Errore deposizione, possibili motivi: energia insufficiente");
-								}
-								break;
-							default : //passa l'azione per il dinosauro specificato
-								break;
-							}	
-						}
-						System.out.println("Conteggio dinosauro: " + conteggioDinosauro);
-						System.out.println("Conteggio giocatori: " + conteggioGiocatori);
+									break;
+								case 2 :
+									//deponi
+									if((p.getGiocatori().get(conteggioGiocatori).eseguiDeposizionedeponiUovo(dino)==1)) {
+										System.out.println("Errore deposizione, possibili motivi: energia insufficiente");
+									}
+									break;
+								default : //passa l'azione per il dinosauro specificato
+									break;
+								}	
+							}
+							System.out.println("Conteggio dinosauro: " + conteggioDinosauro);
+							System.out.println("Conteggio giocatori: " + conteggioGiocatori);
 
-						for(int w=0;w<p.getGiocatori().size();w++) {
-							if(p.getGiocatori().get(w).getDinosauri().isEmpty()) {
-								p.getGiocatori().remove(p.getGiocatori().get(w));
-								if(conteggioGiocatori>0) {
-									conteggioGiocatori--;
+							for(int w=0;w<p.getGiocatori().size();w++) {
+								if(p.getGiocatori().get(w).getDinosauri().isEmpty()) {
+									p.getGiocatori().remove(p.getGiocatori().get(w));
+									if(conteggioGiocatori>0) {
+										conteggioGiocatori--;
+									}
+									conteggioDinosauro=0;
 								}
-								conteggioDinosauro=0;
+							}
+							System.out.println("Conteggio dinosauro: " + conteggioDinosauro);
+							System.out.println("Conteggio giocatori: " + conteggioGiocatori);
+							//						if(p.getGiocatori().isEmpty()) {
+							//							break;
+							//						}
+							//					if(rimuoviGiocatoriSenzaDinosauri(p) == true && conteggioGiocatori>=p.getGiocatori().size()) {
+							//							System.out.println("info varie: " + conteggioGiocatori + "," + p.getGiocatori().size());
+							//							conteggioGiocatori=p.getGiocatori().size()-1;
+							//						}
+
+						}//finisce il for con la scansione dei dinosauri di un certo giocatore
+
+
+
+
+						//qui si puo' anche stampare mappe
+						c.aggiungiTuplaClassifica(p.getGiocatori().get(conteggioGiocatori));
+					}
+					break;
+				case 4 :
+					//stampo la classifica
+					c.stampaClassifica();
+					break;
+				case 5 :
+					//stampo le mappe UTILI
+					i.stampaMappa();
+					i.stampaMappaRidotta();
+					break;
+				default:
+					//termina il ciclo while ed esce dal programma
+					uscita=true;
+					break;
+				}
+				if(scelta1==3) {
+					turnoCorrente++;
+					p.incrementaEtaGiocatori();
+					cresciEconsuma(p);
+				}
+				System.out.println("Classifica aggiornata e le uova sono state schiuse");
+				p.nascitaDinosauro(turnoCorrente);
+				c.aggiornaClassificaStati();
+				c.stampaClassifica();
+
+			} while(!uscita);
+		}
+
+		private static void cresciEconsuma(Partita p) {
+			for(int i=0;i<MAX;i++) {
+				for(int j=0;j<MAX;j++) {
+					if(p.getIsola().getMappa()[i][j]!=null && p.getIsola().getMappa()[i][j].getOccupante()!=null) {
+						if(p.getIsola().getMappa()[i][j].getOccupante() instanceof Vegetale) {
+							Vegetale vegetale = (Vegetale)(p.getIsola().getMappa()[i][j].getOccupante());
+							vegetale.cresci();
+						} else { 
+							if(p.getIsola().getMappa()[i][j].getOccupante() instanceof Carogna) {
+								Carogna carogna = (Carogna)(p.getIsola().getMappa()[i][j].getOccupante());
+								carogna.consuma();
 							}
 						}
-						System.out.println("Conteggio dinosauro: " + conteggioDinosauro);
-						System.out.println("Conteggio giocatori: " + conteggioGiocatori);
-						//						if(p.getGiocatori().isEmpty()) {
-						//							break;
-						//						}
-						//					if(rimuoviGiocatoriSenzaDinosauri(p) == true && conteggioGiocatori>=p.getGiocatori().size()) {
-						//							System.out.println("info varie: " + conteggioGiocatori + "," + p.getGiocatori().size());
-						//							conteggioGiocatori=p.getGiocatori().size()-1;
-						//						}
-
-					}//finisce il for con la scansione dei dinosauri di un certo giocatore
-
-
-
-
-					//qui si puo' anche stampare mappe
-					c.aggiungiTuplaClassifica(p.getGiocatori().get(conteggioGiocatori));
+					} 
 				}
-				break;
-			case 4 :
-				//stampo la classifica
-				c.stampaClassifica();
-				break;
-			case 5 :
-				//stampo le mappe UTILI
-				i.stampaMappa();
-				i.stampaMappaRidotta();
-				break;
-			default:
-				//termina il ciclo while ed esce dal programma
-				uscita=true;
-				break;
 			}
-			if(scelta1==3) {
-				turnoCorrente++;
-				p.incrementaEtaGiocatori();
-				cresciEconsuma(p);
+		}
+
+		private static Giocatore cercaGiocatore (String nickname, Partita p) {
+			for(int i=0;i<p.getGiocatori().size();i++) {
+				if((p.getGiocatori().get(i).getUtente().getNomeUtente()).equals(nickname)) {
+					return p.getGiocatori().get(i);
+				}
 			}
-			System.out.println("Classifica aggiornata e le uova sono state schiuse");
-			p.nascitaDinosauro(turnoCorrente);
-			c.aggiornaClassificaStati();
-			c.stampaClassifica();
+			return null;
+		}
 
-		} while(!uscita);
-	}
-
-	private static void cresciEconsuma(Partita p) {
-		for(int i=0;i<MAX;i++) {
-			for(int j=0;j<MAX;j++) {
-				if(p.getIsola().getMappa()[i][j]!=null && p.getIsola().getMappa()[i][j].getOccupante()!=null) {
-					if(p.getIsola().getMappa()[i][j].getOccupante() instanceof Vegetale) {
-						Vegetale vegetale = (Vegetale)(p.getIsola().getMappa()[i][j].getOccupante());
-						vegetale.cresci();
-					} else { 
-						if(p.getIsola().getMappa()[i][j].getOccupante() instanceof Carogna) {
-							Carogna carogna = (Carogna)(p.getIsola().getMappa()[i][j].getOccupante());
-							carogna.consuma();
-						}
+		private static int[] trovaDinosauroStrada (int[][] stradaPercorsa) {
+			int j,w;
+			int[] uscita = {0,0};
+			for(j=0;j<stradaPercorsa.length;j++) {
+				for(w=0;w<stradaPercorsa[0].length;w++) {
+					if(stradaPercorsa[j][w]==-7) {
+						uscita[0] = j;
+						uscita[1] = w;
+						return uscita;
 					}
-				} 
-			}
-		}
-	}
-
-	private static Giocatore cercaGiocatore (String nickname, Partita p) {
-		for(int i=0;i<p.getGiocatori().size();i++) {
-			if((p.getGiocatori().get(i).getUtente().getNomeUtente()).equals(nickname)) {
-				return p.getGiocatori().get(i);
-			}
-		}
-		return null;
-	}
-
-	private static int[] trovaDinosauroStrada (int[][] stradaPercorsa) {
-		int j,w;
-		int[] uscita = {0,0};
-		for(j=0;j<stradaPercorsa.length;j++) {
-			for(w=0;w<stradaPercorsa[0].length;w++) {
-				if(stradaPercorsa[j][w]==-7) {
-					uscita[0] = j;
-					uscita[1] = w;
-					return uscita;
 				}
 			}
+			return uscita;
 		}
-		return uscita;
-	}
 
-	private static int[] trovaDinosauro (int[][] raggiungibile) {
-		int j,w;
-		int[] uscita = {0,0};
-		for(j=0;j<raggiungibile.length;j++) {
-			for(w=0;w<raggiungibile[0].length;w++) {
-				System.out.print(raggiungibile[j][w] + " ");
+		private static int[] trovaDinosauro (int[][] raggiungibile) {
+			int j,w;
+			int[] uscita = {0,0};
+			for(j=0;j<raggiungibile.length;j++) {
+				for(w=0;w<raggiungibile[0].length;w++) {
+					System.out.print(raggiungibile[j][w] + " ");
+				}
+				System.out.println();
 			}
 			System.out.println();
-		}
-		System.out.println();
-		System.out.println();
+			System.out.println();
 
-		for(j=0;j<raggiungibile.length;j++) {
-			for(w=0;w<raggiungibile[0].length;w++) {
-				if(raggiungibile[j][w]==0) {
-					uscita[0] = j;
-					uscita[1] = w;
-					return uscita;
+			for(j=0;j<raggiungibile.length;j++) {
+				for(w=0;w<raggiungibile[0].length;w++) {
+					if(raggiungibile[j][w]==0) {
+						uscita[0] = j;
+						uscita[1] = w;
+						return uscita;
+					}
 				}
 			}
+			return uscita;
 		}
-		return uscita;
 	}
-}
