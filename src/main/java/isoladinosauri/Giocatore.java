@@ -26,6 +26,7 @@ public class Giocatore {
 	private int etaAttualeGiocatore; //da quanto e' in vita. Se arriva a 120 il giocatore "muore"
 	private int turnoNascita; //turno di nascita del giocatore
 	private String nomeSpecie;
+	private String tipoSpecie;
 	private List<Dinosauro> dinosauri; //squadra di dinosauri del giocatore
 	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se e' false)
 	private List<String> uova; //e' un array di uova del giocatore che viene svuotato alla fine di ogni giro dei giocatori
@@ -37,54 +38,62 @@ public class Giocatore {
 	//DOPO NON SARA' PIU' USATO
 
 	/**
-	 * Costruttore che assegna gli id, inzializza tutti i campi di Giocatore, crea un Dinosauro ed illumina l'area intorno al esso.
-	 * @param partita riferiemento alla Partita.
+	 * Costruttore che crea ed inizializza il Giocatore.
 	 * @param turnoNascita int che rappresenta il tuno di nascita del Giocatore.
 	 * @param nomeSpecie String che rappresenta il nome della specie.
 	 * @param tipoSpecie String che rappresenta il tipo della specie. Puo' essere "carnivoro" o "erbivoro".
 	 */
-	public Giocatore(Partita partita, int turnoNascita, String nomeSpecie, String tipoSpecie) {
-		this.partita = partita;
+	public Giocatore(int turnoNascita, String nomeSpecie, String tipoSpecie) {
+		
 		this.etaAttualeGiocatore=0;
 		this.turnoNascita = turnoNascita;
 		this.nomeSpecie = nomeSpecie;
+		this.tipoSpecie = tipoSpecie;
 		dinosauri = new ArrayList<Dinosauro>();
 
+		//gestione mappa (buio e luce)
+		//non serve inizializzarla perche' e' di default a FALSE
+		this.mappaVisibile = new boolean[MAX][MAX];
+		
+		//inizializzo l'array per le uova, ovviamente parte da vuoto perche' non ho uova all'inizio
+		this.uova = new ArrayList<String>();
+	}
+	
+	/**
+	 * Metodo che permette di aggiungere un Giocatore (razza) alla partita in corso, creare l'id, far nascere il primo Dinosauro 
+	 * 	ed illuminare l'area intorno al esso.
+	 * @param giocatore riferimento al Giocatore che vuole entrare in Partita.
+	 */
+	public void aggiungiInPartita(Partita partita) {
+		this.partita = partita;
+		//ora aggiungo il giocatore creato alla lista dei giocatori in Partita
+		//questo serve se no non potrei usare illuminaMappa direttamente nel costruttore
+		//perche' l'oggetto giocatore non sarebbe ancora fisicamente nella lista giocatori di Partita
+		this.partita.aggiungiGiocatore(this);
+		
 		//ottengo riga e colonna in un vettore di interi di 2 elementi
 		int[] pos = this.posizionaDinosauro();
 
 		this.setIdGiocatore(this.generaIdGiocatore());
 		String idDinosauro = this.generaIdDinosauro();
-
+		
 		Dinosauro dinosauro;
-		//creo il dinosauro con ID, POSIZIONE e TURNO NASCITA
-		if(tipoSpecie.equals("carnivoro")) {
+		if(this.tipoSpecie.equals("carnivoro")) {
 			dinosauro = new Carnivoro(idDinosauro,pos[0], pos[1], turnoNascita);
 			dinosauri.add((Carnivoro)dinosauro);
 			this.partita.getIsola().getMappa()[pos[0]][pos[1]].setDinosauro(dinosauro); 
 		} else { //se e' erbivoro
 			dinosauro = new Erbivoro(idDinosauro,pos[0], pos[1], turnoNascita);
 			dinosauri.add((Erbivoro)dinosauro);
+			this.partita.getIsola();
+			this.partita.getIsola().getMappa();
 			this.partita.getIsola().getMappa()[pos[0]][pos[1]].setDinosauro(dinosauro);
 		}
-
-		//ora aggiungo il giocatore creato alla lista dei giocatori in Partita
-		//questo serve se no non potrei usare illuminaMappa direttamente nel costruttore
-		//perche' l'oggetto giocatore non sarebbe ancora fisicamente nella lista giocatori di Partita
-		this.partita.aggiungiGiocatore(this);
-
-		//gestione mappa (buio e luce)
-		//non serve inizializzarla perche' e' di default a FALSE
-		this.mappaVisibile = new boolean[MAX][MAX];
 
 		//illumino la mappa della visibilita' nella zona in cui ho creato il dinosauro
 		//il raggio e' 2 costante, perche' tutti i giocatori appena creati hanno un solo dino e sempre con dimensione =1
 		//quindi per le specifiche il raggio deve essere =2 (sezione Visibilita')
-		
 		this.partita.getTurnoCorrente().illuminaMappa(this, dinosauro.getRiga(), dinosauro.getColonna(), 2);
-
-		//inizializzo l'array per le uova, ovviamente parte da vuoto perche' non ho uova all'inizio
-		this.uova = new ArrayList<String>();
 	}
 	
 	//***********************************************************************************************************************

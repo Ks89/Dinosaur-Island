@@ -1,5 +1,7 @@
 package isoladinosauri.modellodati;
 
+import isoladinosauri.MovimentoException;
+
 import java.util.Random;
 
 /**
@@ -115,8 +117,9 @@ public abstract class Dinosauro extends Organismo {
 	 * 				dopo un movimento in un'altra cella della mappa.
 	 * @return Un boolean 'true': movimento corretto,
 	 * 			'false': non e' stato possibile eseguire il movimento.
+	 * @throws MovimentoException Eccezione, il dinosauro muore perche' non ha sufficiente energia per muoversi.
 	 */
-	public boolean aggCordinate(int riga, int colonna) {
+	public boolean aggCordinate(int riga, int colonna) throws MovimentoException {
 		//esegue il movimento nelle coordinate specificate ed e' chiamato dal metodo
 		//del movimento nella classe Turno
 		super.setEnergia(super.getEnergia() - 10 * (int)Math.pow(2, (double)super.getEnergiaMax()/1000));
@@ -129,7 +132,8 @@ public abstract class Dinosauro extends Organismo {
 			//il dino deve essere cancellato dalla cella e dalla lista del giocatore
 			//dal metodo che chiama aggCordinate (cioe' quello che si occupa del Movimento in Turno)
 			//tramite rimuoviDinosauro() in Giocatore
-			return false;
+			throw new MovimentoException(MovimentoException.Causa.MORTE);
+//			return false;
 		}
 	}
 

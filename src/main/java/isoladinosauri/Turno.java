@@ -363,14 +363,18 @@ public class Turno {
 					}
 				} else {
 					//mi sto muovendo su terra semplice
-					if(this.spostamentoSuTerreno(mosso, riga, colonna)) {
+					try {
+						this.spostamentoSuTerreno(mosso, riga, colonna);
 						return 1; //spostamento avvenuto correttamente
-					} else {
-						return -2; //dinosauro morto perche' senza energia
+					} catch (MovimentoException e){
+						if(e.getCausa()==MovimentoException.Causa.MORTE) {
+							return -2; //dinosauro morto perche' senza energia
+						}
 					}
 				}
 			}
 		}
+		return 1; //mi ha obbligato eclipse a metterlo
 	}
 
 	/**
@@ -397,14 +401,17 @@ public class Turno {
 			} else
 				//eseguo il movimento in una cella in cui c'e' una carogna e mi muovo
 				//con un erbivoro o una vegetazione con un carnivoro
-				if(dinosauro.aggCordinate(riga, colonna)) {
+				try {
+					dinosauro.aggCordinate(riga, colonna);
 					destinazione.setDinosauro(dinosauro);
 					mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-					return true; //spostamento avvenuto correttamente
-				} else {
-					this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
-					return false; //dinosauro rimosso perche' rimasto senza energia					
+				} catch (MovimentoException e){
+					if(e.getCausa()==MovimentoException.Causa.MORTE) {
+						this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
+						return false; //dinosauro rimosso perche' rimasto senza energia					
+					}
 				}
+				return true; //spostamento avvenuto correttamente
 	}
 
 	/**
@@ -423,7 +430,9 @@ public class Turno {
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = mosso.getRiga();
 		int vecchiaColonna = mosso.getColonna();
-		if(mosso.aggCordinate(riga, colonna)) {
+
+		try {
+			mosso.aggCordinate(riga, colonna);
 			if(mosso.mangia(destinazione.getOccupante())) {
 				//se l'azione "mangia" ha esaurito tutta l'energia dell'occupante,
 				//quest'ultimo deve essere rimosso dalla cella e ne deve essere riscreato
@@ -442,11 +451,14 @@ public class Turno {
 			if(riga!=vecchiaRiga || colonna!=vecchiaColonna) {
 				mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 			}
-			return true;
-		} else {
-			this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso);
-			return false;
+		} catch (MovimentoException e){
+			if(e.getCausa()==MovimentoException.Causa.MORTE) {
+				System.out.println("Dinosauro morto");
+				this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso);
+				return false;
+			}
 		}
+		return true;
 	}
 
 	/**
@@ -517,7 +529,8 @@ public class Turno {
 			attaccante = (Erbivoro)mosso;
 		}
 
-		if(attaccante.aggCordinate(riga, colonna)) {
+		try {
+			attaccante.aggCordinate(riga, colonna);
 			//esegue il comattimento e stabilisce in vincitore in base al risultato del metodo
 			//restituisce true se vince l'attaccante o false se vince l'attaccato (nemico)
 			if(attaccante.combatti(destinazione.getDinosauro())) {
@@ -539,13 +552,16 @@ public class Turno {
 				//TODO mettere un return che da 1 cioe' il vincitore e' l'attacato
 				return 0;
 			}
+		} catch (MovimentoException e){
+			if(e.getCausa()==MovimentoException.Causa.MORTE) {
+				//il dinosauro muore perche' non ha abbastanza energia per muoversi
+				//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
+				this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante);
+				//				return -2; // TODO il dinosauro muore perche' nn ha abbastanza energia e si chiama mex mortePerInedia	
+				//				throw new MovimentoException(MovimentoException.Causa.MORTE);
+			}
 		}
-		else {
-			//il dinosauro muore perche' non ha abbastanza energia per muoversi
-			//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
-			this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante);
-			return -2; // TODO il dinosauro muore perche' nn ha abbastanza energia e si chiama mex mortePerInedia			
-		} 
+		return 0; //solo perche' eclipse lo vuole...non ha nessun senso
 	}
 
 
@@ -559,21 +575,27 @@ public class Turno {
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
 	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
+	 * @throws MovimentoException Eccezione sul movimento.
 	 */
-	private boolean spostamentoSuTerreno(Dinosauro dinosauro, int riga, int colonna) {
+	private boolean spostamentoSuTerreno(Dinosauro dinosauro, int riga, int colonna) throws MovimentoException {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = dinosauro.getRiga();
 		int vecchiaColonna = dinosauro.getColonna();
 
-		if(dinosauro.aggCordinate(riga, colonna)) {
+		try {
+			dinosauro.aggCordinate(riga, colonna);
 			destinazione.setDinosauro(dinosauro);
 			mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-			return true;
-		} else {
-			this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
-			return false; //dinosauro morto perche' senza energia					
+
+		} catch (MovimentoException e){
+			if(e.getCausa()==MovimentoException.Causa.MORTE) {
+				this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
+				System.out.println("Dinosauro morto");
+				throw new MovimentoException(MovimentoException.Causa.MORTE);
+			}
 		}
+		return true;
 	}
 
 	/**

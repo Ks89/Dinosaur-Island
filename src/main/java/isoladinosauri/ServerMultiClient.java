@@ -20,7 +20,7 @@ public class ServerMultiClient {
 		Cella[][] mappaCelle = cm.caricaMappa(gm.creaMappaCasuale());
 		this.partita = new Partita(new Isola(mappaCelle));
 		Turno t = new Turno(partita);
-		Classifica c = new Classifica(partita);
+		new Classifica(partita);
 		partita.setTurnoCorrente(t);
 		this.gestioneGiocatori = new GestioneGiocatori();
 	}
