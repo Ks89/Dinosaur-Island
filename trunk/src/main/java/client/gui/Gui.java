@@ -4,6 +4,7 @@ import isoladinosauri.CaricamentoMappa;
 import isoladinosauri.Cella;
 import isoladinosauri.Giocatore;
 import isoladinosauri.Isola;
+import isoladinosauri.MovimentoException;
 import isoladinosauri.Partita;
 import isoladinosauri.Turno;
 import isoladinosauri.Utente;
@@ -93,7 +94,8 @@ public class Gui {
 		} else {
 			tipoDinosauro = "erbivoro";
 		}
-		giocatore = new Giocatore(partita, turnoPartita, specie, tipoDinosauro);
+		giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);
+		giocatore.aggiungiInPartita(partita);
 		dino = giocatore.getDinosauri().get(indiceDino);
 		datiGui = new DatiGui();
 		this.inizializzaGrafica();
@@ -301,31 +303,28 @@ public class Gui {
 				}
 			}
 		}
-		int stato = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
-		if(stato==-2) {
-			JOptionPane.showMessageDialog(null, "Il Dinosauro e' morto!");
-		} else {
-			if(stato==-1) {
-				JOptionPane.showMessageDialog(null, "Scegliere un'altra destinazione!");
-			} else {
-				if(stato==1) {
-					JOptionPane.showMessageDialog(null, "Tutto ok!");
-				} else {
-					if(stato==0) {
-						JOptionPane.showMessageDialog(null, "Vince attaccato!");
-					} else {
-						if(stato==2) {
-						JOptionPane.showMessageDialog(null, "Vince attaccante!");
-						} else {
-							if(stato==3) {
-								JOptionPane.showMessageDialog(null, "Conbattimento eseguito e mangiato occupante!");
-							}
-						}
-					}
-				}
-			}
-		}
 
+		int statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
+		switch(statoMovimento) {
+		case -2:
+			JOptionPane.showMessageDialog(null, "Il Dinosauro e' morto!");
+			break;
+		case -1:
+			JOptionPane.showMessageDialog(null, "Scegliere un'altra destinazione!");
+			break;
+		case 0:
+			JOptionPane.showMessageDialog(null, "Vince attaccato!");
+			break;
+		case 1:
+			JOptionPane.showMessageDialog(null, "Tutto ok!");
+			break;
+		case 2:
+			JOptionPane.showMessageDialog(null, "Vince attaccante!");
+			break;
+		case 3:
+			JOptionPane.showMessageDialog(null, "Conbattimento eseguito e mangiato occupante!");
+			break;
+		}
 		mg.applicaVisiblita(giocatore, t);
 		mg.applicaRaggiungibilita(indiceDino, giocatore, t);
 	}
