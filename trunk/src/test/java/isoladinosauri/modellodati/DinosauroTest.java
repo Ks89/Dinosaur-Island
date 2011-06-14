@@ -4,41 +4,64 @@
 package isoladinosauri.modellodati;
 
 import static org.junit.Assert.*;
+import isoladinosauri.CaricamentoMappa;
+import isoladinosauri.Cella;
+import isoladinosauri.Giocatore;
+import isoladinosauri.Isola;
+import isoladinosauri.Partita;
 
 import org.junit.Test;
 
 public class DinosauroTest {
-
-	/**
-	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#calcolaForza()}.
-	 */
-	@Test
-	public void testCalcolaForza() {
-		fail("Not yet implemented");
+	
+	public Partita inizializzaPartita() {
+		CaricamentoMappa cm = new CaricamentoMappa();
+		Cella[][] mappaCelle;
+		mappaCelle = cm.caricaDaFile();
+		Isola i = new Isola(mappaCelle);
+		Partita p = new Partita(i);
+		return p;
 	}
 
-	/**
-	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#mangia(isoladinosauri.modellodati.Occupante)}.
-	 */
-	@Test
-	public void testMangia() {
-		fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#combatti(isoladinosauri.modellodati.Dinosauro)}.
-	 */
-	@Test
-	public void testCombatti() {
-		fail("Not yet implemented");
-	}
+//	/**
+//	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#calcolaForza()}.
+//	 */
+//	@Test
+//	public void testCalcolaForza() {
+//		fail("Not yet implemented");
+//	}
+//
+//	/**
+//	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#mangia(isoladinosauri.modellodati.Occupante)}.
+//	 */
+//	@Test
+//	public void testMangia() {
+//		fail("Not yet implemented");
+//	}
+//
+//	/**
+//	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#combatti(isoladinosauri.modellodati.Dinosauro)}.
+//	 */
+//	@Test
+//	public void testCombatti() {
+//		fail("Not yet implemented");
+//	}
 
 	/**
 	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#calcolaRaggioVisibilita()}.
 	 */
 	@Test
 	public void testCalcolaRaggioVisibilita() {
-		fail("Not yet implemented");
+		Partita p = inizializzaPartita();
+		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Dinosauro d = new Carnivoro("11",1,1,1);
+		p.aggiungiGiocatore(g);
+		g.aggiungiDinosauro(d);
+		assertEquals(2, d.calcolaRaggioVisibilita());
+		d.aumentaDimensione();
+		assertEquals(3, d.calcolaRaggioVisibilita());
+		d.aumentaDimensione();
+		assertEquals(3, d.calcolaRaggioVisibilita());
 	}
 
 	/**
@@ -46,7 +69,21 @@ public class DinosauroTest {
 	 */
 	@Test
 	public void testAumentaDimensione() {
-		fail("Not yet implemented");
+		Partita p = inizializzaPartita();
+		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Dinosauro d = new Carnivoro("11",1,1,1);
+		p.aggiungiGiocatore(g);
+		g.aggiungiDinosauro(d);
+		assertEquals(1, d.aumentaDimensione());
+		d.setEnergia(d.getEnergiaMax());
+		assertEquals(1, d.aumentaDimensione());
+		d.setEnergia(d.getEnergiaMax());
+		assertEquals(1, d.aumentaDimensione());
+		assertEquals(-1, d.aumentaDimensione());
+		d.setEnergia(d.getEnergiaMax());
+		assertEquals(1, d.aumentaDimensione());
+		d.setEnergia(d.getEnergiaMax());
+		assertEquals(0, d.aumentaDimensione());
 	}
 
 	/**
@@ -54,7 +91,12 @@ public class DinosauroTest {
 	 */
 	@Test
 	public void testAggCordinate() {
-		fail("Not yet implemented");
+		Partita p = inizializzaPartita();
+		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Dinosauro d = new Carnivoro("11",1,1,1);
+		p.aggiungiGiocatore(g);
+		g.aggiungiDinosauro(d);
+//FIXME:assertFalse(d.aggCordinate(0, 0));
 	}
 
 	///////////////////get e set da togliere
@@ -73,16 +115,7 @@ public class DinosauroTest {
 //	public void testSetEtaDinosauro() {
 //		fail("Not yet implemented");
 //	}
-
-	/**
-	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#incrementaEtaDinosauro()}.
-	 */
-	@Test
-	public void testIncrementaEtaDinosauro() {
-		fail("Not yet implemented");
-	}
-
-	/////////////get e set da togliere
+//
 //	/**
 //	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#getTurnoNascita()}.
 //	 */

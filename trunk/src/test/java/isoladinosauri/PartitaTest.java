@@ -62,7 +62,7 @@ public class PartitaTest {
 		Partita p = inizializzaPartita();
 		Giocatore g = new Giocatore(1,"pippo","carnivoro");
 		assertNull(p.identificaDinosauro(null));
-		Dinosauro d = new Carnivoro("11",0,0,1);
+		Dinosauro d = new Carnivoro("11",1,1,1);
 		p.aggiungiGiocatore(g);
 		g.aggiungiDinosauro(d);
 		assertEquals(g, p.identificaDinosauro(d));
