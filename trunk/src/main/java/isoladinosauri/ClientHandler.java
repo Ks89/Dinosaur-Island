@@ -31,6 +31,10 @@ public class ClientHandler extends Thread {
 	private Partita partita;
 	private GestioneGiocatori gestioneGiocatori;
 	private Classifica classifica;
+	
+	//variabili usate soltanto per l'ultimo dinosauro di ogni giocatore
+	private boolean eseguitaMossa = false;
+	private boolean eseguitaAzione = false;
 
 	/**
 	 * Costruttore della classe ClientHandler che inizializza gli attributi socket, partita, gestioneGiocatori e classifica.
@@ -55,7 +59,7 @@ public class ClientHandler extends Thread {
 	 * @param posSplit
 	 * @return Un boolean: 'true' - l'elemento e' stato trovato, 'false' - non e' stato trovato.
 	 */
-	public boolean cercaNelFile(String nomeFileFisico, String parametro1, String parametro2, String carSplit, int posSplit) {
+	private boolean cercaNelFile(String nomeFileFisico, String parametro1, String parametro2, String carSplit, int posSplit) {
 		boolean trovato = false;
 		try {
 			FileReader fileReader = new FileReader(nomeFileFisico);
@@ -94,7 +98,7 @@ public class ClientHandler extends Thread {
 	 * @param posSplit
 	 * @return
 	 */
-	public String ottieniPassDaFile(String nomeFileFisico,String nomeUtente, String carSplit, int posSplit) {
+	private String ottieniPassDaFile(String nomeFileFisico,String nomeUtente, String carSplit, int posSplit) {
 
 		String password = null;
 		try {
@@ -124,7 +128,7 @@ public class ClientHandler extends Thread {
 	 * @param nomeFileFisico
 	 * @param riga
 	 */
-	public void scriviNelFile(String nomeFileFisico, String riga) {
+	private void scriviNelFile(String nomeFileFisico, String riga) {
 		try {
 			FileWriter fileWriter = new FileWriter (nomeFileFisico,true); //true=append
 			fileWriter.write(riga);
@@ -200,7 +204,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String creaUtente(String richiesta) {
+	private String creaUtente(String richiesta) {
 		String domanda;
 		String nickname = richiesta.split(",")[1].split("=")[1];
 		String password = richiesta.split(",")[2].split("=")[1];
@@ -222,7 +226,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String login(String richiesta) {
+	private String login(String richiesta) {
 		String domanda = null;
 		String nickname = richiesta.split(",")[1].split("=")[1];
 		String password = richiesta.split(",")[2].split("=")[1];
@@ -250,7 +254,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String creaRazza(String richiesta) {
+	private String creaRazza(String richiesta) {
 		String domanda = null;
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeRazza = richiesta.split(",")[2].split("=")[1];
@@ -280,7 +284,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String accessoPartita(String richiesta) {
+	private String accessoPartita(String richiesta) {
 
 		String domanda = null;
 		int k=0;
@@ -322,7 +326,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String uscitaPartita(String richiesta) {
+	private String uscitaPartita(String richiesta) {
 		String domanda = null;
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
@@ -352,7 +356,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String listaGiocatori(String richiesta) {
+	private String listaGiocatori(String richiesta) {
 		String domanda = null;
 
 		String token = richiesta.split(",")[1].split("=")[1];
@@ -378,7 +382,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String logout(String richiesta) {
+	private String logout(String richiesta) {
 		String domanda = null;
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
@@ -408,7 +412,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String mappaGenerale(String richiesta) {
+	private String mappaGenerale(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String domanda;
@@ -464,7 +468,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String listaDinosauri(String richiesta) {
+	private String listaDinosauri(String richiesta) {
 
 		String token;
 		String domanda = null;
@@ -498,7 +502,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String classifica(String richiesta) {
+	private String classifica(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String domanda;
@@ -527,7 +531,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String vistaLocale(String richiesta) {
+	private String vistaLocale(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String idDino = richiesta.split(",")[2].split("=")[1];
@@ -591,7 +595,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String statoDinosauro(String richiesta) {
+	private String statoDinosauro(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String idDino = richiesta.split(",")[2].split("=")[1];
@@ -659,7 +663,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String deponiUovo(String richiesta) {
+	private String deponiUovo(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String idDino = richiesta.split(",")[2].split("=")[1];
@@ -685,6 +689,13 @@ public class ClientHandler extends Thread {
 							String idNuovoDinosauro = giocatore.eseguiDeposizionedeponiUovo(dinosauro);
 							domanda = "@ok,"+idNuovoDinosauro;
 							partita.nascitaDinosauro(1);
+							
+							if(this.verificaUltimoDinosauro(dinosauro)) {
+								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
+								this.eseguitaAzione=true;
+								//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
+							}
+							
 						} catch (DeposizioneException de){
 							if(de.getCausa()==DeposizioneException.Causa.MORTE) {
 								domanda = "@no,@mortePerInedia";							}
@@ -713,7 +724,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String cresciDinosauro(String richiesta) {
+	private String cresciDinosauro(String richiesta) {
 		String domanda = null;
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
@@ -735,6 +746,13 @@ public class ClientHandler extends Thread {
 						try {
 							dinosauro.aumentaDimensione();
 							domanda = "@ok";
+							
+							if(this.verificaUltimoDinosauro(dinosauro)) {
+								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
+								this.eseguitaAzione=true;
+								//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
+							}
+							
 						} catch (CrescitaException ce){
 							if(ce.getCausa()==CrescitaException.Causa.MORTE) {
 								domanda = "@no,@mortePerInedia";
@@ -763,7 +781,7 @@ public class ClientHandler extends Thread {
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
 	 * @return Una String con la risposta del Server.
 	 */
-	public String muoviDinosauro(String richiesta) {
+	private String muoviDinosauro(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		String domanda = null;
@@ -794,6 +812,13 @@ public class ClientHandler extends Thread {
 							boolean statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dinosauro, riga, colonna);
 							if(statoMovimento) {
 								domanda = "@ok";
+
+								if(this.verificaUltimoDinosauro(dinosauro)) {
+									//se il dinosauro mosso e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
+									this.eseguitaMossa=true;
+									//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
+								}
+			
 							} else {
 								System.out.println("Problema");
 							}
@@ -825,7 +850,43 @@ public class ClientHandler extends Thread {
 		}
 		return domanda;
 	}
-
+	
+	
+//	public String confermaTurno(String richiesta) {
+//		String token = richiesta.split(",")[1].split("=")[1];
+//		System.out.println(richiesta);
+//
+//		// verifico se l'utente e' loggato
+//		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+//		if(loggato) {
+//			// verifico se l'utente si trova in partita
+//			boolean inPartita = false;
+//			if(this.individuaGiocatore(nomeUtente)!=null) {
+//				inPartita = true;
+//			}
+//			if(inPartita) {
+//	
+//				
+//				
+//			} else {
+//				domanda = "@no,@nonInPartita";
+//			}
+//		} else {
+//			domanda = "@no,@tokenNonValido";
+//		}
+//		return domanda;
+//	}
+	
+	private boolean verificaUltimoDinosauro (Dinosauro dinosauro) {
+		for(int i=0;i<this.partita.getGiocatori().size();i++) {
+			for(int j=0;j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {
+				if(dinosauro.equals(this.partita.getGiocatori().get(i).getDinosauri().get(j)) &&
+						j==this.partita.getGiocatori().get(i).getDinosauri().size()-1) return true;
+			}
+		}
+		return false;
+	}
+	
 
 	public void run() {
 

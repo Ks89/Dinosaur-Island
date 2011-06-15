@@ -12,6 +12,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -43,6 +44,23 @@ public class MappaGui {
 		mappaGui = new JButton[MAX][MAX];
 		this.gui = gui;
 		this.dg = dg;
+	}
+
+
+	public void disattivaAzioniMappa() {
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
+				mappaGui[i][j].setEnabled(false);
+			}
+		}
+	}
+
+	public void attivaAzioniMappa() {
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
+				mappaGui[i][j].setEnabled(true);
+			}
+		}
 	}
 
 
@@ -246,12 +264,12 @@ public class MappaGui {
 	//		}
 	//	}
 
-//	/**
-//	 * Metodo per rinizializzare la mappa dopo aver deposto un uovo, in pratica aggiorna
-//	 * la mappa di gioco andando a verificare dove ci sono nuovi dinosauri nati.
-//	 * @param carnivoroIcona Icon che rappresenta l'icona del Dinosauro Carnivoro.
-//	 * @param erbivoroIcona Icon che rappresenta l'icona del Dinosauro Erbivoro.
-//	 */
+	//	/**
+	//	 * Metodo per rinizializzare la mappa dopo aver deposto un uovo, in pratica aggiorna
+	//	 * la mappa di gioco andando a verificare dove ci sono nuovi dinosauri nati.
+	//	 * @param carnivoroIcona Icon che rappresenta l'icona del Dinosauro Carnivoro.
+	//	 * @param erbivoroIcona Icon che rappresenta l'icona del Dinosauro Erbivoro.
+	//	 */
 	//	public void rinizializzaMappa(Icon carnivoroIcona, Icon erbivoroIcona) {
 	//		for(int i=0;i<40;i++) {
 	//			for(int j=0;j<40;j++) {
@@ -273,49 +291,41 @@ public class MappaGui {
 	 * Metodo per applicare la raggiungibilita' alla mappa.
 	 */
 	public void applicaRaggiungibilita () {
-		try {
-			String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
-			this.gui.getClientGui().statoDinosauro(idDinosauro);
-			String risposta = this.gui.getClientGui().getRisposta();
+		String risposta = gui.ottieniStatoDinosauro();
 
-			int rigaDino = Integer.parseInt(risposta.split(",")[4].replace("{", ""));
-			int colonnaDino = Integer.parseInt(risposta.split(",")[5].replace("}", ""));
-			int dimensione = Integer.parseInt(risposta.split(",")[6]);
-			int raggio;
-			if(dimensione==1) {
-				raggio=2;
+		int rigaDino = Integer.parseInt(risposta.split(",")[4].replace("{", ""));
+		int colonnaDino = Integer.parseInt(risposta.split(",")[5].replace("}", ""));
+		int dimensione = Integer.parseInt(risposta.split(",")[6]);
+		int raggio;
+		if(dimensione==1) {
+			raggio=2;
+		} else {
+			if(dimensione==2 || dimensione==3) {
+				raggio=3;
 			} else {
-				if(dimensione==2 || dimensione==3) {
-					raggio=3;
-				} else {
-					raggio=4;
-				}
+				raggio=4;
 			}
+		}
 
-			//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
-			int inizioRiga = rigaDino - raggio;
-			int inizioColonna = colonnaDino - raggio;
-			int fineRiga = rigaDino + raggio;
-			int fineColonna = colonnaDino + raggio;
+		//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
+		int inizioRiga = rigaDino - raggio;
+		int inizioColonna = colonnaDino - raggio;
+		int fineRiga = rigaDino + raggio;
+		int fineColonna = colonnaDino + raggio;
 
-			for(int i=MAX-1;i>=0;i--) {
-				for(int j=0;j<MAX;j++) {
-					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
+		for(int i=MAX-1;i>=0;i--) {
+			for(int j=0;j<MAX;j++) {
+				if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
 
-						if(!(this.gui.getMappaRicevuta()[i][j].equals("a"))) {
-							mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
-						} else {
-							mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-						}
+					if(!(this.gui.getMappaRicevuta()[i][j].equals("a"))) {
+						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
 					} else {
 						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 					}
+				} else {
+					mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -360,24 +370,23 @@ public class MappaGui {
 			}		
 			System.out.println("cliccati" + rigaClic + "," + colonnaClic);
 			String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
-	//			String idDinosauro = gui.getIdDinosauro(indiceDino); FIXME chiamando questo metodo si blocca tutto
-//			if(!gui.getMovimento()[indiceDino]) { // TODO indicedino
-			try {	
-				gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
-				String risposta = gui.getClientGui().getRisposta();
-				if(risposta.contains("@ok")) {
-					aggiornaStato(idDinosauro);
-					gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
+			if(!gui.getMovimento()[gui.getIndiceDino()]) { // TODO indicedino
+				try {	
+					gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
+					String risposta = gui.getClientGui().getRisposta();
+					if(risposta.contains("@ok")) {
+						aggiornaStato(idDinosauro);
+						gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
+					}
+				} catch (IOException ecc) {
+					ecc.printStackTrace();
+				} catch (InterruptedException ecc) {
+					ecc.printStackTrace();
 				}
-			} catch (IOException ecc) {
-				ecc.printStackTrace();
-			} catch (InterruptedException ecc) {
-				ecc.printStackTrace();
+			} else {
+				//non si puo' eseguire il movimento
+				JOptionPane.showMessageDialog(null, "Azione di movimento gia' eseguita!");
 			}
-			//			} else {
-			//				//non si puo' eseguire il movimento
-			//				JOptionPane.showMessageDialog(null, "Azione di movimento gia' eseguita!");
-			//			}
 		}
 		public void mouseEntered(MouseEvent e) {
 		}
@@ -389,8 +398,8 @@ public class MappaGui {
 		}
 	}
 
-	
-	
+
+
 	/**
 	 * Metodo generale che riceve l'ID del Dinosauro e aggiorna la grafica caricando tutte le sue informazioni
 	 * @param idDino String che rappresenta l'identificativo univoco del Dinosauro.

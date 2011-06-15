@@ -128,6 +128,18 @@ public class ClientGui {
 		richiesta="@listaDinosauri,token="+token;
 		this.inviaAlServer();
 	}
+	
+	public void confermaTurno() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@confermaTurno,token="+token;
+		this.inviaAlServer();
+	}
+	
+	public void passaTurno() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@passaTurno,token="+token;
+		this.inviaAlServer();
+	}
 
 	public void inviaAlServer() throws IOException, InterruptedException{
 		System.out.println("Invio richiesta al server: " + richiesta);
