@@ -22,8 +22,8 @@ import javax.swing.JTextField;
  * Classe che mostra l'interfaccia grafica di login e/o registrazione al gioco. Inoltre, permette
  * di accedere alla Partita inserendo il nome della specie e il tipo di dinosauro scelto.
  */
-public class LoginGui { 
-	private Gui gui;
+public class LoginGuiLocale { 
+	private GuiLocale gui;
 	private static JFrame frameGiocatore = new JFrame("Aggiunta giocatore");
 	private static CardLayout cardLayout = new CardLayout();
 	private static Container contentPane = frameGiocatore.getContentPane();
@@ -39,9 +39,9 @@ public class LoginGui {
 
 	/**
 	 * Costruttore che viene inizializzato con la classe Gui.
-	 * @param gui
+	 * @param gui GuiLocale caricata subito dopo la fase di login.
 	 */
-	public LoginGui(Gui gui) {
+	public LoginGuiLocale(GuiLocale gui) {
 		this.gui = gui;
 		carnivoroRButton = new JRadioButton ("carnivoro",false);
 		erbivoroRButton = new JRadioButton ("erbivoro",false);
@@ -112,7 +112,8 @@ public class LoginGui {
 		registrati.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						//TODO inserisce l'utente nella lista di quelli registrati sul server
+						//inserisce l'utente nella lista di quelli registrati sul server, 
+						//ovviamente non serve implementarlo il locale
 					}
 				}
 		);
@@ -125,11 +126,9 @@ public class LoginGui {
 			accedi.setEnabled(true);
 			if(event.getSource() == carnivoroRButton) {
 				tipo = true;
-				System.out.println(tipo);
 			}
 			if(event.getSource() == erbivoroRButton) {
 				tipo = false;
-				System.out.println(tipo);
 			}
 		}
 	}

@@ -12,7 +12,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-//import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -28,24 +27,29 @@ public class MappaGui {
 
 	private JButton[][] mappaGui;
 	private Gui gui;
-	private int indiceDino;
+	private DatiGui dg;
 	private JScrollBar verticalScrollBar;
 	private JScrollBar horizontalScrollBar;
 
 	/**
 	 * Costruttore che inzializza la mappa di JButton e la
-	 * classe imposta il riferimento alla classe Gui.
+	 * classe imposta il riferimento a Gui e a DatiGui.
 	 * @param gui Riferimento all'oggetto Gui, necessario per richiamare molti dei metodi per
-	 * 			il movimento e la raggiungibilita.
+	 * 			il movimento e la raggiungibilita.	 
+	 * @param dg Riferimento all'oggetto DatiGui, necessario per ottenere aggiornare il riassunto
+	 * 			sulla stato del Dinosauro selezionato
 	 */
 	public MappaGui(Gui gui, DatiGui dg) {
 		mappaGui = new JButton[MAX][MAX];
 		this.gui = gui;
+		this.dg = dg;
 	}
+
+
 
 	/**
 	 * Metodo per creare il JScrollPane della mappa e le celle contenute in esso.
-	 * @param mappa un array bidimensionale di Celle per leggere la mappa generata in Isola.
+	 * @param mappa un array bidimensionale di String per creare la Mappa.
 	 * @return Un JScrollPane contenente la mappa di gioco.
 	 */
 	public JScrollPane creaMappa(String[][] mappa) {
@@ -109,6 +113,10 @@ public class MappaGui {
 		horizontalScrollBar.setValue((colonna * 158) - 237);
 	}
 
+	/**
+	 * @param answer
+	 * @return
+	 */
 	public String[][] creaMappaVisibilita (String answer) {
 		String[] datiVisibilita = answer.split(",");
 		int rigaOrigine = Integer.parseInt(datiVisibilita[1].replace("{", ""));
@@ -147,21 +155,17 @@ public class MappaGui {
 	 * @param visibilita String rappresentante la mappa della visiblita ricevuta dal server.
 	 */
 	public void applicaVisiblita(String visibilita) {
-//		Icon erbcarIcona = new ImageIcon(this.getClass().getResource("/erb-car.png"));
-//		Icon erbvegIcona = new ImageIcon(this.getClass().getResource("/erb-veg.png"));
-//		Icon carncarIcona = new ImageIcon(this.getClass().getResource("/carn-car.png"));
-//		Icon carnvegIcona = new ImageIcon(this.getClass().getResource("/carn-veg.png"));
 		Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro.png"));
 		Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro.png"));
 		Icon carognaIcona = new ImageIcon(this.getClass().getResource("/car.png"));
 		Icon vegetaleIcona = new ImageIcon(this.getClass().getResource("/veg.png"));
 		Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
 		Icon acquaIcona = new ImageIcon(this.getClass().getResource("/acqua.png"));
-		
+
 		String[][] mappaRicevuta = gui.getMappaRicevuta();
 		String[][] mappaVisibilita = this.creaMappaVisibilita(visibilita);
 		String[] datiVisibilita = visibilita.split(",");
-		
+
 		int rigaOrigine = Integer.parseInt(datiVisibilita[1].replace("{", ""));
 		int colonnaOrigine = Integer.parseInt(datiVisibilita[2].replace("}", ""));
 		int rigaFine = rigaOrigine + Integer.parseInt(datiVisibilita[3].replace("{", "")) - 1;
@@ -178,15 +182,14 @@ public class MappaGui {
 					if(mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].contains("d")) {
 						System.out.println(" - " + mappaVisibilita[i-rigaOrigine][j-colonnaOrigine]);
 						try {
-							gui.getClientGui().statoDinosauro("11");
-							String risposta = gui.getClientGui().getAnswer().split(",")[3];
-							//ora ho aggiunto alla cella i,j col dinosauro il tipo, cio c o e concatenando.
+							String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
+							gui.getClientGui().statoDinosauro(idDinosauro);
+							String risposta = gui.getClientGui().getRisposta().split(",")[3];
+							//ora ho aggiunto alla cella i,j col dinosauro il tipo, cioe' c o e concatenando.
 							mappaRicevuta[i][j] = mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].concat(",").concat(risposta);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -229,97 +232,94 @@ public class MappaGui {
 			}
 		}
 	}
-	
 
-	/**
-	 * Metodo per resettare la raggiungibilita' (contorno delle celle)
-	 * rimpostandolo su "grigio chiaro", come predefinito.
-	 */
-	public void resetRaggiungibilita (){
-		for(int i=MAX-1;i>=0;i--) {
-			for(int j=0;j<MAX;j++) {
-				mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-			}
-		}
-	}
 
-	/**
-	 * Metodo per rinizializzare la mappa dopo aver deposto un uovo, in pratica aggiorna
-	 * la mappa di gioco andando a verificare dove ci sono nuovi dinosauri nati.
-	 * @param carnivoroIcona Icon che rappresenta l'icona del Dinosauro Carnivoro.
-	 * @param erbivoroIcona Icon che rappresenta l'icona del Dinosauro Erbivoro.
-	 */
-//	public void rinizializzaMappa(Icon carnivoroIcona, Icon erbivoroIcona) {
-//		for(int i=0;i<40;i++) {
-//			for(int j=0;j<40;j++) {
-//				if(mappa[i][j] !=null && mappa[i][j].getDinosauro()!=null) {
-//					if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
-//						mappaGui[i][j].setIcon(carnivoroIcona);
-//					} else {
-//						if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
-//							mappaGui[i][j].setIcon(erbivoroIcona);
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
+	//	/**
+	//	 * Metodo per resettare la raggiungibilita' (contorno delle celle)
+	//	 * rimpostandolo su "grigio chiaro", come predefinito.
+	//	 */
+	//	public void resetRaggiungibilita (){
+	//		for(int i=MAX-1;i>=0;i--) {
+	//			for(int j=0;j<MAX;j++) {
+	//				mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+	//			}
+	//		}
+	//	}
 
-	
+//	/**
+//	 * Metodo per rinizializzare la mappa dopo aver deposto un uovo, in pratica aggiorna
+//	 * la mappa di gioco andando a verificare dove ci sono nuovi dinosauri nati.
+//	 * @param carnivoroIcona Icon che rappresenta l'icona del Dinosauro Carnivoro.
+//	 * @param erbivoroIcona Icon che rappresenta l'icona del Dinosauro Erbivoro.
+//	 */
+	//	public void rinizializzaMappa(Icon carnivoroIcona, Icon erbivoroIcona) {
+	//		for(int i=0;i<40;i++) {
+	//			for(int j=0;j<40;j++) {
+	//				if(mappa[i][j] !=null && mappa[i][j].getDinosauro()!=null) {
+	//					if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
+	//						mappaGui[i][j].setIcon(carnivoroIcona);
+	//					} else {
+	//						if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
+	//							mappaGui[i][j].setIcon(erbivoroIcona);
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+
+
 	/**
 	 * Metodo per applicare la raggiungibilita' alla mappa.
 	 */
 	public void applicaRaggiungibilita () {
 		try {
-			this.gui.getClientGui().statoDinosauro("11");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String risposta = this.gui.getClientGui().getAnswer();
-		
-		int rigaDino = Integer.parseInt(risposta.split(",")[4].replace("{", ""));
-		int colonnaDino = Integer.parseInt(risposta.split(",")[5].replace("}", ""));
-		int dimensione = Integer.parseInt(risposta.split(",")[6]);
-		int raggio;
-		if(dimensione==1) {
-			raggio=2;
-		} else {
-			if(dimensione==2 || dimensione==3) {
-				raggio=3;
-			} else {
-				raggio=4;
-			}
-		}
-		
-		//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
-		int inizioRiga = rigaDino - raggio;
-		int inizioColonna = colonnaDino - raggio;
-		int fineRiga = rigaDino + raggio;
-		int fineColonna = colonnaDino + raggio;
+			String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
+			this.gui.getClientGui().statoDinosauro(idDinosauro);
+			String risposta = this.gui.getClientGui().getRisposta();
 
-		for(int i=MAX-1;i>=0;i--) {
-			for(int j=0;j<MAX;j++) {
-				if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
-					mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
-//					if((raggiungibile[i - inizioRiga][j - inizioColonna]!=NONRAGG) &&
-//							(raggiungibile[i - inizioRiga][j - inizioColonna]!=ACQUA)) {
-//						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
-//					} 
-//					if(raggiungibile[i - inizioRiga][j - inizioColonna]==0) {
-//						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
-//					}
+			int rigaDino = Integer.parseInt(risposta.split(",")[4].replace("{", ""));
+			int colonnaDino = Integer.parseInt(risposta.split(",")[5].replace("}", ""));
+			int dimensione = Integer.parseInt(risposta.split(",")[6]);
+			int raggio;
+			if(dimensione==1) {
+				raggio=2;
+			} else {
+				if(dimensione==2 || dimensione==3) {
+					raggio=3;
 				} else {
-					mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+					raggio=4;
 				}
 			}
+
+			//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
+			int inizioRiga = rigaDino - raggio;
+			int inizioColonna = colonnaDino - raggio;
+			int fineRiga = rigaDino + raggio;
+			int fineColonna = colonnaDino + raggio;
+
+			for(int i=MAX-1;i>=0;i--) {
+				for(int j=0;j<MAX;j++) {
+					if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
+
+						if(!(this.gui.getMappaRicevuta()[i][j].equals("a"))) {
+							mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
+						} else {
+							mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+						}
+					} else {
+						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Metodo per trovare un Dinosauro ("0") all'interno della mappa di raggiungibilita'.
 	 * @param raggiungibile Mappa di raggiungibilita'.
@@ -347,30 +347,37 @@ public class MappaGui {
 	 */
 	class GestioneMouse implements MouseListener{
 		public void mouseClicked(MouseEvent e) {
-//			JButton pulsante = (JButton)e.getSource();
-//			int q, w = 0;
-//			int rigaClic = 0, colonnaClic = 0;
-//			for(q=0;q<MAX;q++) {
-//				for(w=0;w<MAX;w++) {
-//					if(pulsante.equals(mappaGui[q][w])) {
-//						rigaClic =  q;
-//						colonnaClic = w;  
-//					}
-//				}
-//			}
-//
-//			int[] datiRaggiungibilita = gui.getDatiRaggiungibilita();
-//
-//			if(mappa[rigaClic][colonnaClic]!=null && rigaClic>=datiRaggiungibilita[0] &&
-//					rigaClic <=datiRaggiungibilita[2] && colonnaClic>=datiRaggiungibilita[1] && colonnaClic<=datiRaggiungibilita[3]) {
-//				gui.setIndiceDino(indiceDino);
-//				gui.eseguiMovimento(rigaClic,colonnaClic);
-//				gui.assegnaTurni();
-//				setScrollBar(rigaClic,colonnaClic);
-//			} else {
-//				JOptionPane.showMessageDialog(null, "Errore! Posizione non concessa!");
-//			}
-//			dg.aggiornaDati(indiceDino, giocatore);
+			JButton pulsante = (JButton)e.getSource();
+			int q, w = 0;
+			int rigaClic = 0, colonnaClic = 0;
+			for(q=0;q<MAX;q++) {
+				for(w=0;w<MAX;w++) {
+					if(pulsante.equals(mappaGui[q][w])) {
+						rigaClic =  q;
+						colonnaClic = w;  
+					}
+				}
+			}		
+			System.out.println("cliccati" + rigaClic + "," + colonnaClic);
+			String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
+	//			String idDinosauro = gui.getIdDinosauro(indiceDino); FIXME chiamando questo metodo si blocca tutto
+//			if(!gui.getMovimento()[indiceDino]) { // TODO indicedino
+			try {	
+				gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
+				String risposta = gui.getClientGui().getRisposta();
+				if(risposta.contains("@ok")) {
+					aggiornaStato(idDinosauro);
+					gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
+				}
+			} catch (IOException ecc) {
+				ecc.printStackTrace();
+			} catch (InterruptedException ecc) {
+				ecc.printStackTrace();
+			}
+			//			} else {
+			//				//non si puo' eseguire il movimento
+			//				JOptionPane.showMessageDialog(null, "Azione di movimento gia' eseguita!");
+			//			}
 		}
 		public void mouseEntered(MouseEvent e) {
 		}
@@ -381,7 +388,35 @@ public class MappaGui {
 		public void mouseReleased(MouseEvent e) {
 		}
 	}
+
 	
+	
+	/**
+	 * Metodo generale che riceve l'ID del Dinosauro e aggiorna la grafica caricando tutte le sue informazioni
+	 * @param idDino String che rappresenta l'identificativo univoco del Dinosauro.
+	 */
+	public void aggiornaStato(String idDino) {
+		try {
+			//ricevo nuovamente la mappa con la vista locale				
+			gui.getClientGui().vistaLocale(idDino);
+			applicaVisiblita(gui.getClientGui().getRisposta());
+			applicaRaggiungibilita();
+
+			gui.getClientGui().statoDinosauro(idDino);
+			String[] risposta = gui.getClientGui().getRisposta().split(",");
+			int riga = Integer.parseInt(risposta[4].replace("{",""));
+			int colonna = Integer.parseInt(risposta[5].replace("}",""));
+			setScrollBar(riga,colonna);
+
+			//aggiorno il panel col riassunto dello stato del dinosauro
+			dg.aggiornaDati(idDino);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * @return Un array bidimensionale di JButton che rappresenta la mappa di gioco.
 	 */
@@ -394,20 +429,6 @@ public class MappaGui {
 	 */
 	public void setMappaGui(JButton[][] mappaGui) {
 		this.mappaGui = mappaGui.clone();
-	}
-
-	/**
-	 * @return Un int che rappresenta l'indice del Dinosauro selezionato.
-	 */
-	public int getIndiceDino() {
-		return indiceDino;
-	}
-
-	/**
-	 * @param indiceDino int per impostare l'indice del Dinosauro selezionato.
-	 */
-	public void setIndiceDino(int indiceDino) {
-		this.indiceDino = indiceDino;
 	}
 
 }

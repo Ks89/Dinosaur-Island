@@ -11,7 +11,7 @@ import javax.swing.JPanel;
  * Classe che si occupa di inizializzare il Panel con il riassunto 
  * sullo stato del Dinosauro selezionato e del Giocatore.
  */
-public class DatiGui {
+public class DatiGuiLocale {
 
 	private JLabel userRis;
 	private JLabel nomeSpecieRis;
@@ -32,7 +32,7 @@ public class DatiGui {
 	 * contenenti le informazioni sul Giocatore e sui Dinosauri.
 	 * @param giocatore Giocatore alla quale e' assegnato il Turno.
 	 */
-	public DatiGui() {
+	public DatiGuiLocale() {
 		this.userRis = new JLabel();
 		this.nomeSpecieRis = new JLabel();
 		this.etaRis = new JLabel();

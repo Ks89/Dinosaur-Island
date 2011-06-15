@@ -4,34 +4,45 @@ import isoladinosauri.CaricamentoMappa;
 import isoladinosauri.Cella;
 import isoladinosauri.Giocatore;
 import isoladinosauri.Isola;
-import isoladinosauri.MovimentoException;
 import isoladinosauri.Partita;
 import isoladinosauri.Turno;
 import isoladinosauri.Utente;
 import isoladinosauri.modellodati.Dinosauro;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
-import javax.swing.*;
+import Eccezioni.CrescitaException;
+import Eccezioni.DeposizioneException;
+import Eccezioni.MovimentoException;
 
 /**
  *	Classe principale che si occupa di creare la grafica dell'applicazione (lato client).
  */
-public class Gui {
+public class GuiLocale {
 
 	/*
-	 * TODO fare + immagini coi dinosauri con sovraimpresso nel png il livello con tutte le combinazioni
-	 * TODO ridimensionare un pelo le celle e le immagini nelle celle per far si che l'area di spostamento del carnivoro sia visibile
-	 * FIXME se muovo un dinosauro appena nato dall'uovo il panel dati non si aggiorna
-	 * FIXME sarebbe bello che se il dinosauro va su una cella con u vegetale ed e' erbivoro. Facendo la crescita automaticamente mangia
+	 *  fare + immagini coi dinosauri con sovraimpresso nel png il livello con tutte le combinazioni
+	 *  ridimensionare un pelo le celle e le immagini nelle celle per far si che l'area di spostamento del carnivoro sia visibile
+	 *  se muovo un dinosauro appena nato dall'uovo il panel dati non si aggiorna
+	 *  sarebbe bello che se il dinosauro va su una cella con u vegetale ed e' erbivoro. Facendo la crescita automaticamente mangia
 	 * 		l'occupante e assorbe l'energia senza dover fare altre azioni di movimento ecc...
-	 * TODO il menu a tendina non agiorna subito il panel laterale indicando il dinosauro
-	 * FIXME quando depongo e il nascituro va su una cella con carogna o vegetale la cella viene settata con solo il dinosauro
+	 *  il menu a tendina non agiorna subito il panel laterale indicando il dinosauro
+	 *  quando depongo e il nascituro va su una cella con carogna o vegetale la cella viene settata con solo il dinosauro
 	 * 		perche' non ho fatto tutti gli if del caso
 	 */
 
@@ -55,22 +66,22 @@ public class Gui {
 	private int indiceDino; 
 	private int turnoNascita;
 
-	private Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro.png"));
+	private Icon carnivoroIcona /*= new ImageIcon(this.getClass().getResource("/carnivoro.png"))*/;
 	private Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro.png"));
 	private Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
 
 	private Partita partita;
 	private Turno t;
 	private Isola isola;
-	private DatiGui datiGui;
-	private MappaGui mg;
+	private DatiGuiLocale datiGui;
+	private MappaGuiLocale mg;
 
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Costruttore della classe Gui che inizializza la mappa, l'Isola, la Partita ed il Turno.
 	 */
-	public Gui () {
+	public GuiLocale () {
 		this.cm = new CaricamentoMappa();
 		this.mappa = cm.caricaDaFile();
 		this.isola = new Isola(this.mappa);
@@ -97,7 +108,7 @@ public class Gui {
 		giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);
 		giocatore.aggiungiInPartita(partita);
 		dino = giocatore.getDinosauri().get(indiceDino);
-		datiGui = new DatiGui();
+		datiGui = new DatiGuiLocale();
 		this.inizializzaGrafica();
 		mg.setScrollBar(dino.getRiga(), dino.getColonna());
 	}
@@ -109,7 +120,6 @@ public class Gui {
 			listaDino[i] = giocatore.getDinosauri().get(i).getId();
 			sceltaDinosauro.addItem(listaDino[i]);
 		}
-		//		sceltaDinosauro = new JComboBox(listaDino); 
 		sceltaDinosauro.setMaximumRowCount(MAXDINO);
 	}
 
@@ -119,10 +129,10 @@ public class Gui {
 	private void inizializzaGrafica() {
 		frame = new JFrame("Isola dei dinosauri BETA1");
 		frame.setLayout(new FlowLayout()); //imposto il Layout a griglia
-		//		frame.setMinimumSize(new Dimension(1025,637));
+		frame.setMinimumSize(new Dimension(1025,637));
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//		frame.setResizable(false);
-		mg = new MappaGui(this,giocatore,datiGui);
+		frame.setResizable(false);
+		mg = new MappaGuiLocale(this,giocatore,datiGui);
 		mappaPanel= mg.creaMappa(mappa);
 		this.setMappaGui(mg.getMappaGui());
 
@@ -131,10 +141,10 @@ public class Gui {
 		frame.add(infoPanel);
 		frame.add(mappaPanel);
 
-		MenuGui menuGui = new MenuGui(frame);		
+		MenuGuiLocale menuGui = new MenuGuiLocale(frame);		
 		frame.setJMenuBar(menuGui.getMenu());
 
-		this.assegnaTurni();
+		this.aggiornaMappa();
 
 		frame.pack();
 		frame.setVisible(true);
@@ -156,9 +166,9 @@ public class Gui {
 
 
 	/**
-	 * Metodo che si occupa di assegnare i Turni.
+	 * Metodo che si occupa di aggiornare la Mappa.
 	 */
-	public void assegnaTurni() {
+	public void aggiornaMappa() {
 		mg.applicaRaggiungibilita(indiceDino,giocatore,t);
 		mg.applicaVisiblita(giocatore, t);
 	}
@@ -196,7 +206,6 @@ public class Gui {
 						}
 						setIndiceDino(i);
 						mg.setIndiceDino(i);
-						//						datiGui.aggiornaDati(i, giocatore);
 					}
 				}
 		);
@@ -204,49 +213,53 @@ public class Gui {
 		cresci.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(dino.aumentaDimensione()==1) {
+						
+						try {
+							dino.aumentaDimensione();
 							int raggio = dino.calcolaRaggioVisibilita();
 							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
 							mg.applicaVisiblita(giocatore, t);
 							datiGui.aggiornaDati(indiceDino, giocatore);
-						}
-						else {
-							if(dino.aumentaDimensione()==-1) {
+						} catch (CrescitaException ce){
+							if(ce.getCausa()==CrescitaException.Causa.MORTE) {
 								partita.getGiocatori().get(0).rimuoviDinosauro(dino);
 								mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
 								JOptionPane.showMessageDialog(null, "Non e' stato possibile eseguire l'azione di crescita\nDinosauro rimosso!");
 							}
+							if(ce.getCausa()==CrescitaException.Causa.DIMENSIONEMASSIMA) {
+								JOptionPane.showMessageDialog(null, "Non e' stato possibile eseguire l'azione di crescita\nDimensione massima!");
+							}
 						}
-
 					}
 				}
 		);
 
 		deponi.addActionListener(
 				new ActionListener() {
-					public void actionPerformed(ActionEvent e) { 
-						//						dino.setEnergia(5000);
-						//						dino.setEnergiaMax(5000);
-						int statoDeposizione = giocatore.eseguiDeposizionedeponiUovo(dino);
-						if(statoDeposizione==1) {
+					public void actionPerformed(ActionEvent e) { 	
+						try {
+							String idNuovoDinosauro = giocatore.eseguiDeposizionedeponiUovo(dino);
+							JOptionPane.showMessageDialog(null, "Id nuovo dinosauro: " + idNuovoDinosauro);
 							int raggio = dino.calcolaRaggioVisibilita();
 							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
 							mg.applicaVisiblita(giocatore, t);
 							partita.nascitaDinosauro(turnoNascita);
 							inizializzaSceltaDino(giocatore);
 							mg.rinizializzaMappa(carnivoroIcona, erbivoroIcona);
-						} else {
-							mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
-							if(statoDeposizione==-2) {
+						} catch (DeposizioneException de){
+							if(de.getCausa()==DeposizioneException.Causa.MORTE) {
+								mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
 								JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
 								"\nenergia insufficiente!");
 							}
-							if(statoDeposizione==0) {
+							if(de.getCausa()==DeposizioneException.Causa.SQUADRACOMPLETA) {
+								mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
 								JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
 								"squadra dei dinosauri completa!");
 							}
+						} finally {
+							datiGui.aggiornaDati(indiceDino, giocatore);
 						}
-						datiGui.aggiornaDati(indiceDino, giocatore);
 					}
 				}
 		);
@@ -304,26 +317,33 @@ public class Gui {
 			}
 		}
 
-		int statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
-		switch(statoMovimento) {
-		case -2:
-			JOptionPane.showMessageDialog(null, "Il Dinosauro e' morto!");
-			break;
-		case -1:
-			JOptionPane.showMessageDialog(null, "Scegliere un'altra destinazione!");
-			break;
-		case 0:
-			JOptionPane.showMessageDialog(null, "Vince attaccato!");
-			break;
-		case 1:
-			JOptionPane.showMessageDialog(null, "Tutto ok!");
-			break;
-		case 2:
-			JOptionPane.showMessageDialog(null, "Vince attaccante!");
-			break;
-		case 3:
-			JOptionPane.showMessageDialog(null, "Conbattimento eseguito e mangiato occupante!");
-			break;
+		
+		try {
+			boolean stato = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
+			if(stato) {
+				System.out.println("Tutto ok");
+			} else {
+				System.out.println("Problema");
+			}
+		} catch (MovimentoException e){
+			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCATO) {
+				JOptionPane.showMessageDialog(null, "Vince attaccante!");
+			}
+			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCANTE) {
+				JOptionPane.showMessageDialog(null, "Vince attaccato!");
+			}
+			if(e.getCausa()==MovimentoException.Causa.MORTE) {
+				JOptionPane.showMessageDialog(null, "Il Dinosauro e' morto!");
+			}
+			if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
+				JOptionPane.showMessageDialog(null, "Scegliere un'altra destinazione!");
+			}
+			if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
+				JOptionPane.showMessageDialog(null, "Nessun vincitore!");
+			}
+			if(e.getCausa()==MovimentoException.Causa.ERRORE) {
+				JOptionPane.showMessageDialog(null, "Errore!");
+			}
 		}
 		mg.applicaVisiblita(giocatore, t);
 		mg.applicaRaggiungibilita(indiceDino, giocatore, t);

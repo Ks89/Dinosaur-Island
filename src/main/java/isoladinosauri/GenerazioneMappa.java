@@ -15,29 +15,33 @@ public class GenerazioneMappa {
 	private static final int CAROGNE = 20;
 	private static final int RAGGIUNGIBILI = 1280;
 	private static final int NUMFORME = 18;
+	
+	private String[][] mappa;
+	private int numeroraggiungibili;
 
+	public GenerazioneMappa() {
+		mappa = new String[MAX][MAX];
+	}
+	
 	/**
-	 * Metodo per generare la mappa in modo 'presuo-casuale'.
+	 * Metodo per generare la mappa in modo 'psesuo-casuale'.
 	 * @return La mappa genereta sotto forma di array bidimensionale di String.
 	 */
 	public String[][] creaMappaCasuale() {
 		String mappa[][] = this.inserisciAcqua();
-		this.inserisciCarogne(mappa);
-		this.inserisciTerra(mappa);
-		this.contaCarogne(mappa);
+		this.inserisciCarogne();
+		this.inserisciTerra();
+		this.contaCarogne();
 		PosizionaVegetazione tv = new PosizionaVegetazione();
 		tv.posizionaVegetazione(mappa);
 		return mappa;
-		//		this.salvaMappa(mappa);
-		//		this.stampaMappa(mappa);
-
 	}
 
 	/**
 	 * Metodo per contare il numero di carogne all'interno della mappa di gioco.
 	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
 	 */
-	private void contaCarogne(String[][] mappa) {
+	private void contaCarogne() {
 		int cont=0;
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
@@ -53,7 +57,7 @@ public class GenerazioneMappa {
 	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
 	 * @return Un array bidimensionale di String che rappresenta la mappa di gioco con inserite 20 carogne ('c').
 	 */
-	private String[][] inserisciCarogne(String[][] mappa) {
+	private String[][] inserisciCarogne() {
 		Random random = new Random();
 		int cont=0, riga, colonna;
 		do {
@@ -72,7 +76,7 @@ public class GenerazioneMappa {
 	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
 	 * @return Un array bidimensionale di String che rappresenta la mappa di gioco con inserite le cella di terra ('t').
 	 */
-	private String[][] inserisciTerra(String[][] mappa) {
+	private String[][] inserisciTerra() {
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
 				if(!mappa[i][j].equals("a") && !mappa[i][j].equals("c")) {
@@ -83,18 +87,215 @@ public class GenerazioneMappa {
 		return mappa;
 	}
 
+	
+	/**
+	 * Metodo per disegnare il contorno d'acqua dell'isola.
+	 */
+	private void inizializzoBordo() {
+		for(int j=0;j<MAX;j++) {
+			mappa[0][j]="a";
+		}
+		for(int j=0;j<MAX;j++) {
+			mappa[39][j]="a";
+		}
+		for(int i=0;i<MAX;i++) {
+			mappa[i][0]="a";
+		}
+		for(int i=0;i<MAX;i++) {
+			mappa[i][39]="a";
+		}
+	}
+	
+	/**
+	 * Metodo per inserire le forme d'acqua (laghi) nella mappa.
+	 */
+	private void inserimentoForme() {
+		//ottengo l'array di forme di acqua da inserire
+		String[][] arrayForme = this.ottieniFormeAcqua();
+		
+		/*
+		 * Uno alla volta inserisco nella mappa
+		 * tutti gli elementi contenuti nella 
+		 * struttura arrayforme
+		 */
+		for(int numerofigure=0;numerofigure<arrayForme.length;numerofigure++){
+
+			String arraydistringhe[]=arrayForme[numerofigure];
+
+			/*
+			 *cordinate generate a caso
+			 *si parte dal punto generato
+			 *e si disegna la figura verso
+			 *il basso e verso sinistra 
+			 */			
+			int x=0;
+			int y=0;
+
+			/*
+			 * I due offset determinano di quanto
+			 *  ci si sposta dal punto generato
+			 *  per disegnare la figura
+			 */
+			int offsetx=0;
+			int offsety=0;
+
+			Random random=new Random();
+			/*
+			 * Nel ciclo while si calcola se nelle coordinate generate a caso
+			 * c'e' lo spazio per disegnare la figura d'acqua
+			 */
+			boolean posNonConcessa=true;
+
+			while (posNonConcessa){
+				posNonConcessa=false;
+				x=random.nextInt(38);
+				y=random.nextInt(38);
+				int i=0;
+				for(i=0;i<arraydistringhe.length;i++){
+					offsetx=Integer.parseInt(arraydistringhe[i].charAt(0)+"");
+					offsety=Integer.parseInt(arraydistringhe[i].charAt(1)+"");
+					if((x+offsetx)>39) {
+						posNonConcessa=true;
+					} else { if((y+offsety)>39) {
+						posNonConcessa=true;
+					} else { if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) {
+						posNonConcessa=true;
+					} else { 
+						if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) {
+							posNonConcessa=true;
+						}
+					}
+					}
+					}
+				} //chiusura FOR
+
+			}//chiusura WHILE
+			/*
+			 * A questo punto disegno la figura nella mappa.
+			 * Visto che le figure non si devono toccare, intorno
+			 * ad esse metto un simbolo sul quale
+			 * non si puo' mettere acqua
+			 * (Per evitare blocchi di piu' di 15 caselle adiacenti
+			 *  di acqua) 
+			 */
+
+			for(int i=0;i<arraydistringhe.length;i++){
+				offsetx=Integer.parseInt(arraydistringhe[i].charAt(0)+"");
+				offsety=Integer.parseInt(arraydistringhe[i].charAt(1)+"");
+
+				mappa[x+offsetx][y+offsety]="a";
+				if(offsetx==0) {
+					mappa[x-1][y+offsety]="b"; 
+				}
+				if(offsety==0) {
+					mappa[x+offsetx][y-1]="b";
+				}
+				mappa[x+offsetx+1][y+offsety]="b";
+				mappa[x+offsetx][y+offsety+1]="b";
+			}
+			/*
+			 * Devo controllare se tutte le zone di
+			 * terra sono unite (raggiungibili)
+			 */
+		}//Chiusura ciclo for 
+	}
+	
+	
+	/**
+	 * Metodo per gestire i fossati di guardia, cioe' i contorni dei laghi, in modo da impedire
+	 * sovrapposizioni o "contatti".
+	 */
+	public void gestisciFossatiGuardia() {
+		/*
+		 * Essendo che il posizionamento delle forme 
+		 * d'acqua puo' intaccare il bordo dell isola
+		 * fare riferimento alla classe inserimento,
+		 * quando si inserisce l'acqua si inserisce anche
+		 * un "fossato" di guardia per evitare l'unione di
+		 * due pozze d'acqua
+		 */
+		for(int j=0;j<MAX;j++) {
+			mappa[0][j]="a";
+		}
+		for(int j=0;j<MAX;j++) {
+			mappa[MAX-1][j]="a";
+		}
+		for(int i=0;i<MAX;i++) {
+			mappa[i][0]="a";
+		}
+		for(int i=0;i<MAX;i++) {
+			mappa[i][MAX-1]="a";
+		}
+
+		//Eliminazione dei fossati di guardia
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
+				if (mappa[i][j].equals("b")) {
+					mappa[i][j]=" " ;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Metodo che verifica la raggiungibilita tra tutte le celle per essere certo che non
+	 * vi siano zone di terra isolate.
+	 */
+	private void gestisciRaggiungibilita() {
+		/*
+		 * In questo ciclo do while si "colorano" i 
+		 * blocchi adiacenti a quelli che contengono 't'
+		 * se sono vuoti. (Per la raggiungibilita')
+		 */
+		boolean modificato;
+		do{
+			modificato=false;
+			for(int i=0;i<MAX-1;i++) {
+				for(int j=0;j<MAX-1;j++) {
+					if (mappa[i][j].equals("t")) {
+						if (mappa[i+1][j].equals(" ")) {
+							mappa[i+1][j]="t";
+							modificato=true;
+						}
+
+						if (mappa[i-1][j].equals(" ")) { 
+							mappa[i-1][j]="t";
+							modificato=true;
+						}
+						if (mappa[i][j+1].equals(" ")) { 
+							mappa[i][j+1]="t";
+							modificato=true;
+						}
+						if (mappa[i][j-1].equals(" ")) { 
+							mappa[i][j-1]="t";
+							modificato=true;
+						}
+					}//Chiusura IF
+				}    //Chiusura FOR
+			}		 //Chiusura FOR
+		} while (modificato); //CHIUSURA DO-WHILE
+
+		//Conta il numero di t
+		for(int i=0;i<MAX-1;i++) {
+			for(int k=0;k<MAX-1;k++) {
+				if (mappa[i][k].equals("t")) {
+					numeroraggiungibili++;
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Metodo che inserisce le "pozze" di acqua nella mappa di gioco in modo "preuso-casuale".
 	 * @return Un array bidimensionale di String che rappresenta la mappa di gioco con posizonate solo le celle d'acqua.
 	 */
 	private String[][] inserisciAcqua(){
-		String[][] mappa = new String[MAX][MAX];
+
 		/*
 		 * La variabile numeroraggiungibili servira' dopo
 		 * a capire se tutti i blocchi di terra sono 
 		 * collegati tra di loro
 		 */
-		int numeroraggiungibili;
 
 		do{
 			numeroraggiungibili=0;
@@ -106,19 +307,8 @@ public class GenerazioneMappa {
 
 			}
 
-			//Disegno il contorno d'acqua dell isola
-			for(int j=0;j<MAX;j++) {
-				mappa[0][j]="a";
-			}
-			for(int j=0;j<MAX;j++) {
-				mappa[39][j]="a";
-			}
-			for(int i=0;i<MAX;i++) {
-				mappa[i][0]="a";
-			}
-			for(int i=0;i<MAX;i++) {
-				mappa[i][39]="a";
-			}
+			//inizializza il bordo con l'acqua
+			this.inizializzoBordo();
 
 			/*
 			 * Per fare in modo che l'acqua sia del 20 percento e 
@@ -142,126 +332,13 @@ public class GenerazioneMappa {
 			 * terzo (2+0,3+1)
 			 * E cosi' via
 			 */
+			
+			
+			//inserimento di tutte le forme 
+			this.inserimentoForme();
 
-			//ottengo l'array di forme di acqua da inserire
-			String[][] arrayForme = this.ottieniFormeAcqua();
-
-
-			/*
-			 * Uno alla volta inserisco nella mappa
-			 * tutti gli elementi contenuti nella 
-			 * struttura arrayforme
-			 */
-			for(int numerofigure=0;numerofigure<arrayForme.length;numerofigure++){
-
-				String arraydistringhe[]=arrayForme[numerofigure];
-
-				/*
-				 *cordinate generate a caso
-				 *si parte dal punto generato
-				 *e si disegna la figura verso
-				 *il basso e verso sinistra 
-				 */			
-				int x=0;
-				int y=0;
-
-				/*
-				 * I due offset determinano di quanto
-				 *  ci si sposta dal punto generato
-				 *  per disegnare la figura
-				 */
-				int offsetx=0;
-				int offsety=0;
-
-				Random random=new Random();
-				/*
-				 * Nel ciclo while si calcola se nelle coordinate generate a caso
-				 * c'e' lo spazio per disegnare la figura d'acqua
-				 */
-				boolean posNonConcessa=true;
-
-				while (posNonConcessa){
-					posNonConcessa=false;
-					x=random.nextInt(38);
-					y=random.nextInt(38);
-					int i=0;
-					for(i=0;i<arraydistringhe.length;i++){
-						offsetx=Integer.parseInt(arraydistringhe[i].charAt(0)+"");
-						offsety=Integer.parseInt(arraydistringhe[i].charAt(1)+"");
-						if((x+offsetx)>39) {
-							posNonConcessa=true;
-						} else { if((y+offsety)>39) {
-							posNonConcessa=true;
-						} else { if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) {
-							posNonConcessa=true;
-						} else { 
-							if (mappa[x+offsetx][y+offsety].equals("a")||mappa[x+offsetx][y+offsety].equals("b")) {
-								posNonConcessa=true;
-							}
-						}
-						}
-						}
-					} //chiusura FOR
-
-				}//chiusura WHILE
-				/*
-				 * A questo punto disegno la figura nella mappa.
-				 * Visto che le figure non si devono toccare, intorno
-				 * ad esse metto un simbolo sul quale
-				 * non si puo' mettere acqua
-				 * (Per evitare blocchi di piu' di 15 caselle adiacenti
-				 *  di acqua) 
-				 */
-
-				for(int i=0;i<arraydistringhe.length;i++){
-					offsetx=Integer.parseInt(arraydistringhe[i].charAt(0)+"");
-					offsety=Integer.parseInt(arraydistringhe[i].charAt(1)+"");
-
-					mappa[x+offsetx][y+offsety]="a";
-					if(offsetx==0) {
-						mappa[x-1][y+offsety]="b"; 
-					}
-					if(offsety==0) {
-						mappa[x+offsetx][y-1]="b";
-					}
-					mappa[x+offsetx+1][y+offsety]="b";
-					mappa[x+offsetx][y+offsety+1]="b";
-				}
-				/*
-				 * Devo controllare se tutte le zone di
-				 * terra sono unite (raggiungibili)
-				 */
-			}//Chiusura ciclo for 
-
-			/*
-			 * Essendo che il posizionamento delle forme 
-			 * d'acqua puo' intaccare il bordo dell isola
-			 * Si faccia riferimento alla classe inserimento,
-			 * quando si inserisce l'acqua si inserisce anche
-			 * un "fossato" di guardia per evitare l'unione di
-			 * due pozze d'acqua
-			 */
-			for(int j=0;j<MAX;j++) {
-				mappa[0][j]="a";
-			}
-			for(int j=0;j<MAX;j++) {
-				mappa[39][j]="a";
-			}
-			for(int i=0;i<MAX;i++) {
-				mappa[i][0]="a";
-			}
-			for(int i=0;i<MAX;i++) {
-				mappa[i][39]="a";
-			}
-
-			//Eliminazione dei fossati di guardia
-			for(int i=0;i<MAX;i++) {
-				for(int j=0;j<MAX;j++) {
-					if (mappa[i][j].equals("b")) {
-						mappa[i][j]=" " ;
-					}
-				}
-			}
+			//gestisco i fossati di guardia per capire se i laghi si toccano
+			this.gestisciFossatiGuardia();
 
 			/*
 			 * Cerco il primo elemento di terra
@@ -283,47 +360,7 @@ public class GenerazioneMappa {
 			int primoeleterray=j;
 			mappa[1][primoeleterray]="t";
 
-			/*
-			 * In questo ciclo do while si "colorano" i 
-			 * blocchi adiacenti a quelli che contengono 't'
-			 * se sono vuoti. (Per la raggiungibilita')
-			 */
-			boolean modificato;
-			do{
-				modificato=false;
-				for(int i=0;i<MAX-1;i++) {
-					for(j=0;j<MAX-1;j++) {
-						if (mappa[i][j].equals("t")) {
-							if (mappa[i+1][j].equals(" ")) {
-								mappa[i+1][j]="t";
-								modificato=true;
-							}
-
-							if (mappa[i-1][j].equals(" ")) { 
-								mappa[i-1][j]="t";
-								modificato=true;
-							}
-							if (mappa[i][j+1].equals(" ")) { 
-								mappa[i][j+1]="t";
-								modificato=true;
-							}
-							if (mappa[i][j-1].equals(" ")) { 
-								mappa[i][j-1]="t";
-								modificato=true;
-							}
-						}//Chiusura IF
-					}    //Chiusura FOR
-				}		 //Chiusura FOR
-			} while (modificato); //CHIUSURA DO-WHILE
-
-			//Conta il numero di t
-			for(int i=0;i<MAX-1;i++) {
-				for(int k=0;k<MAX-1;k++) {
-					if (mappa[i][k].equals("t")) {
-						numeroraggiungibili++;
-					}
-				}
-			}
+			this.gestisciRaggiungibilita();
 
 		}while (numeroraggiungibili!=RAGGIUNGIBILI);
 		return mappa;
@@ -380,44 +417,4 @@ public class GenerazioneMappa {
 		arrayForme[17] = formaquindici;
 		return arrayForme;
 	}
-
-	//	private void salvaMappa(String[][] mappa) {
-	//		//salvo la mappa
-	//		try{
-	//			Formatter out = new Formatter("mappaTest.txt");
-	//			//attenzione qui prima di modificare il codice c'era salvaRiga= new String(); e non null
-	//			String salvaRiga = null;
-	//			for(int i=0;i<40;i++) {
-	//				for(int j=0;j<40;j++) {
-	//					salvaRiga = salvaRiga + mappa[i][j];
-	//				}
-	//				out.format("%s\n", salvaRiga);
-	//				salvaRiga="";
-	//			}
-	//
-	//			out.close();
-	//		}
-	//		catch (SecurityException securityException)
-	//		{
-	//			System.err.println("Non hai accesso al file");
-	//			System.err.println("Il programma e' stato terminato");
-	//		}
-	//		catch (FileNotFoundException filesNotFoundException)
-	//		{
-	//			System.err.println("Errore nella creazione del file");
-	//			System.err.println("Il programma e' stato terminato");
-	//		}
-	//	}
-
-	//	//metodo stampa mappa
-	//	private void stampaMappa(String mappa [][]){
-	//		for(int i=0;i<MAX;i++) {
-	//			for(int j=0;j<MAX;j++) {
-	//				System.out.print(mappa[i][j]+" ");
-	//			}
-	//			System.out.println();
-	//		}
-	//	}
-
-
 }

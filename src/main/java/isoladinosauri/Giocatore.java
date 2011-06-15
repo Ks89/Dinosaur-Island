@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import Eccezioni.DeposizioneException;
+
 /**
  * Classe Giocatore, costituita da tutti gli attributi che 
- * lo identificano della partita. Il costruttore si preoccupaa anche 
- * di gestire l'illumnazione della mappa e genera in automatico il
- * primo dinosauro del giocatore.
+ * lo identificano della partita.
  */
 public class Giocatore {
 
@@ -31,11 +31,13 @@ public class Giocatore {
 	private boolean[][] mappaVisibile; //gestisce visuale giocatore con buio (se e' false)
 	private List<String> uova; //e' un array di uova del giocatore che viene svuotato alla fine di ogni giro dei giocatori
 
-	//ATTENZIONE: SOLO IL PRIMO DINOSAURO DEL GIOCATORE E' POSIZIONATO A CASO NELLA MAPPA
-	//GLI ALTRI NASCONO DALLE UOVA VICINO AL DINOSAURO CHE LE GENERA
-	//PER QUESTO IL METODO POSIZIONADINOSAURO() CHIAMATO NEL COSTRUTTORE
-	//VIENE USATO SOLO NELLA CREAZIONE DEL GIOCATORE (E DI CONSEGUENZA DEL SUO PRIMO DINO)
-	//DOPO NON SARA' PIU' USATO
+	/*
+	 * ATTENZIONE: SOLO IL PRIMO DINOSAURO DEL GIOCATORE E' POSIZIONATO A CASO NELLA MAPPA
+	 * GLI ALTRI NASCONO DALLE UOVA VICINO AL DINOSAURO CHE LE GENERA
+	 * PER QUESTO IL METODO POSIZIONADINOSAURO() CHIAMATO NEL METODO AGGIUNGIINPARTITA()
+	 * VIENE USATO SOLO NELLA CREAZIONE DEL GIOCATORE (E DI CONSEGUENZA DEL SUO PRIMO DINO)
+	 * DOPO NON SARA' PIU' USATO
+	 */
 
 	/**
 	 * Costruttore che crea ed inizializza il Giocatore.
@@ -61,14 +63,14 @@ public class Giocatore {
 	
 	/**
 	 * Metodo che permette di aggiungere un Giocatore (razza) alla partita in corso, creare l'id, far nascere il primo Dinosauro 
-	 * 	ed illuminare l'area intorno al esso.
-	 * @param giocatore riferimento al Giocatore che vuole entrare in Partita.
+	 * 	ed illuminare l'area intorno ad esso.
+	 * @param Riferimento alla classe Partita in cui si vuole aggiungere il Giocatore.
 	 */
 	public void aggiungiInPartita(Partita partita) {
 		this.partita = partita;
-		//ora aggiungo il giocatore creato alla lista dei giocatori in Partita
-		//questo serve se no non potrei usare illuminaMappa direttamente nel costruttore
-		//perche' l'oggetto giocatore non sarebbe ancora fisicamente nella lista giocatori di Partita
+		
+		//aggiungo il giocatore creato alla lista dei giocatori in Partita
+		//questo serve perche' se no non sarebbe ancora fisicamente nella lista giocatori di Partita
 		this.partita.aggiungiGiocatore(this);
 		
 		//ottengo riga e colonna in un vettore di interi di 2 elementi
@@ -157,7 +159,7 @@ public class Giocatore {
 	/**
 	 * Metodo che genera l'id parziale, ovvero solo quello associato al numero del Dinosauro, per poi essere combinato con la
 	 * parte del Giocatore e restituire, tramite il metodo generaIdDiinosauro, l'id completo nella forma "XY".
-	 * @return
+	 * @return Un int che rappresenta l'id parziale generato, associato al Giocatore.
 	 */
 	private int generaIdParziale() {
 		//uguale a generaIdGiocatore() ma sta volta lavoro sui char, perche' l'id del dinosauro
@@ -273,11 +275,12 @@ public class Giocatore {
 
 	/**
 	 * Metodo per aggiungere un Uovo.
-	 * @param riga int che rappresent la riga dove e' stato deposto l'uovo.
-	 * @param colonna int che rappresente la colonna dove e' stato deposto l'uovo.
+	 * @param riga int che rappresenta la riga dove e' stato deposto l'uovo.
+	 * @param colonna int che rappresenta la colonna dove e' stato deposto l'uovo.
+	 * @param idDinosauro String che rappresenta l'id che avra' il Dinosauro quando nascera'.
 	 */
-	public void aggiungiUovo(int riga, int colonna) {
-		this.uova.add(riga + "-" + colonna);
+	public void aggiungiUovo(int riga, int colonna, String idDinosauro) {
+		this.uova.add(riga + "-" + colonna + "-" + idDinosauro);
 	}
 
 	/**
@@ -290,24 +293,27 @@ public class Giocatore {
 	/**
 	 * Metodo per far deporre un uovo al Dinosauro.
 	 * @param dinosauro riferimento al Dinosauro che deve deporre l'uovo
-	 * @return Un boolean che indica con 'false' che il Dinosauro non ha 
-	 * 		abbastanza energia per compiere l'azione e quindi muore,
-	 * 		con 'true' che e' andato tutto bene.
+	 * @return Una String che rappresenta l'id che avra' il Dinosauro quando nascera'. 
+	 * @throws DeposizioneException Eccezione che puo' essere sollevata a causa della MORTE del Dinosauro perche' non possiede
+	 * energia sufficiente per compiere l'azione, oppure per SQUADRACOMPLETA, dovuta al fatto che ogni Giocatore puo' avere al massimo
+	 * 5 Dinosauri.
 	 */
-	public int eseguiDeposizionedeponiUovo(Dinosauro dinosauro) {
+	public String eseguiDeposizionedeponiUovo(Dinosauro dinosauro) throws DeposizioneException {
 		dinosauro.setEnergia(dinosauro.getEnergia() - 1500);
 		if(dinosauro.getEnergia()>0) {
 			//il dinosauro pu' compiere l'azione di deposizione, ma solo se il num di dino
 			//sommati a quello delle uova (perche' in futuro saranno anch'essi dino) sia <5
 			if((this.getDinosauri().size() + this.getUova().size()) < MAXDINO ) {
-				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna());
-				return 1;
+				String idDinosauro = this.generaIdDinosauro();
+				System.out.println("ID Dinosauro: " + idDinosauro);
+				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna(),idDinosauro);
+				return idDinosauro;
 			} else {
-				return 0; //squadra completa e non posso creare altri dinosauri deponendo uova	
+				throw new DeposizioneException(DeposizioneException.Causa.SQUADRACOMPLETA);
 			}
 		} else { //il dinosauro muore perche' non ha sufficiente energia
 			this.rimuoviDinosauro(dinosauro);	
-			return -2;
+			throw new DeposizioneException(DeposizioneException.Causa.MORTE);
 		}
 	}
 
@@ -367,8 +373,6 @@ public class Giocatore {
 	 * @return Un array bidimensionale di boolean che rappresenta la mappa della visibilita' del Giocatore.
 	 */
 	public boolean[][] getMappaVisibile() {
-		//su consiglio di Sonar ritorno un oggetto clonato per una questione
-		//di sicurezza
 		return mappaVisibile.clone();
 	}
 

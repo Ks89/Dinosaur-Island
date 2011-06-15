@@ -27,7 +27,7 @@ public class Isola {
 	 * Costruttore per inizializzare la mappa.
 	 * @param mappa Array bidimensionali di Celle per impostare la mappa.
 	 */
-	public Isola(Cella[][] mappa) { //FIXME, attenzione tenere d'occhio
+	public Isola(Cella[][] mappa) {
 		this.mappa = mappa.clone();
 	}
 	

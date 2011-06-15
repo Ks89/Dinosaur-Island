@@ -4,8 +4,9 @@ import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Vegetale;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.StringTokenizer;
 
 public class CaricamentoMappa {
@@ -29,10 +30,11 @@ public class CaricamentoMappa {
 	 */
 	public Cella[][] caricaDaFile() {
 		BufferedReader br = null;
-		FileReader fr = null;
+		Reader reader = null;
 		try {  	
-			fr = new FileReader("mappaTestAcquaUovo.txt");
-			br = new BufferedReader(fr);
+			//fr = new FileReader("mappaTestAcquaUovo.txt");
+			reader = new InputStreamReader(this.getClass().getResourceAsStream("/mappaTestAcquaUovo.txt"));
+			br = new BufferedReader(reader);
 			String riga = br.readLine();
 			StringTokenizer st = null;	
 			String cellaLetta;
@@ -48,18 +50,18 @@ public class CaricamentoMappa {
 
 		}	
 		catch(IOException ioException) {
-			System.err.println("Errore lettura file.");
+			System.err.println("Errore lettura file.1");
 		} finally {
 			try {
-				if(fr!=null) {
-					fr.close();
+				if(reader!=null) {
+					reader.close();
 				}
 				if(br!=null) {
 
 					br.close();
 				}
 			} catch (IOException e) {
-				System.err.println("Errore chiusura file");
+				System.err.println("Errore chiusura file2");
 				e.printStackTrace();
 			}
 		}

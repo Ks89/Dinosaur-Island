@@ -62,22 +62,22 @@ public class DatiGui {
 			e.printStackTrace();
 		}
 		
-		String[] answerSplittata = this.gui.getClientGui().getAnswer().split(",");
-		int rigaDino = Integer.parseInt(this.gui.getClientGui().getAnswer().split(",")[4].replace("{", ""));
-		int colonnaDino = Integer.parseInt(this.gui.getClientGui().getAnswer().split(",")[5].replace("}", ""));
+		String[] rispostaSplittata = this.gui.getClientGui().getRisposta().split(",");
+		int rigaDino = Integer.parseInt(this.gui.getClientGui().getRisposta().split(",")[4].replace("{", ""));
+		int colonnaDino = Integer.parseInt(this.gui.getClientGui().getRisposta().split(",")[5].replace("}", ""));
 		
-		this.userRis.setText(answerSplittata[1]);
-		this.nomeSpecieRis.setText(answerSplittata[2]);
+		this.userRis.setText(rispostaSplittata[1]);
+		this.nomeSpecieRis.setText(rispostaSplittata[2]);
 		
 //		this.etaRis.setText(giocatore.getEtaAttuale() + "");
 //		this.tNascitaGiocatoreRis.setText(giocatore.getTurnoNascita() + "");
 //		
 //		this.idDinosauroRis.setText(dino.getId());
-		this.dimensioneRis.setText(answerSplittata[6]);
+		this.dimensioneRis.setText(rispostaSplittata[6]);
 //		this.forzaRis.setText(dino.calcolaForza() + "");
-		this.energiaRis.setText(answerSplittata[6]); //FIXME
-		this.energiaMaxRis.setText(Integer.parseInt(answerSplittata[6])*1000 + "");
-		this.tNascitaDinoRis.setText(answerSplittata[6]);
+		this.energiaRis.setText(rispostaSplittata[6]); //FIXME
+		this.energiaMaxRis.setText(Integer.parseInt(rispostaSplittata[6])*1000 + "");
+		this.tNascitaDinoRis.setText(rispostaSplittata[6]);
 		this.posRis.setText(rigaDino + "," + colonnaDino);
 	}
 

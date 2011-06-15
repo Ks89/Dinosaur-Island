@@ -15,6 +15,7 @@ public class Utente {
 	private String password;
 	
 	/**
+	 * Costruttore della classe Utente che riceve come paramentri due stringhe: il nome e la password.
 	 * @param nomeUtente String per stabilire il nome per il login dell'Utente.
 	 * @param password String per stabilire la password per il login dell'Utente.
 	 */

@@ -5,8 +5,16 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.swing.*;
+
+import client.ClientGui;
+import client.Gui;
+import client.LoginGui;
+import client.gui.GuiLocale;
+import client.gui.LoginGuiLocale;
 
 /**
  * Classe richiamata dal main per simulare il gioco in Locale con grafica
@@ -31,65 +39,60 @@ public class Main {
 		homePanel.add(createButton("Socket"));
 		homePanel.add(createButton("Rmi"));
 
-		JPanel localePanel = new JPanel(new GridLayout(4,1));
+		JPanel localePanel = new JPanel(new GridLayout(3,1));
 		JLabel locale = new JLabel("LOCALE");
 		locale.setHorizontalAlignment(SwingConstants.CENTER);
 		localePanel.add(locale);
 
-		JButton lineaComando = new JButton("Linea di comando");
-		lineaComando.addActionListener(
+		JButton guiLocale = new JButton("Avvia");
+		guiLocale.addActionListener(
 				new ActionListener()
 				{
 					public void actionPerformed(ActionEvent event){
-						LocaleConsole cl = new LocaleConsole();
-						cl.avviaLineaDiComando();
-						frame.setVisible(false);
+						GuiLocale gui = new GuiLocale();
+						LoginGuiLocale loginGui = new LoginGuiLocale(gui);
+						loginGui.aggiuntaGiocatore();
+						frame.dispose();
 					}
 				}
 		);
-
-		localePanel.add(lineaComando);
-		localePanel.add(createButton("GUI Locale"));
+		localePanel.add(guiLocale);
 		localePanel.add(createButton(HOME));
 
-		JPanel localeGUIPanel = new JPanel(new GridLayout(4,1));
-		JLabel localeGUI = new JLabel("Modalita' caricamento mappa");
-		localeGUI.setHorizontalAlignment(SwingConstants.CENTER);
-		localeGUIPanel.add(localeGUI);
 		
-		
-		JButton caricaDaFile = new JButton("Carica da file");
-		caricaDaFile.addActionListener(
-				new ActionListener()
-				{
-					public void actionPerformed(ActionEvent event){
-//						LocaleGrafica cl = new LocaleGrafica();
-//						cl.grafica();
-//						frame.setVisible(false);
-					}
-				}
-		);
-		localeGUIPanel.add(caricaDaFile);
-
-		
-		localeGUIPanel.add(createButton("Generazione casuale"));
-		localeGUIPanel.add(createButton(HOME));
-
-		
-		JPanel socketPanel = new JPanel(new GridLayout(4,1));
+		JPanel socketPanel = new JPanel(new GridLayout(3,1));
 		JLabel socket = new JLabel("SOCKET");
 		socket.setHorizontalAlignment(SwingConstants.CENTER);
 		socketPanel.add(socket);
-		socketPanel.add(createButton("Linea di comando"));
-		socketPanel.add(createButton("GUI"));
+		JButton guiSocket = new JButton("Avvia");
+		guiSocket.addActionListener(
+				new ActionListener()
+				{
+					public void actionPerformed(ActionEvent event){
+						ClientGui client = new ClientGui("localhost", 1234);
+						try {
+							client.inizializzaClient();
+							Gui gui = new Gui(client);
+							LoginGui loginGui = new LoginGui(gui);
+							loginGui.aggiuntaGiocatore();
+						} catch (UnknownHostException e) {
+							JOptionPane.showMessageDialog(null, "UnknownHostException: Host sconosciuto!");
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(null, "IOException: Server non raggiungibile!");
+						}					
+						frame.dispose();
+					}
+				}
+		);
+		socketPanel.add(guiSocket);
 		socketPanel.add(createButton(HOME));
 
-		JPanel rmiPanel = new JPanel(new GridLayout(4,1));
+		JPanel rmiPanel = new JPanel(new GridLayout(3,1));
 		JLabel rmi = new JLabel("RMI");
 		rmi.setHorizontalAlignment(SwingConstants.CENTER);
 		rmiPanel.add(rmi);
-		rmiPanel.add(createButton("Linea di comando"));
-		rmiPanel.add(createButton("GUI"));
+		JButton guiRmi = new JButton("Avvia");
+		rmiPanel.add(guiRmi);
 		rmiPanel.add(createButton(HOME));
 
 		contentPane.setLayout(cardLayout);
@@ -97,7 +100,6 @@ public class Main {
 		contentPane.add(localePanel, "Locale");
 		contentPane.add(socketPanel, "Socket");
 		contentPane.add(rmiPanel, "Rmi");
-		contentPane.add(localeGUIPanel, "GUI Locale");
 		
 		frame.pack();
 		frame.setVisible(true);
