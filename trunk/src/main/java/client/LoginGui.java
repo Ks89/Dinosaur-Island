@@ -41,7 +41,7 @@ public class LoginGui {
 
 	/**
 	 * Costruttore che viene inizializzato con la classe Gui.
-	 * @param gui
+	 * @param gui Riferimento alla classe Gui.
 	 */
 	public LoginGui(Gui gui) {
 		this.gui = gui;
@@ -118,10 +118,8 @@ public class LoginGui {
 								continua.setEnabled(true);
 //							}
 						} catch (IOException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -138,10 +136,8 @@ public class LoginGui {
 							gui.preparaDati(user.getText(), password.getText());
 							
 						} catch (IOException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}	
 							
@@ -157,10 +153,8 @@ public class LoginGui {
 							try {
 								gui.getClientGui().creaRazza(user.getText(), password.getText());
 							} catch (IOException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							} catch (InterruptedException e1) {
-								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
 					}
@@ -172,10 +166,8 @@ public class LoginGui {
 						try {
 							gui.getClientGui().creaUtente(user.getText(), password.getText());
 						} catch (IOException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}
@@ -183,6 +175,10 @@ public class LoginGui {
 		);
 	}
 
+	/**
+	 * Classe per gestire gli eventi sui RadioButton, cioe' i pulsanti
+	 * circolari per scegliere il tipo di Dinosauro
+	 */
 	private class RadioButtonHandler implements ItemListener
 	{
 		public void itemStateChanged(ItemEvent event)
@@ -190,11 +186,9 @@ public class LoginGui {
 			accedi.setEnabled(true);
 			if(event.getSource() == carnivoroRButton) {
 				tipo = true;
-				System.out.println(tipo);
 			}
 			if(event.getSource() == erbivoroRButton) {
 				tipo = false;
-				System.out.println(tipo);
 			}
 		}
 	}
@@ -219,23 +213,4 @@ public class LoginGui {
 			cardLayout.show(contentPane, e.getActionCommand());
 		}
 	};
-	
-	public JTextField getUser() {
-		return user;
-	}
-
-
-	public void setUser(JTextField user) {
-		this.user = user;
-	}
-
-
-	public JTextField getPassword() {
-		return password;
-	}
-
-
-	public void setPassword(JTextField password) {
-		this.password = password;
-	}
 }

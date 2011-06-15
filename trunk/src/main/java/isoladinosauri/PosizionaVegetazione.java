@@ -5,13 +5,12 @@ import java.util.Random;
 /**
  * Questa classe viene utilizzata solo per posizionare
  * la vegetazione in modo casuale.
- * E' solo una beta che verra' rimossa prossimamente
  */
 public class PosizionaVegetazione {
 
 	private static final int MAX = 40;
 	private static final int VEGETAZIONE = 512;
-	
+
 	/** 
 	 * Metodo per posizionare in modo casuale la Vegetazione su una mappa 40x40 con gia' terra (t), acqua (a) e carogne (c).
 	 * @param mappa Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
@@ -22,10 +21,8 @@ public class PosizionaVegetazione {
 		Random random = new Random();
 		Random r1 = new Random(12);
 		Random r2 = new Random(3);
-		
-		//scansiono 50 volte la mappa ed inserisco la vegetazione nei posti liberi
-		//FIXME usare un while che si basa su cont
-		for(int w=0;w<100;w++){
+
+		do{
 			for(int i=0; i<MAX;i++) {
 				for(int j=0; j<MAX ;j++) {
 					random.setSeed(r1.nextInt() * r2.nextInt());
@@ -37,14 +34,14 @@ public class PosizionaVegetazione {
 					}
 				}
 			}
-		}
+		} while(cont!=VEGETAZIONE);
 
 		//verifico validaita' della mappa
 		int[] verificata = this.verificaValidita(mappa);
 
 		System.out.println("Validita' mappa :" + verificata[0] + " " + verificata[1] + " " + verificata[2] + " " + verificata[3]);
 	}
-	
+
 	/**
 	 * Metodo per verificare la validita' della mappa, cioe' conta il numero di celle per ogni tipo.
 	 * @param mappa Array 2d di String che costituisce la mappa 40x40 di "t", "a" e "c".
@@ -77,8 +74,8 @@ public class PosizionaVegetazione {
 		verifica[0] = acqua;
 		verifica[1] = terra;
 		verifica[2] = carogna;
- 		verifica[3] = vegetazione;
- 		return verifica;
+		verifica[3] = vegetazione;
+		return verifica;
 
 	}
 }

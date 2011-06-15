@@ -1,8 +1,7 @@
-package client;
+package client.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -15,20 +14,18 @@ import javax.swing.JOptionPane;
 /**
  * 	Classe che si occupa di creare il Menu del programma all'interno del JFrame.
  */
-public class MenuGui {
+public class MenuGuiLocale {
 
 	private JFrame frame;
-	private Gui gui;
 
 	/**
 	 * Costruttore della classe MenuGui che riceve il JFrame contiene tutti gli elementi dell'interfaccia.
 	 * @param frame JFrame che contiene la grafica dell'applizazione.
 	 */
-	public MenuGui(JFrame frame, Gui gui) {
+	public MenuGuiLocale(JFrame frame) {
 		this.frame = frame;
-		this.gui = gui;
 	}
-
+	
 	/**
 	 * Metodo per generare il Menu
 	 * @return Una JMenuBar contenente tutti gli elementi del menu,.
@@ -47,7 +44,7 @@ public class MenuGui {
 				{
 					public void actionPerformed(ActionEvent event)
 					{//mostra un messaggio quando l'untente sceglie about...
-						JOptionPane.showMessageDialog(null,"Isola Dei Dinosauri BETA1\nCreato da 766172 e 7xxxxx\n(C) 2011","About",JOptionPane.PLAIN_MESSAGE);
+						JOptionPane.showMessageDialog(null,"Isola Dei Dinosauri BETA1\nCreato da Stefano Cappa e Luca Besana\n(C) 2011","About",JOptionPane.PLAIN_MESSAGE);
 					}
 				}
 		);
@@ -66,40 +63,10 @@ public class MenuGui {
 				}
 		);
 
-		//crea il nuovo menu Operazioni
-		JMenu operazMenu = new JMenu("Operazioni");
-		operazMenu.setMnemonic('O');
-		JMenuItem ottieniClassifica = new JMenuItem("Ottieni Classifica");
-		ottieniClassifica.setMnemonic('C'); //imposta mnemonic
-		operazMenu.add(ottieniClassifica); //aggiunge la voce al menu Operazioni
-		ottieniClassifica.addActionListener(
-				new ActionListener() //classe inner anonima
-				{
-					public void actionPerformed(ActionEvent event)
-					{
-						try {
-							gui.getClientGui().classifica(); 
-							String risposta = gui.getClientGui().getRisposta();
-							risposta = risposta.replace("@classifica,{", "");
-							risposta = risposta.replace("{", "");
-							risposta = risposta.replace("},", "\n");
-							risposta = risposta.replace("}", "");
-							System.out.println("classifica: " + risposta);
-							JOptionPane.showMessageDialog(null, risposta);
-						} catch (IOException e) {
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-		);
-		
 		//aggiunge il menu File alla barra appena creata
 		JMenuBar bar = new JMenuBar();
 		bar.add(fileMenu);
-		bar.add(operazMenu);
 		return bar;
 	}
-
+	
 }

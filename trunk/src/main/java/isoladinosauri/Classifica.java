@@ -70,7 +70,7 @@ public class Classifica {
 		}
 	}
 
-	
+
 	/**
 	 * Metodo per aggiornare una Tupla (riga della Classifica) quando il Giocatore e' gia' presente in Classifica.
 	 * @param tupla riferimento a Tupla che rappresenta la singola riga della Classifica.
@@ -85,7 +85,7 @@ public class Classifica {
 		tupla.setPunti(this.calcolaPunti(giocatore));
 	}
 
-	
+
 	/**
 	 * Metodo che aggiorna lo stato online/offline di tutte le Tuple in Classifica utilizzando il metodo cercaInGiocatori
 	 * per capire queli Giocatori sono ancora nella Partita e quali sono usciti.
@@ -112,7 +112,7 @@ public class Classifica {
 		//eseguo l'ordinamento decrescente della classifica per punteggio
 		this.ordinaClassifica();
 	}
-	
+
 
 	/**
 	 * Metodo che scansiona la Classifica e verifica se ogni Tupla e' associata al Giocatore ricevuto in ingresso e
@@ -152,7 +152,7 @@ public class Classifica {
 		return null;
 	}
 
-	
+
 	/**
 	 * Metodo che ordina la Classifica in modo decescente per punteggio, tramite BubbleSort.
 	 */
@@ -181,6 +181,29 @@ public class Classifica {
 					this.classificaGiocatori.get(i).getPunti() + "," + 
 					this.classificaGiocatori.get(i).getStato());
 		}
+	}
+	
+	/**
+	 * Metodo per ottenere la Classifica completa.
+	 */
+	public String ottieniClassifica() {
+		String classificaOttenuta=new String();
+		for(int i=0;i<this.getClassifica().size();i++) {
+			classificaOttenuta = classificaOttenuta.concat(",{").concat(this.classificaGiocatori.get(i).getNomeUtente()).concat(",").concat(
+				this.classificaGiocatori.get(i).getNomeSpecie()).concat(",").concat(""+this.classificaGiocatori.get(i).getPunti()).concat(",").concat( 
+			this.classificaGiocatori.get(i).getStato()).concat("}");
+		}
+		return classificaOttenuta;
+	}
+
+
+	public List<Tupla> getClassificaGiocatori() {
+		return classificaGiocatori;
+	}
+
+
+	public void setClassificaGiocatori(List<Tupla> classificaGiocatori) {
+		this.classificaGiocatori = classificaGiocatori;
 	}
 
 

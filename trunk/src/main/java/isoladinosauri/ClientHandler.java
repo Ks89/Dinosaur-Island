@@ -9,6 +9,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import Eccezioni.CrescitaException;
+import Eccezioni.DeposizioneException;
+import Eccezioni.MovimentoException;
+
 import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
@@ -16,21 +20,41 @@ import isoladinosauri.modellodati.Erbivoro;
 import isoladinosauri.modellodati.Vegetale;
 import isoladinosauri.GestioneGiocatori;
 
+/**
+ * Classe che si occupa del protocollo di comunicazione tra Server e Client.
+ */
 public class ClientHandler extends Thread {
 
 	private Socket socket;
 	private static final int MAX = 40;
 	private static final String ERRORE = "Errore lettura file";
 	private Partita partita;
-//	private Utente utente;
 	private GestioneGiocatori gestioneGiocatori;
+	private Classifica classifica;
 
-	public ClientHandler(Socket socket, Partita partita, GestioneGiocatori gestioneGiocatori) {
+	/**
+	 * Costruttore della classe ClientHandler che inizializza gli attributi socket, partita, gestioneGiocatori e classifica.
+	 * @param socket Riferimento al Socket.
+	 * @param partita Riferimento alla Partita.
+	 * @param gestioneGiocatori Riferimento a GestioneGiocatori contenenti le liste di utenti online e le razze create.
+	 * @param classifica Classifica dei giocatori.
+	 */
+	public ClientHandler(Socket socket, Partita partita, GestioneGiocatori gestioneGiocatori,Classifica classifica) {
 		this.socket = socket;
 		this.partita = partita;
 		this.gestioneGiocatori = gestioneGiocatori;
+		this.classifica = classifica;
 	}
 
+	/**
+	 * Metodo per eseguire ricerche nel file degli utenti.
+	 * @param nomeFileFisico String che rappresenta il nome del file.
+	 * @param parametro1
+	 * @param parametro2
+	 * @param carSplit
+	 * @param posSplit
+	 * @return Un boolean: 'true' - l'elemento e' stato trovato, 'false' - non e' stato trovato.
+	 */
 	public boolean cercaNelFile(String nomeFileFisico, String parametro1, String parametro2, String carSplit, int posSplit) {
 		boolean trovato = false;
 		try {
@@ -62,9 +86,16 @@ public class ClientHandler extends Thread {
 		}
 		return trovato;
 	}
-	
+
+	/**
+	 * @param nomeFileFisico
+	 * @param nomeUtente
+	 * @param carSplit
+	 * @param posSplit
+	 * @return
+	 */
 	public String ottieniPassDaFile(String nomeFileFisico,String nomeUtente, String carSplit, int posSplit) {
-	
+
 		String password = null;
 		try {
 			FileReader fileReader = new FileReader(nomeFileFisico);
@@ -88,6 +119,11 @@ public class ClientHandler extends Thread {
 		return password;
 	}
 
+	
+	/**
+	 * @param nomeFileFisico
+	 * @param riga
+	 */
 	public void scriviNelFile(String nomeFileFisico, String riga) {
 		try {
 			FileWriter fileWriter = new FileWriter (nomeFileFisico,true); //true=append
@@ -100,6 +136,12 @@ public class ClientHandler extends Thread {
 		}
 	}
 
+	/**
+	 * Metodo per individuare il Giocatore da un nome dell'utente.
+	 * @param nomeUtente String che rappresenta il nome dell'utente.
+	 * @return Un Giocatore che possiede lo stesso nome dell'Utente ad esso associato. 
+	 * 		Se il Gicoatore non viene individuato restituisce null.
+	 */
 	private Giocatore individuaGiocatore (String nomeUtente) {
 		int i=0;
 		if(this.partita.getGiocatori().isEmpty()) {
@@ -113,11 +155,16 @@ public class ClientHandler extends Thread {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Metodo per verificare se il Dinosauro (tramite il suo id) e' veramente in Partita.
+	 * @param id String che rappresenta l'id del Dinosauro.
+	 * @return Un boolean: 'true' - il Dinosauro e' in Partita, 'false' - il Dinosauro non e' in Partita.
+	 */
 	private boolean verificaIdDinosauro(String id) {
 		if(Integer.parseInt(id)>=11 && Integer.parseInt(id)<=85) {
 			for(int i=0;i<this.partita.getGiocatori().size();i++) {
-				for(int j=0;j<this.partita.getGiocatori().size();j++) {
+				for(int j=0;j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {
 					if(this.partita.getGiocatori().get(i).getDinosauri().get(j).getId().equals(id)) {
 						return true;
 					}
@@ -126,7 +173,13 @@ public class ClientHandler extends Thread {
 		} 
 		return false;
 	}
-	
+
+	/**
+	 * Metodo per individuare un Dinosauro dal suo id.
+	 * @param id String che rappresenta il l'id del Dinosauro.
+	 * @return Un Dinosauro che possiede lo stesso id passato come parametro in ingresso. 
+	 * 		Se il Dinosauro non viene individuato restituisce null.
+	 */
 	private Dinosauro individuaDinosauro (String id) {
 		if(this.partita.getGiocatori().isEmpty()) {
 			return null;
@@ -141,86 +194,98 @@ public class ClientHandler extends Thread {
 		}
 		return null;
 	}
-	
-	public String creaUtente(String request) {
-		String answer;
-		String nickname = request.split(",")[1].split("=")[1];
-		String password = request.split(",")[2].split("=")[1];
 
-		// verifico se ci sono gia' utenti registrati nel file e li creo nella classe utente
-//		this.registraUtentiFile("Utenti.txt"," ",0);
+	/**
+	 * Metodo per creare un Utente.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String creaUtente(String richiesta) {
+		String domanda;
+		String nickname = richiesta.split(",")[1].split("=")[1];
+		String password = richiesta.split(",")[2].split("=")[1];
 		
 		// verifico se l'utente si trova in partital'utente e' gia' esistente
 		boolean trovato = cercaNelFile("Utenti.txt",nickname,null," ",0);
 		if(trovato) {
-			answer="@no,@usernameOccupato";
+			domanda="@no,@usernameOccupato";
 		}
 		else {
-			answer="@ok";
+			domanda="@ok";
 			scriviNelFile("Utenti.txt",nickname+" "+password+"\n");
-//			System.out.println("Dati: " + nickname + "," + password);
-//			this.utente = new Utente(nickname,password);
-//			System.out.println("Dati: " + this.utente.getNomeUtente() + "," + this.utente.getPassword());
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String login(String request) {
-		String answer = null;
-		String nickname = request.split(",")[1].split("=")[1];
-		String password = request.split(",")[2].split("=")[1];
+	/**
+	 * Metodo per eseguire il login.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String login(String richiesta) {
+		String domanda = null;
+		String nickname = richiesta.split(",")[1].split("=")[1];
+		String password = richiesta.split(",")[2].split("=")[1];
 		String token = nickname+"-"+password;
 		//verifico se c'e' nel file Utenti.txt
 		boolean trovato = cercaNelFile("Utenti.txt",nickname,password," ",0);
 		if(trovato) {
 			boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 			if(!loggato) {
-				//aggiungo l'utente in partita
-				
 				this.gestioneGiocatori.aggiungiTokenLoggati(nickname,token);
-				answer = "@ok,"+token;
+				domanda = "@ok,"+token;
 			}
 			else {
-				answer = "@no,@UTENTE_GIA_LOGGATO";
+				domanda = "@no,@UTENTE_GIA_LOGGATO";
 			}
 		}
 		else if(!trovato) {
-			answer = "@no,@autenticazioneFallita";
+			domanda = "@no,@autenticazioneFallita";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String creaRazza(String request) {
-		String answer = null;
-		String token = request.split(",")[1].split("=")[1];
-		String nomeRazza = request.split(",")[2].split("=")[1];
-		String tipoRazza = request.split(",")[3].split("=")[1];
+	/**
+	 * Metodo per creare una razza, cioe' un Giocatore.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String creaRazza(String richiesta) {
+		String domanda = null;
+		String token = richiesta.split(",")[1].split("=")[1];
+		String nomeRazza = richiesta.split(",")[2].split("=")[1];
+		String tipoRazza = richiesta.split(",")[3].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 
 		//verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 		if(loggato) {
-			int turnoCorrente = 1; //solo per test
+			int turnoCorrente = 1;
 			String password = this.ottieniPassDaFile("Utenti.txt", nomeUtente, " ", 0);
 			Utente utente = new Utente(nomeUtente,password);
 			Giocatore giocatore = new Giocatore(turnoCorrente, nomeRazza, tipoRazza);
 			giocatore.setUtente(utente);
-//			System.out.println("Utente: " + this.utente.getNomeUtente());
 			this.gestioneGiocatori.aggiungiGiocatoreCreato(giocatore);
-			answer = "@ok";
+			domanda = "@ok";
 		}
 		else if(!loggato) {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String accessoPartita(String request) {
+	
+	/**
+	 * Metodo per accedere alla Partita.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String accessoPartita(String richiesta) {
 
-		String answer = null;
+		String domanda = null;
 		int k=0;
 
-		String token = request.split(",")[1].split("=")[1];
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		// cerco se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
@@ -235,26 +300,31 @@ public class ClientHandler extends Thread {
 				k = this.gestioneGiocatori.indiceGiocatoreCreato(nomeUtente);
 				//aggiungo il giocatore alla partita
 				Giocatore giocatore = this.gestioneGiocatori.ottieniGiocatoriCreati().get(k);
-//				this.partita.aggiungiGiocatore(giocatore);
 				giocatore.aggiungiInPartita(this.partita);
-				answer = "@ok";
+				this.classifica.aggiungiTuplaClassifica(giocatore);
+				domanda = "@ok";
 			}
 			else if(nGiocatori>=8) {
-				answer = "@no,@troppiGiocatori";
+				domanda = "@no,@troppiGiocatori";
 			}
 			else if(inPartita){
-				answer = "@no,@ACCESSO_GIA_EFFETTUATO";
+				domanda = "@no,@ACCESSO_GIA_EFFETTUATO";
 			}
 		}
 		else {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String uscitaPartita(String request) {
-		String answer = null;
-		String token = request.split(",")[1].split("=")[1];
+	/**
+	 * Metodo per uscire dalla Partita.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String uscitaPartita(String richiesta) {
+		String domanda = null;
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		int k=0;
 
@@ -269,64 +339,79 @@ public class ClientHandler extends Thread {
 			//rimuovo il giocatore dalla partita
 			Giocatore giocatore = this.gestioneGiocatori.ottieniGiocatoriCreati().get(k);
 			this.partita.rimuoviGiocatore(giocatore);
-			answer = "@ok";
+			domanda = "@ok";
 		}
 		else if(!inPartita) {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String listaGiocatori(String request) {
-		String answer = null;
+	/**
+	 * Metodo per ottenere la lista dei Giocatori.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String listaGiocatori(String richiesta) {
+		String domanda = null;
 
-		String token = request.split(",")[1].split("=")[1];
+		String token = richiesta.split(",")[1].split("=")[1];
 		//verifico se e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 
 		if(loggato) {
 			//accedo alla lista dei giocatori per fornire la lista dei giocatori in partita
-			String listaGiocatori = null;
+			String listaGiocatori = new String();
 			for(int i=0; i<this.partita.getGiocatori().size(); i++) {
 				listaGiocatori = listaGiocatori.concat(",").concat(this.partita.getGiocatori().get(i).getUtente().getNomeUtente());
 			}
-			answer = "@listaGiocatori"+listaGiocatori;
+			domanda = "@listaGiocatori"+listaGiocatori;
 		}
 		else if(!loggato) {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String logout(String request) {
-		String answer = null;
-		String token = request.split(",")[1].split("=")[1];
+	/**
+	 * Metodo per eseguire il logout.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String logout(String richiesta) {
+		String domanda = null;
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		int k;
 
 		//verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
-		
-			if(loggato) {
-				//rimuovo il giocatore dalla lista login
-				this.gestioneGiocatori.rimuoviTokenLoggati(nomeUtente,token);
-				//cerco l'indice del giocatore nell'array dei giocatoriCreati
-				k = this.gestioneGiocatori.indiceGiocatoreCreato(nomeUtente);
-				//rimuovo il giocatore dalla partita
-				Giocatore giocatore = this.gestioneGiocatori.ottieniGiocatoriCreati().get(k);
-				this.partita.rimuoviGiocatore(giocatore);
-				answer = "@ok";
-			}
-			else if(!loggato) {
-				answer = "@no,@tokenNonValido";
-			}
-		return answer;
+
+		if(loggato) {
+			//rimuovo il giocatore dalla lista login
+			this.gestioneGiocatori.rimuoviTokenLoggati(nomeUtente,token);
+			//cerco l'indice del giocatore nell'array dei giocatoriCreati
+			k = this.gestioneGiocatori.indiceGiocatoreCreato(nomeUtente);
+			//rimuovo il giocatore dalla partita
+			Giocatore giocatore = this.gestioneGiocatori.ottieniGiocatoriCreati().get(k);
+			this.partita.rimuoviGiocatore(giocatore);
+			domanda = "@ok";
+		}
+		else if(!loggato) {
+			domanda = "@no,@tokenNonValido";
+		}
+		return domanda;
 	}
 
-	public String mappaGenerale(String request) {
-		String token = request.split(",")[1].split("=")[1];
+	/**
+	 * Metodo per ottenere la mappa generale (40x40).
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String mappaGenerale(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		String answer;
+		String domanda;
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 
 		//verifico se l'utente e' loggato
@@ -339,135 +424,179 @@ public class ClientHandler extends Thread {
 			}
 			if(inPartita) {
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
-				answer = "@mappaGenerale,{40,40},";
+				domanda = "@mappaGenerale,{40,40},";
 				//traduco la mappa di tipo Cella in tipo String
 				for(int i=MAX-1; i>=0; i--) {
 					for(int j=0; j<MAX; j++) {
 						if(!giocatore.getMappaVisibile()[i][j]) {
-							answer = answer.concat("[b]");
+							domanda = domanda.concat("[b]");
 						} else {
 							if(mappa[i][j]==null) {
-								answer = answer.concat("[a]");
+								domanda = domanda.concat("[a]");
 							} else {
 								if(mappa[i][j].getOccupante() instanceof Carogna) {
-									answer = answer.concat("[c]");
+									domanda = domanda.concat("[c]");
 								} else {
 									if(mappa[i][j].getOccupante() instanceof Vegetale) {
-										answer = answer.concat("[v]");
+										domanda = domanda.concat("[v]");
 									} else {
-										answer = answer.concat("[t]");
+										domanda = domanda.concat("[t]");
 									}
 								}
 							}
 						}
 					}
-					answer = answer.concat(";");
+					domanda = domanda.concat(";");
 				}
 			}
 			else {
-				answer = "@no,@nonInPartita";
+				domanda = "@no,@nonInPartita";
 			}
 		}
 		else {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
-	
-	public String listaDinosauri(String request) {
+
+	/**
+	 * Metodo per ottenere la lista dei Dinosauro del Giocatore richiedente.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String listaDinosauri(String richiesta) {
 
 		String token;
-		String answer = null;
-		String listaDino = new String();
+		String domanda = null;
+		String listaDino=new String();
 
-		token = request.split(",")[1].split("=")[1];
+		token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		//verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 		if(loggato) {
 			// verifico se l'utente si trova in partita
-			if(this.individuaGiocatore(nomeUtente)!=null) { //se il giocatore e' in partita
-				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
+			Giocatore giocatore = this.individuaGiocatore(nomeUtente);
+			if(giocatore!=null) { //se il giocatore e' in partita
 				for(int k=0; k<giocatore.getDinosauri().size(); k++) {
-					listaDino.concat(","+giocatore.getDinosauri().get(k).getId());
+					listaDino = listaDino.concat(",").concat(giocatore.getDinosauri().get(k).getId());
 				}
 			}
 			else {
 				//TODO: ?? dalle specifiche: ''..altrimenti non si e' in partita, e cio' e' definito dal simbolo +'' ??
 			}
-			answer = "@listaDinosauri"+listaDino;
+			domanda = "@listaDinosauri"+listaDino;
 		}
 		else if(!loggato) {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
-	
-	public String vistaLocale(String request) {
-		String token = request.split(",")[1].split("=")[1];
+
+	/**
+	 * Metodo per ottenere la Classifica.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String classifica(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		String idDino = request.split(",")[2].split("=")[1];
-		String answer = null;
+		String domanda;
+		//verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			//verifico se e' in partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
+			}
+			if(inPartita) {
+				domanda = "@classifica" + classifica.ottieniClassifica();
+
+			} else {
+				domanda = "@no,@nonInPartita";
+			}	
+		} else {
+			domanda = "@no,@tokenNonValido";
+		}
+		return domanda;
+	}
+
+	/**
+	 * Metodo per ottenere la vista locale del Dinosauro.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String vistaLocale(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
+		String idDino = richiesta.split(",")[2].split("=")[1];
+		String domanda = null;
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 
 		//verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 		if(loggato) {
-			
+
 			if(this.individuaGiocatore(nomeUtente)!=null) { //se l'utente si trova in partita
-//				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
+				//				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				Dinosauro dinosauro = this.individuaDinosauro(idDino);
 				if(dinosauro!=null) {
 					int[] vista = partita.getTurnoCorrente().ottieniVisuale(dinosauro.getRiga(), dinosauro.getColonna(), dinosauro.calcolaRaggioVisibilita());
-					
-					answer = "@vistaLocale,{"+vista[0]+","+vista[1]+"}"+","+"{"+(vista[2]-vista[0]+1)+","+(vista[3]-vista[1]+1)+"},";
-//					for(int i=39; i>=0; i--) {
-//						for(int j=0; j<40; j++) {
-					for(int i=vista[2]; i>=vista[0]; i--) {
+
+					domanda = "@vistaLocale,{"+vista[0]+","+vista[1]+"}"+","+"{"+(vista[2]-vista[0]+1)+","+(vista[3]-vista[1]+1)+"},";
+					//					for(int i=39; i>=0; i--) {
+					//						for(int j=0; j<40; j++) {
+					for(int i=vista[0]; i<vista[2]+1; i++) {
 						for(int j=vista[1]; j<vista[3]+1; j++) {
 							if(mappa[i][j]==null) {
-								answer = answer.concat("[a]");
+								domanda = domanda.concat("[a]");
 							} else {
 								if(mappa[i][j].getDinosauro()!=null) {
-									answer = answer.concat("[d,").concat(mappa[i][j].getDinosauro().getEnergia()+"").concat("]");
+									domanda = domanda.concat("[d,").concat(mappa[i][j].getDinosauro().getEnergia()+"").concat("]");
 								} else {	
 									if(mappa[i][j].getOccupante() instanceof Carogna) {
 										Carogna carogna = (Carogna)mappa[i][j].getOccupante();
-										answer = answer.concat("[c,").concat(carogna.getEnergia()+"").concat("]");
+										domanda = domanda.concat("[c,").concat(carogna.getEnergia()+"").concat("]");
 									} else {
 										if(mappa[i][j].getOccupante() instanceof Vegetale) {
 											Vegetale vegetale = (Vegetale)mappa[i][j].getOccupante();
-											answer = answer.concat("[v,").concat(vegetale.getEnergia()+"").concat("]");
+											domanda = domanda.concat("[v,").concat(vegetale.getEnergia()+"").concat("]");
 										} else {
-											answer = answer.concat("[t]");
+											domanda = domanda.concat("[t]");
 										}
 									}
 								}
 							}
 						}
-						answer = answer.concat(";");
+						domanda = domanda.concat(";");
 					}
 				}
 				else {
-					answer = "@no,@idNonValido";
+					domanda = "@no,@idNonValido";
 				}
 			}
 			else {
-				answer = "@no,@nonInPartita";
+				domanda = "@no,@nonInPartita";
 			}
 		}
 		else {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
-	
-	public String statoDinosauro(String request) {
-		String token = request.split(",")[1].split("=")[1];
+
+	/**
+	 * Metodo per ottenere lo stato di un Dinosauro.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String statoDinosauro(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		String idDino = request.split(",")[2].split("=")[1];
-		String answer = null;
-//		Cella[][] mappa = this.partita.getIsola().getMappa();
+		String idDino = richiesta.split(",")[2].split("=")[1];
+		String domanda = null;
+		//		Cella[][] mappa = this.partita.getIsola().getMappa();
 
 		//verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
@@ -505,33 +634,36 @@ public class ClientHandler extends Thread {
 						int energia = dinosauro.getEnergia();
 						//FIXME: turni vissuti
 						int turni = 1;//turni vissuti ??
-						answer = "@statoDinosauro"+","+user+","+razza+","+tipo+","+"{"+riga+","+colonna+"}"+","+dimensione+","+energia+","+turni;
+						domanda = "@statoDinosauro"+","+user+","+razza+","+tipo+","+"{"+riga+","+colonna+"}"+","+dimensione+","+energia+","+turni;
 					}
 					else {
-						answer = "@statoDinosauro"+","+user+","+razza+","+tipo+","+"{"+riga+","+colonna+"}"+","+dimensione;
+						domanda = "@statoDinosauro"+","+user+","+razza+","+tipo+","+"{"+riga+","+colonna+"}"+","+dimensione;
 					}
 				}
 				else {
-					answer = "@no,@idNonValido";
+					domanda = "@no,@idNonValido";
 				}
 			}
 			else {
-				answer = "@no,@nonInPartita";
+				domanda = "@no,@nonInPartita";
 			}
 		}
 		else {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String deponiUovo(String request) {
-		String token = request.split(",")[1].split("=")[1];
+	/**
+	 * Metodo per deporre un uovo.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String deponiUovo(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		String idDino = request.split(",")[2].split("=")[1];
-		String idDinoNato = null;
-		String answer = null;
-		//		Cella[][] mappa = this.partita.getIsola().getMappa();
+		String idDino = richiesta.split(",")[2].split("=")[1];
+		String domanda = null;
 
 		//verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
@@ -545,44 +677,47 @@ public class ClientHandler extends Thread {
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				Dinosauro dinosauro = this.individuaDinosauro(idDino);
 				if(dinosauro!=null) {
-					if(dinosauro.getEtaDinosauro()<dinosauro.getDurataVita()) {
-						//FIXME: eta' attuale e' il numero dei turni e non delle mosse
-						answer = "@no,@raggiuntoLimiteMosseDinosauro";
-					} else {
-						int stato = giocatore.eseguiDeposizionedeponiUovo(dinosauro);
-						switch (stato) {
-						case 0:
-							answer = "@no,@raggiuntoNumeroMaxDinosauri";
-							break;
-						case 1:
-							//FIXME: fornire l'id del nuovo dinosauro nato
-							answer = "@ok,"+idDinoNato;
-							break;
-						case -2:
-							answer = "@no,@mortePerInedia";
-							break;
+//					if(dinosauro.getEtaDinosauro()<dinosauro.getDurataVita()) {
+//						//FIXME: eta' attuale e' il numero dei turni e non delle mosse
+//						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
+//					} else {
+						try {
+							String idNuovoDinosauro = giocatore.eseguiDeposizionedeponiUovo(dinosauro);
+							domanda = "@ok,"+idNuovoDinosauro;
+							partita.nascitaDinosauro(1);
+						} catch (DeposizioneException de){
+							if(de.getCausa()==DeposizioneException.Causa.MORTE) {
+								domanda = "@no,@mortePerInedia";							}
+							if(de.getCausa()==DeposizioneException.Causa.SQUADRACOMPLETA) {
+								domanda = "@no,@raggiuntoNumeroMaxDinosauri";
+							}
 						}
-					}
+//					}
 				}
 				else {
-					answer = "@no,@idNonValido";
+					domanda = "@no,@idNonValido";
 				}
 			}
 			else {
-				answer = "@no,@nonInPartita";
+				domanda = "@no,@nonInPartita";
 			}
 		}
 		else {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String cresciDinosauro(String request) {
-		String answer = null;
-		String token = request.split(",")[1].split("=")[1];
+	/**
+	 * Metodo per far crescere un Dinosauro.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String cresciDinosauro(String richiesta) {
+		String domanda = null;
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		String idDino = request.split(",")[2].split("=")[1];
+		String idDino = richiesta.split(",")[2].split("=")[1];
 
 		// verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
@@ -596,47 +731,52 @@ public class ClientHandler extends Thread {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
 
-					if(dinosauro.getEtaDinosauro()<dinosauro.getDurataVita()) {
-						int statoCrescita = dinosauro.aumentaDimensione();
-						if(statoCrescita==1) {
-							//azione di crescita eseguita correttamente
-							answer = "@ok";
-						} else {
-							if(statoCrescita==0) {
-								answer = "@no,@raggiuntaDimensioneMax";
-							} else { //se stato crescita e' ==-1 il dinosauro deve essere rimosso perche' sebza energia
-								answer = "@no,@mortePerInedia";
+					if(dinosauro.getEtaDinosauro()<dinosauro.getDurataVita()) {						
+						try {
+							dinosauro.aumentaDimensione();
+							domanda = "@ok";
+						} catch (CrescitaException ce){
+							if(ce.getCausa()==CrescitaException.Causa.MORTE) {
+								domanda = "@no,@mortePerInedia";
+							}
+							if(ce.getCausa()==CrescitaException.Causa.DIMENSIONEMASSIMA) {
+								domanda = "@no,@raggiuntaDimensioneMax";
 							}
 						}
 					} else {
-						answer = "@no,@raggiuntoLimiteMosseDinosauro";
+						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
 					}
 				} else {
-					answer = "@no,@idNonValido";
+					domanda = "@no,@idNonValido";
 				}
 			} else {
-				answer = "@no,@nonInPartita";
+				domanda = "@no,@nonInPartita";
 			}
 		} else {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
 
-	public String muoviDinosauro(String request) {
-		String token = request.split(",")[1].split("=")[1];
+	/**
+	 * Metodo per muovere un Dinosauro.
+	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
+	 * @return Una String con la risposta del Server.
+	 */
+	public String muoviDinosauro(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		String answer = null;
-		String idDino = request.split(",")[2].split("=")[1];
-		System.out.println(request);
-		System.out.println(request.split("=")[3]);
-		String destinazione = request.split("=")[3].replace("{","").replace("}", ""); //espressa come "X,Y"
+		String domanda = null;
+		String idDino = richiesta.split(",")[2].split("=")[1];
+		System.out.println(richiesta);
+		System.out.println(richiesta.split("=")[3]);
+		String destinazione = richiesta.split("=")[3].replace("{","").replace("}", ""); //espressa come "X,Y"
 		int riga = Integer.parseInt(destinazione.split(",")[0]);
 		int colonna = Integer.parseInt(destinazione.split(",")[1]); 
 		System.out.println("riga, colonna " + riga + "," + colonna);
-		
+
 		this.partita.getIsola().stampaMappaRidotta();
-		
+
 		// verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 		if(loggato) {
@@ -649,116 +789,103 @@ public class ClientHandler extends Thread {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
 					if(dinosauro.getEtaDinosauro()<=dinosauro.getDurataVita()) {
-						int statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dinosauro, riga, colonna);
-						switch(statoMovimento) {
-						case -2:
-							answer = "@no,@mortePerInedia";
-							break;
-						case -1:
-							answer = "@no,@destinazioneNonValida";
-							break;
-						case 0:
-							answer = "@ok,@combattimento,p";	
-							break;
-						case 1:
-							answer = "@ok";
-							break;
-						case 2:
-							answer = "@ok,@combattimento,v";
-							break;
+
+						try {
+							boolean statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dinosauro, riga, colonna);
+							if(statoMovimento) {
+								domanda = "@ok";
+							} else {
+								System.out.println("Problema");
+							}
+						} catch (MovimentoException e){
+							if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCATO) {
+								domanda = "@ok,@combattimento,v";
+							}
+							if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCANTE) {
+								domanda = "@ok,@combattimento,p";
+							}
+							if(e.getCausa()==MovimentoException.Causa.MORTE) {
+								domanda = "@no,@mortePerInedia";
+							}
+							if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
+								domanda = "@no,@destinazioneNonValida";
+							}
 						}
 					} else {
-						answer = "@no,@raggiuntoLimiteMosseDinosauro";
+						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
 					}
 				} else {
-					answer = "@no,@idNonValido";
+					domanda = "@no,@idNonValido";
 				}
 			} else {
-				answer = "@no,@nonInPartita";
+				domanda = "@no,@nonInPartita";
 			}
 		} else {
-			answer = "@no,@tokenNonValido";
+			domanda = "@no,@tokenNonValido";
 		}
-		return answer;
+		return domanda;
 	}
-
 
 
 	public void run() {
 
 		String comando = null;
-		String answer;
+		String domanda;
 
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 			while (true) {
-				String request = bufferedReader.readLine();
-				if(request!=null) {
-					comando = request.split(",")[0];
+				String richiesta = bufferedReader.readLine();
+				if(richiesta!=null) {
+					comando = richiesta.split(",")[0];
 				}
-//				FIXME: non si dovrebbe verificare mai, quindi si puo' togliere
-//				if (comando == null) {
-//					System.out.println("Client closed connection.");
-//					break;
-//				} else 
 				if (comando.equals("@creaUtente")) {
-					answer = creaUtente(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@login")) {
-					answer=login(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@creaRazza")) {
-					answer=creaRazza(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@accessoPartita")) {
-					answer=accessoPartita(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@uscitaPartita")) {
-					answer=uscitaPartita(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@listaGiocatori")) {
-					answer=listaGiocatori(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@logout")) {
-					answer=logout(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@mappaGenerale")) {
-					answer=mappaGenerale(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@listaDinosauri")) {
-					answer = listaDinosauri(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@vistaLocale")) {
-					answer = vistaLocale(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@statoDinosauro")) {
-					answer = statoDinosauro(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@muoviDinosauro")) {
-					answer = muoviDinosauro(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@cresciDinosauro")) {
-					answer = cresciDinosauro(request);
-					bufferedWriter.write(answer);
-				}
-				else if (comando.equals("@deponiUovo")) {
-					answer = deponiUovo(request);
-					bufferedWriter.write(answer);
-				}
-				else {
+					domanda = creaUtente(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@login")) {
+					domanda=login(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@creaRazza")) {
+					domanda=creaRazza(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@accessoPartita")) {
+					domanda=accessoPartita(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@uscitaPartita")) {
+					domanda=uscitaPartita(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@listaGiocatori")) {
+					domanda=listaGiocatori(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@logout")) {
+					domanda=logout(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@mappaGenerale")) {
+					domanda=mappaGenerale(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@listaDinosauri")) {
+					domanda = listaDinosauri(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@classifica")) {
+					domanda = classifica(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@vistaLocale")) {
+					domanda = vistaLocale(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@statoDinosauro")) {
+					domanda = statoDinosauro(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@muoviDinosauro")) {
+					domanda = muoviDinosauro(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@cresciDinosauro")) {
+					domanda = cresciDinosauro(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@deponiUovo")) {
+					domanda = deponiUovo(richiesta);
+					bufferedWriter.write(domanda);
+				} else {
 					bufferedWriter.write("@unknownCommand");
 				}
 				bufferedWriter.newLine();
@@ -766,7 +893,7 @@ public class ClientHandler extends Thread {
 			}
 		}
 		catch (IOException e) {
-			System.out.println("Error in the connection with the client.");
+			System.out.println("Errore durante la connessione col Client.");
 		}
 	}
 }

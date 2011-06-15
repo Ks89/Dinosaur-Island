@@ -7,11 +7,6 @@ import isoladinosauri.modellodati.Erbivoro;
 import java.util.ArrayList;
 import java.util.List;
 
-//FIXME GRAVISSIMO: se c'e' un solo giocatore nella partita e il suo dinosauro muore il programma crasha SEMPRE (MOLTO GRAVE)
-//se invece cancello il giocatore direttamente dal menu, allora non succede nulla. Il bug sta nei cicli dei dinosauri, sugli indici
-//FIXME se muovo e non ho piu energia per farlo il programma non uccide il dino e resta bloccato nel ciclo per inserire le coordinate
-//FIXME una volta che il dinosauro erbivoro va su cella di un carnivoro e perde, il menu' delle azioni non devo apparire piu'
-//FIXME se faccio crescere un dinosauro fino ad esaurire l'energia il programma crasha
 
 /**
  * Classe Partita per la gestione dei giocatori,
@@ -54,7 +49,7 @@ public class Partita {
 	 * @param giocatore riferimento al Giocatore che deve essere rimosso dalla Partita.
 	 */
 	public void rimuoviGiocatore(Giocatore giocatore) {
-		//ricevo gicatore, cioe' il giocatore che devo cancellare		
+		//ricevo giocatore, cioe' il giocatore che devo cancellare		
 		//rimuovo tutti i dinosauri del giocatore dalla mappa
 		Cella[][] mappa = this.getIsola().getMappa();
 		for(int j=0;j<MAX;j++) {
@@ -78,7 +73,7 @@ public class Partita {
 		}
 	}
 	
-
+	
 	/**
 	 * Metodo che restituisce il Giocatore che posside il Dinosauro dato in ingresso.
 	 * @param dinosauro - Il Dinosauro che deve essere cercato tra quelli dei Giocatori.
@@ -113,11 +108,12 @@ public class Partita {
 	 * @param turnoNascita - int che rappresenta il turno in cui sono nati i Dinosauri dalle uova.
 	 */
 	public void nascitaDinosauro (int turnoNascita) {
-		String[] coordinate; //array con dentro
+		String[] coordinate;
 		int[] posizione;
 		Dinosauro dinosauro = null;
 		Integer riga = null;
 		Integer colonna = null;
+		String idDinosauro = null;
 		List<String> listaUova;
 
 		for(int i=0;i<this.getGiocatori().size();i++) {
@@ -130,10 +126,9 @@ public class Partita {
 				coordinate = listaUova.get(j).split("-");
 				riga = Integer.parseInt(coordinate[0]);
 				colonna = Integer.parseInt(coordinate[1]);
+				idDinosauro = coordinate[2];
 
 				posizione = this.generaCoordinateNascituro(riga,colonna);
-
-				String idDinosauro = this.getGiocatore(i).generaIdDinosauro();
 
 				//NB: fare .getDinosauri().get(0) vuol dire  prendere il primo dino del giocatore
 				//solo per vedere se e' carnivoro o erbivoro e quindi per capire il tipo della specie del dinosauro
@@ -194,7 +189,7 @@ public class Partita {
 
 			}
 		}
-		return coordinate; //FIXME se arrivo qui e' perche' nella mappa non c'e' spazio
+		return coordinate; //FIXME se arrivo qui e' perche' nella mappa non c'e' spazio (impossibile arrivarci)
 	}
 	
 	
@@ -240,7 +235,7 @@ public class Partita {
 	/**
 	 * Metodo che permette di ottenere direttamente il Giocatore identificato da un certo indice 'i' nella Partita.
 	 * @param i Posizione del Giocatore nell'arrayList di Giocatori.
-	 * @return
+	 * @return Un Giocatore online in Partita, nella i-esima posizione dell'ArrayList.
 	 */
 	private Giocatore getGiocatore(int i) {
 		return giocatori.get(i);

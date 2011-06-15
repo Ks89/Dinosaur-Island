@@ -1,8 +1,10 @@
 package isoladinosauri.modellodati;
 
-import isoladinosauri.MovimentoException;
 
 import java.util.Random;
+
+import Eccezioni.CrescitaException;
+import Eccezioni.MovimentoException;
 
 /**
  * Superclasse ASTRATTA di Carnivoro ed Erbivoro che
@@ -88,8 +90,10 @@ public abstract class Dinosauro extends Organismo {
 	 * @return Un int '1': crescita avvenuta correttamente,
 	 * 			'0': non e' stato possibile far cresce il Dinosauro perche' ha gia' la dimensione massima,
 	 * 			'-1': il Dinosauro non ha l'energia sufficiente per compiere l'azione e deve essere rimosso.
+	 * @throws CrescitaException Eccezione che puo' essere causata dalla MORTE di un Dinosauro perche' non possiede energi
+	 * 			sufficiente o dal raggiungimento della DIMENSIONEMASSIMA (cioe' 5).
 	 */
-	public int aumentaDimensione() {
+	public void aumentaDimensione() throws CrescitaException {
 		//nel caso in cui la dimensione sia gia' massima
 		//ritorna false perche' non e' in grado di far crescere
 		//la dimensione del dinosauro
@@ -97,14 +101,12 @@ public abstract class Dinosauro extends Organismo {
 			if(super.getEnergia()>(super.getEnergiaMax()/2)) {
 				super.setEnergia(super.getEnergia() - super.getEnergiaMax()/2);
 				super.setEnergiaMax(1000+super.getEnergiaMax());
-				return 1;
 			} else {
-				//il dinosauro deve morire perche' non ha energia sufficiente per compiere l'azione
-				return -1;
+				throw new CrescitaException(CrescitaException.Causa.MORTE);
 			}
 		}
 		else {
-			return 0; 
+			throw new CrescitaException(CrescitaException.Causa.DIMENSIONEMASSIMA);
 		}
 	}
 
@@ -115,11 +117,9 @@ public abstract class Dinosauro extends Organismo {
 	 * 				dopo un movimento in un'altra cella della mappa.
 	 * @param colonna int che indica la riga in cui dovra' andare il Dinosauro 
 	 * 				dopo un movimento in un'altra cella della mappa.
-	 * @return Un boolean 'true': movimento corretto,
-	 * 			'false': non e' stato possibile eseguire il movimento.
 	 * @throws MovimentoException Eccezione, il dinosauro muore perche' non ha sufficiente energia per muoversi.
 	 */
-	public boolean aggCordinate(int riga, int colonna) throws MovimentoException {
+	public void aggCordinate(int riga, int colonna) throws MovimentoException {
 		//esegue il movimento nelle coordinate specificate ed e' chiamato dal metodo
 		//del movimento nella classe Turno
 		super.setEnergia(super.getEnergia() - 10 * (int)Math.pow(2, (double)super.getEnergiaMax()/1000));
@@ -127,13 +127,12 @@ public abstract class Dinosauro extends Organismo {
 			//eseguo movimento correttamente
 			super.setRiga(riga);
 			super.setColonna(colonna);
-			return true;
 		} else {
 			//il dino deve essere cancellato dalla cella e dalla lista del giocatore
 			//dal metodo che chiama aggCordinate (cioe' quello che si occupa del Movimento in Turno)
 			//tramite rimuoviDinosauro() in Giocatore
+			//quindi rilancio l'eccezione
 			throw new MovimentoException(MovimentoException.Causa.MORTE);
-//			return false;
 		}
 	}
 

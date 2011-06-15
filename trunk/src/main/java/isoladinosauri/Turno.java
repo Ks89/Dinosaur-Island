@@ -2,6 +2,8 @@ package isoladinosauri;
 
 import java.util.Random;
 
+import Eccezioni.MovimentoException;
+
 import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
@@ -347,50 +349,80 @@ public class Turno {
 	 * @param mosso Dinosauro che esegue lo spostamento.
 	 * @param riga int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-//FIXME:	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
+	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
+	 * @throws MovimentoException Eccezione sul movimento che puo' essere dovuta da: DESTINAZIONEERRATA: nella cella di destinazione c'e'
+	 * acqua, oppure non e' raggiungibile, MORTE: il Dinosauro non ha sufficiente energia per compiere l'azione, NESSUNVINCITORE:
+	 * lo spostamento porta ad un combattimento dove, inspiegabilmente, nessuno dei due combattenti vince, SCONFITTAATTACCATO: se l'attaccante vince
+	 * , SCONFITTAATTACCANTE: se l'attaccante perde, cioe' l'attaccato (colui che si trova nella cella di destinazione) vince, ERRORE: errore generico.
 	 */
-	public int spostaDinosauro(Dinosauro mosso, int riga, int colonna) {
+	public boolean spostaDinosauro(Dinosauro mosso, int riga, int colonna) throws MovimentoException {
 		//ottengo cella di destinazione, individuata da (riga,colonna)
 		Cella destinazione = this.partita.getIsola().getMappa()[riga][colonna];
 
 		//se nella destinazione c'e' acqua blocca subito il metodo con return false;
 		if(destinazione==null) {
-			return -1; //TODO se c'e' acqua dar uscire -1
+			throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
 		} else {
 			//questa e' la logica per far si che dopo al combattimento si possa anche mangiare l'occupante
 			if(destinazione.getDinosauro()!=null) {
+				boolean risultato =false;
 				//combatto col dinosauro presente nella cella di destinazione
-				int risultato = this.combatti(mosso, riga, colonna);
+				try {
+					risultato = this.combatti(mosso, riga, colonna);
+				} catch (MovimentoException e){
+					if(e.getCausa()==MovimentoException.Causa.MORTE) {
+						throw new MovimentoException(MovimentoException.Causa.MORTE);
+					} else {
+						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
+							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
+						} else {
+							if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
+								throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
+							}
+						}
+					}
+				}	
 				if(destinazione.getOccupante()!=null) {
 					//mangio l'occupante, distinguendo se vegetazione o carogna
-					if(!(risultato!=-2 && risultato!=-1 && risultato!=1 && this.mangiaOccupante(mosso, riga, colonna))) {
-						risultato=3;
-					}
+					try {
+						this.mangiaOccupante(mosso, riga, colonna);
+					} catch (MovimentoException e){
+						if(e.getCausa()==MovimentoException.Causa.MORTE) {
+							throw new MovimentoException(MovimentoException.Causa.MORTE);
+						}
+					}						
 				}
-				return risultato;	
+				if(risultato) {
+					throw new MovimentoException(MovimentoException.Causa.SCONFITTAATTACCATO);
+				} else {
+					throw new MovimentoException(MovimentoException.Causa.SCONFITTAATTACCANTE);
+				}
 			} else {
 				if(destinazione.getOccupante()!=null) {
-					//mangio l'occupante, distinguendo se vegetazione o carogna
-					if(this.mangiaOccupante(mosso, riga, colonna)) {
-						return 1;
-					} else {
-						return -2;
-					}
+					//mangio l'occupante, distinguendo se vegetazione o carogna	
+					try {
+						this.mangiaOccupante(mosso, riga, colonna);
+					} catch (MovimentoException e){
+						if(e.getCausa()==MovimentoException.Causa.MORTE) {
+							throw new MovimentoException(MovimentoException.Causa.MORTE);
+						}
+					}	
+					return true;
 				} else {
 					//mi sto muovendo su terra semplice
 					try {
 						this.spostamentoSuTerreno(mosso, riga, colonna);
-						return 1; //spostamento avvenuto correttamente
+						return true; //spostamento avvenuto correttamente
 					} catch (MovimentoException e){
 						if(e.getCausa()==MovimentoException.Causa.MORTE) {
-							return -2; //dinosauro morto perche' senza energia
+							throw new MovimentoException(MovimentoException.Causa.MORTE);
 						}
 					}
 				}
 			}
 		}
-		return 1; //mi ha obbligato eclipse a metterlo
+		throw new MovimentoException(MovimentoException.Causa.ERRORE);
 	}
 
 	/**
@@ -398,10 +430,9 @@ public class Turno {
 	 * @param dinosauro Dinosauro che esegue lo spostamento.
 	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
-	 * 			'false' se ci sono stati problemi.
+	 * @throws MovimentoException Eccezione sul movimento, causata dalla morte del Dinosauro per inedia.
 	 */
-	private boolean mangiaOccupante(Dinosauro dinosauro, int riga, int colonna) {
+	private void mangiaOccupante(Dinosauro dinosauro, int riga, int colonna) throws MovimentoException {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = dinosauro.getRiga();
@@ -409,11 +440,23 @@ public class Turno {
 
 		if(dinosauro instanceof Carnivoro && destinazione.getOccupante() instanceof Carogna) {
 			Carnivoro mosso = (Carnivoro)dinosauro;
-			return this.spostamentoConOccupante(mosso, riga, colonna);
+			try {
+				this.spostamentoConOccupante(mosso, riga, colonna);
+			} catch (MovimentoException e){
+				if(e.getCausa()==MovimentoException.Causa.MORTE) {
+					throw new MovimentoException(MovimentoException.Causa.MORTE);
+				}
+			}	
 		} else 
 			if(dinosauro instanceof Erbivoro && destinazione.getOccupante() instanceof Vegetale) {
 				Erbivoro mosso = (Erbivoro)dinosauro;
-				return this.spostamentoConOccupante(mosso, riga, colonna);
+				try {
+					this.spostamentoConOccupante(mosso, riga, colonna);
+				} catch (MovimentoException e){
+					if(e.getCausa()==MovimentoException.Causa.MORTE) {
+						throw new MovimentoException(MovimentoException.Causa.MORTE);
+					}
+				}	
 			} else
 				//eseguo il movimento in una cella in cui c'e' una carogna e mi muovo
 				//con un erbivoro o una vegetazione con un carnivoro
@@ -424,10 +467,8 @@ public class Turno {
 				} catch (MovimentoException e){
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
 						this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
-						return false; //dinosauro rimosso perche' rimasto senza energia					
 					}
 				}
-				return true; //spostamento avvenuto correttamente
 	}
 
 	/**
@@ -436,12 +477,11 @@ public class Turno {
 	 * mangiata dal dinosauro e di conseguenza richiama il metodo mangia() per gestire
 	 * l'assorbimento dell'energia. Questo metodo privato viene chiamato all'interno di mangiaOccupante.
 	 * @param mosso Dinosauro che esegue lo spostamento.
-	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
+	 * @param riga int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
-	 * 			'false' se ci sono stati problemi.
+	 * @throws MovimentoException Eccezione sul movimento, causata dalla morte del Dinosauro per inedia.
 	 */
-	private boolean spostamentoConOccupante(Dinosauro mosso, int riga, int colonna) {
+	private void spostamentoConOccupante(Dinosauro mosso, int riga, int colonna) throws MovimentoException {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = mosso.getRiga();
@@ -469,12 +509,11 @@ public class Turno {
 			}
 		} catch (MovimentoException e){
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
-				System.out.println("Dinosauro morto");
 				this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso);
-				return false;
+				//se il dinosauro muore rilancio l'eccezione con causa Morte
+				throw new MovimentoException(MovimentoException.Causa.MORTE);
 			}
 		}
-		return true;
 	}
 
 	/**
@@ -484,8 +523,11 @@ public class Turno {
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
 	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
+	 * @throws MovimentoException Eccezione sul movimento che puo' essere dovuta da: DESTINAZIONEERRATA: nella cella di destinazione c'e'
+	 * acqua, oppure non e' raggiungibile, MORTE: il Dinosauro non ha sufficiente energia per compiere l'azione, NESSUNVINCITORE:
+	 * lo spostamento porta ad un combattimento dove, inspiegabilmente, nessuno dei due combattenti vince, ERRORE: errore generico.
 	 */
-	private int combatti(Dinosauro dinosauro, int riga, int colonna) {
+	private boolean combatti(Dinosauro dinosauro, int riga, int colonna) throws MovimentoException {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = dinosauro.getRiga();
@@ -495,13 +537,24 @@ public class Turno {
 
 		if(partita.identificaDinosauro(dinosauro).equals(partita.identificaDinosauro(destinazione.getDinosauro()))) {
 			System.out.println("Non puoi combattere con un tuo Dinosauro");
-			return -1;  //TODO qui bisogna sollevare destinazione nn valida cioe' -1
+			throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
 		}
 		//controllo di che tipo e' il dinosauro attaccante
 		//se e' carnivoro posso mangiare qualunque altro dinosauro
 		if(dinosauro instanceof Carnivoro) {
 			Carnivoro attaccante = (Carnivoro)dinosauro;
-			return this.spostamentoConDinosauro(attaccante, riga, colonna);
+			try {
+				boolean statoSpostamento = this.spostamentoConDinosauro(attaccante, riga, colonna);
+				if(statoSpostamento){
+					return true;
+				} else {
+					return false;
+				}
+			} catch (MovimentoException e) {
+				if(e.getCausa()==MovimentoException.Causa.MORTE) {
+					throw new MovimentoException(MovimentoException.Causa.MORTE);
+				}
+			}
 		} else { //se e' erbivoro posso combattere solo contro quelli carnivori (per sopravvivenza e non per mangiare)
 			//quello che muovo e' erbivoro, quindi controllo cosa ho nella destinazione
 
@@ -509,12 +562,27 @@ public class Turno {
 			//dovra' scegliere uno nuova destinazione (nel main)
 			if(destinazione.getDinosauro() instanceof Erbivoro) {
 				System.out.println("Impossibile muoversi su un altro dinosauro erbivoro");
-				return -1; //TODO qui bisogna sollevare destinazione nn valida cioe'-1
+				throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
 			} else { //combatto contro un carnivoro
 				Erbivoro attaccante = (Erbivoro)dinosauro; 
-				return this.spostamentoConDinosauro(attaccante, riga, colonna);
+				try {
+					boolean statoSpostamento = this.spostamentoConDinosauro(attaccante, riga, colonna);
+					if(statoSpostamento){
+						return true;
+					} else {
+						return false;
+					}
+				} catch (MovimentoException e) {
+					if(e.getCausa()==MovimentoException.Causa.MORTE) {
+						throw new MovimentoException(MovimentoException.Causa.MORTE);
+					}
+					if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
+						throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
+					}
+				}
 			}
 		}
+		throw new MovimentoException(MovimentoException.Causa.ERRORE);
 	}	
 
 	/**
@@ -525,8 +593,10 @@ public class Turno {
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
 	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
 	 * 			'false' se ci sono stati problemi.
+	 * @throws MovimentoException MovimentoException Eccezione sul movimento che puo' essere dovuta da: MORTE: il Dinosauro non ha sufficiente energia per compiere l'azione,
+	 * NESSUNVINCITORE: lo spostamento porta ad un combattimento dove, inspiegabilmente, nessuno dei due combattenti vince.
 	 */
-	private int spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) {
+	private boolean spostamentoConDinosauro(Dinosauro mosso, int riga, int colonna) throws MovimentoException {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = mosso.getRiga();
@@ -554,33 +624,29 @@ public class Turno {
 			} else {
 				destinazione.setDinosauro(attaccato);
 			}
+			//controllo chi e' risultato il vincitore dopo alla chiamata combatti()
 			if(attaccante.equals(destinazione.getDinosauro())){
 				//ha vinto l'attaccante
 				System.out.println("Rimosso dinosauro attaccato");
 				giocatore.rimuoviDinosauro(attaccato,mappa[vecchiaRiga][vecchiaColonna]);
-				//TODO mettere un return che da 1 cioe' il vincitore e' l'attacacnte
-				return 2;
+				return true;
 			} else { 
 				//vince il dino che si trova sulla cella di destinazione prima del movimento
 				System.out.println("Rimosso dinosauro attaccante");
 				giocatore=this.partita.identificaDinosauro(attaccante);
 				giocatore.rimuoviDinosauro(attaccante,mappa[vecchiaRiga][vecchiaColonna]);
-				//TODO mettere un return che da 1 cioe' il vincitore e' l'attacato
-				return 0;
+				return false;
 			}
-		} catch (MovimentoException e){
+		} catch (MovimentoException e) {
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
 				//il dinosauro muore perche' non ha abbastanza energia per muoversi
 				//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
 				this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante);
-				//				return -2; // TODO il dinosauro muore perche' nn ha abbastanza energia e si chiama mex mortePerInedia	
-				//				throw new MovimentoException(MovimentoException.Causa.MORTE);
+				throw new MovimentoException(MovimentoException.Causa.MORTE);
 			}
 		}
-		return 0; //solo perche' eclipse lo vuole...non ha nessun senso
+		throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
 	}
-
-
 
 
 	/**
@@ -589,11 +655,9 @@ public class Turno {
 	 * @param mosso Dinosauro che esegue lo spostamento.
 	 * @param riga  int che rappresenta la riga della mappa in cui spostarsi.
 	 * @param colonna int che rappresenta la colonna della mappa in cui spostarsi.
-	 * @return Un boolean: 'true' se lo spostamento ha avuto successo, 
-	 * 			'false' se ci sono stati problemi.
-	 * @throws MovimentoException Eccezione sul movimento.
+	 * @throws MovimentoException Eccezione sul movimento, causata dalla morte del Dinosauro per inedia.
 	 */
-	private boolean spostamentoSuTerreno(Dinosauro dinosauro, int riga, int colonna) throws MovimentoException {
+	private void spostamentoSuTerreno(Dinosauro dinosauro, int riga, int colonna) throws MovimentoException {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
 		int vecchiaRiga = dinosauro.getRiga();
@@ -603,7 +667,6 @@ public class Turno {
 			dinosauro.aggCordinate(riga, colonna);
 			destinazione.setDinosauro(dinosauro);
 			mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
-
 		} catch (MovimentoException e){
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
 				this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
@@ -611,7 +674,6 @@ public class Turno {
 				throw new MovimentoException(MovimentoException.Causa.MORTE);
 			}
 		}
-		return true;
 	}
 
 	/**
@@ -645,7 +707,6 @@ public class Turno {
 		System.out.println("Nuovo elemento in: " + nuovaRiga + "," + nuovaColonna);
 	}
 
-	//FIXME inserire questo metodo alla fine di ogni turno della partita e testarlo
 	/**
 	 * Metodo che scansiona tutta la mappa di gioco in cerca di Carogne
 	 * con energia =0 per cancellarle e ricrearle nella mappa

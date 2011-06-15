@@ -29,18 +29,18 @@ import javax.swing.JScrollPane;
  * Include anche la gestione dei clic sui pulsanti per eseguire il movimento
  * del Dinosauro (chiamando i metodi opportuni).
  */
-public class MappaGui {
+public class MappaGuiLocale {
 
 	private static final int MAX = 40;
 	private static final int NONRAGG = 9;
 	private static final int ACQUA = 8;
 	
 	private JButton[][] mappaGui;
-	private Gui gui;
+	private GuiLocale gui;
 	private Cella[][] mappa;
 	private Giocatore giocatore;
 	private int indiceDino;
-	private DatiGui dg;
+	private DatiGuiLocale dg;
 	private JScrollBar verticalScrollBar;
 	private JScrollBar horizontalScrollBar;
 
@@ -50,7 +50,7 @@ public class MappaGui {
 	 * @param gui Riferimento all'oggetto Gui, necessario per richiamare molti dei metodi per
 	 * 			il movimento e la raggiungibilita.
 	 */
-	public MappaGui(Gui gui, Giocatore giocatore, DatiGui dg) {
+	public MappaGuiLocale(GuiLocale gui, Giocatore giocatore, DatiGuiLocale dg) {
 		mappaGui = new JButton[MAX][MAX];
 		this.gui = gui;
 		this.giocatore = giocatore;
@@ -348,7 +348,7 @@ public class MappaGui {
 					rigaClic <=datiRaggiungibilita[2] && colonnaClic>=datiRaggiungibilita[1] && colonnaClic<=datiRaggiungibilita[3]) {
 					gui.setIndiceDino(indiceDino);
 					gui.eseguiMovimento(rigaClic,colonnaClic);
-					gui.assegnaTurni();
+					gui.aggiornaMappa();
 					setScrollBar(rigaClic,colonnaClic);
 			} else {
 				JOptionPane.showMessageDialog(null, "Errore! Posizione non concessa!");
@@ -357,19 +357,15 @@ public class MappaGui {
 		}
 
 		public void mouseEntered(MouseEvent e) {
-
 		}
 
 		public void mouseExited(MouseEvent e) {
-
 		}
 
 		public void mousePressed(MouseEvent e) {
-
 		}
 
 		public void mouseReleased(MouseEvent e) {
-
 		}
 	}
 
