@@ -30,6 +30,9 @@ public class Gui {
 	private int maxIndiceDinosauri;
 	//	private int turnoNascita;
 	//	private int turnoPartita;
+	private JButton cresci;
+	private JButton deponi;
+	private JButton prossimoDinosauro;
 
 	private String[][] mappaRicevuta;
 	private DatiGui datiGui;
@@ -49,8 +52,21 @@ public class Gui {
 		mg = new MappaGui(this,datiGui);
 		this.maxIndiceDinosauri = 1;
 	}
-	
-	
+
+	public void disattivaAzioniGui() {
+		this.cresci.setEnabled(false);
+		this.deponi.setEnabled(false);
+		this.prossimoDinosauro.setEnabled(false);
+		mg.disattivaAzioniMappa();
+	}
+
+	public void attivaAzioniGui() {
+		this.cresci.setEnabled(true);
+		this.deponi.setEnabled(true);
+		this.prossimoDinosauro.setEnabled(true);
+		mg.attivaAzioniMappa();
+	}
+
 	/**
 	 * Metodo che si occupa di preparare i dati per poi inizializzare la grafica.
 	 * @param user String che rappresenta il nome dell'utente al momento del login.
@@ -59,11 +75,11 @@ public class Gui {
 	public void preparaDati(String user, String password) {
 		try {
 			this.caricaMappa();
-			
+
 			this.getClientGui().listaDinosauri();
 			this.listaDinosauri = this.getClientGui().getRisposta();
 			System.out.println(this.listaDinosauri);
-			
+
 			this.getClientGui().statoDinosauro("11");
 			int rigaDino = Integer.parseInt(this.getClientGui().getRisposta().split(",")[4].replace("{", ""));
 			int colonnaDino = Integer.parseInt(this.getClientGui().getRisposta().split(",")[5].replace("}", ""));
@@ -83,6 +99,20 @@ public class Gui {
 		this.mappaPanel= mg.creaMappa(mg.creaMappaVisibilita(answer));
 		this.setMappaGui(mg.getMappaGui());
 		return answer;
+	}
+
+	public String ottieniStatoDinosauro() {
+		String idDinosauro = this.getIdDinosauro(this.getIndiceDino());
+		try {
+			this.getClientGui().statoDinosauro(idDinosauro);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return this.getClientGui().getRisposta();
 	}
 
 	/**
@@ -220,8 +250,8 @@ public class Gui {
 		JPanel panelAzioni = new JPanel();
 		panelAzioni.setLayout(new GridLayout(7,1));
 		JLabel titolo = new JLabel("Azioni");
-		JButton cresci = new JButton("Cresci");
-		JButton deponi = new JButton("Deponi");
+		cresci = new JButton("Cresci");
+		deponi = new JButton("Deponi");
 
 		//TODO
 		this.ottieniClassifica();
@@ -232,7 +262,7 @@ public class Gui {
 		selezionePanel.add(sceltaDinosauro);
 
 		JButton uscitaPartita = new JButton("Uscita Partita");
-		JButton prossimoDinosauro = new JButton("Prossimo dinosauro");
+		prossimoDinosauro = new JButton("Prossimo dinosauro");
 
 
 		panelAzioni.add(titolo);
@@ -291,9 +321,8 @@ public class Gui {
 		cresci.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-//						if(!getAzione()[indiceDino]) { // TODO indicedino
+						if(!getAzione()[getIndiceDino()]) { // TODO indicedino
 							try {
-//								getClientGui().crescitaDinosauro("11");
 								String idDinosauro = getIdDinosauro(indiceDino);
 								getClientGui().crescitaDinosauro(idDinosauro);
 								String risposta = getClientGui().getRisposta();
@@ -318,10 +347,10 @@ public class Gui {
 							} catch (InterruptedException e2) {
 								e2.printStackTrace();
 							}
-//						} else {
-//							//non si puo' eseguire il movimento
-//							JOptionPane.showMessageDialog(null, "Azione di crescita gia' eseguita!");
-//						}
+						} else {
+							//non si puo' eseguire il movimento
+							JOptionPane.showMessageDialog(null, "Azione di crescita gia' eseguita!");
+						}
 					}
 
 				}
@@ -330,11 +359,10 @@ public class Gui {
 		deponi.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-//						if(!getAzione()[indiceDino]) { // TODO indicedino
+						if(!getAzione()[getIndiceDino()]) { 
 							try {
 								String idDinosauro = getIdDinosauro(indiceDino);
 								getClientGui().deponiUovo(idDinosauro);
-//								getClientGui().deponiUovo("11");
 								String risposta = getClientGui().getRisposta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
 								idDinosauro = risposta.replace("@ok,", "");
 								if(risposta.contains("@ok")) {
@@ -344,13 +372,13 @@ public class Gui {
 									mg.applicaVisiblita(getClientGui().getRisposta());
 									//aggiorno il panel col riassunto dello stato del dinosauro
 									datiGui.aggiornaDati(idDinosauro);
-									
+
 									//TODO per reinizializzae la lista dei dinosauri
 									getClientGui().listaDinosauri();
 									listaDinosauri = getClientGui().getRisposta();
 									System.out.println(listaDinosauri);
 									prossimoDinosauro();
-									
+
 								} else {
 									if(risposta.contains("@raggiuntaDimensioneMax")) {
 										JOptionPane.showMessageDialog(null, "Raggiunta dimensione massima");
@@ -367,52 +395,35 @@ public class Gui {
 							} catch (InterruptedException e2) {
 								e2.printStackTrace();
 							}
-//						} else {
-//							//non si puo' eseguire il movimento
-//							JOptionPane.showMessageDialog(null, "Azione di deposizione gia' eseguita!");
-//						}
-
-						//						int statoDeposizione = giocatore.eseguiDeposizionedeponiUovo(dino);
-						//						if(statoDeposizione==1) {
-						//							int raggio = dino.calcolaRaggioVisibilita();
-						//							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
-						//							mg.applicaVisiblita(giocatore, t);
-						//							partita.nascitaDinosauro(turnoNascita);
-						//							inizializzaSceltaDino(giocatore);
-						//							mg.rinizializzaMappa(carnivoroIcona, erbivoroIcona);
-						//						} else {
-						//							mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
-						//							if(statoDeposizione==-2) {
-						//								JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
-						//								"\nenergia insufficiente!");
-						//							}
-						//							if(statoDeposizione==0) {
-						//								JOptionPane.showMessageDialog(null, "Errore deposizione!\nIl dinosauro e' morto, " +
-						//								"squadra dei dinosauri completa!");
-						//							}
-						//						}
-						//						datiGui.aggiornaDati();
+						} else {
+							//non si puo' eseguire il movimento
+							JOptionPane.showMessageDialog(null, "Azione di deposizione gia' eseguita!");
+						}
 					}
 				}
 		);
 		return panelAzioni;
 	}
 
+	public void assegnaTurniDinosauri() {
+//		if()
+	}
+
 	public String getIdDinosauro(int indiceDino) {
-//		try {
-			String risposta = this.listaDinosauri;
-			System.out.println("la risposta e': " + risposta);
-			risposta = risposta.replace("@listaDinosauri,", "");
-			String[] dinosauri = risposta.split(",");
-			return dinosauri[indiceDino];
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return null;
+		//		try {
+		String risposta = this.listaDinosauri;
+		System.out.println("la risposta e': " + risposta);
+		risposta = risposta.replace("@listaDinosauri,", "");
+		String[] dinosauri = risposta.split(",");
+		return dinosauri[indiceDino];
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		} catch (InterruptedException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
+		//		return null;
 	}
 
 	public void resetAzioniEMovimenti() {
@@ -422,34 +433,43 @@ public class Gui {
 			this.getAzione()[i] = false;
 		}
 	}
-	
+
 	private void prossimoDinosauro(){
-		
+
+		//metodo per cambiare dinosauro e automaticamente setta a true (cioe' azione  e movimento eseguito) i 2 array
 		String[] dinosauri = this.listaDinosauri.replace("@listaDinosauri,","").split(",");
 		this.maxIndiceDinosauri = dinosauri.length;
-		
+
 		if(indiceDino + 1 < maxIndiceDinosauri) {
-		this.indiceDino++;
-		System.out.println(this.indiceDino);
-		String idDino = this.getIdDinosauro(indiceDino);
-		System.out.println("id dinosa con quell'indice: " + idDino);
-		mg.aggiornaStato(idDino);
+			this.getMovimento()[this.indiceDino] = true;
+			this.getAzione()[this.indiceDino] = true;
+			this.indiceDino++;
+			System.out.println(this.indiceDino);
+			String idDino = this.getIdDinosauro(indiceDino);
+			System.out.println("id dino con quell'indice: " + idDino);
+			mg.aggiornaStato(idDino);
 		} else {
 			//TODO il turno finisce per forza e viene inviato al server il messaggio
-			
+
 			//non tenerlo nella versione definitiva perche' dovra' essere fatto quando un metodi ricevera' un messaggio dal server 
 			//che indica l'assegnazione del turno
 			this.indiceDino = 0;
-			
+			for(int i=0;i<maxIndiceDinosauri;i++) {
+				this.getMovimento()[i] = false;
+				this.getAzione()[i] = false;
+			}
+			this.disattivaAzioniGui();
+			mg.disattivaAzioniMappa();
+			//invia messaggio 
 		}
 	}
-	
+
 	public void verificaTurno(int indiceDino) {
 		if(this.getMovimento()[indiceDino] && this.getAzione()[indiceDino]) {
 			this.prossimoDinosauro();
 		}
 	}
-	
+
 
 	//	public void prossimoDinosauro() {
 	//		this.indiceDino++;
@@ -458,13 +478,13 @@ public class Gui {
 	//		}
 	//	}
 
-//	public void eseguireAzione() {
-//		JFrame turnoFrame = new JFrame();
-//		turnoFrame.setLayout(new GridLayout(3,1));
-//		turnoFrame.add(new JLabel("Hai 30 secondi per fare una scelta:"));
-//		JButton pulsanteConferma = new JButton("Conferma");
-//		JButton pulsantePassa = new JButton("Passa");
-//	}
+	//	public void eseguireAzione() {
+	//		JFrame turnoFrame = new JFrame();
+	//		turnoFrame.setLayout(new GridLayout(3,1));
+	//		turnoFrame.add(new JLabel("Hai 30 secondi per fare una scelta:"));
+	//		JButton pulsanteConferma = new JButton("Conferma");
+	//		JButton pulsantePassa = new JButton("Passa");
+	//	}
 
 	/**
 	 * @return Un int che rappresenta il numero del Dinosauro nella propria squadra.

@@ -372,15 +372,15 @@ public class Turno {
 					risultato = this.combatti(mosso, riga, colonna);
 				} catch (MovimentoException e){
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
-						throw new MovimentoException(MovimentoException.Causa.MORTE);
-					} else {
-						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
-							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
-						} else {
-							if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
-								throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
-							}
-						}
+						throw e;
+//					} else {
+//						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
+//							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
+//						} else {
+//							if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
+//								throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
+//							}
+//						}
 					}
 				}	
 				if(destinazione.getOccupante()!=null) {
@@ -389,7 +389,7 @@ public class Turno {
 						this.mangiaOccupante(mosso, riga, colonna);
 					} catch (MovimentoException e){
 						if(e.getCausa()==MovimentoException.Causa.MORTE) {
-							throw new MovimentoException(MovimentoException.Causa.MORTE);
+							throw e;
 						}
 					}						
 				}
@@ -405,7 +405,7 @@ public class Turno {
 						this.mangiaOccupante(mosso, riga, colonna);
 					} catch (MovimentoException e){
 						if(e.getCausa()==MovimentoException.Causa.MORTE) {
-							throw new MovimentoException(MovimentoException.Causa.MORTE);
+							throw e;
 						}
 					}	
 					return true;
@@ -416,7 +416,7 @@ public class Turno {
 						return true; //spostamento avvenuto correttamente
 					} catch (MovimentoException e){
 						if(e.getCausa()==MovimentoException.Causa.MORTE) {
-							throw new MovimentoException(MovimentoException.Causa.MORTE);
+							throw e;
 						}
 					}
 				}
@@ -444,7 +444,7 @@ public class Turno {
 				this.spostamentoConOccupante(mosso, riga, colonna);
 			} catch (MovimentoException e){
 				if(e.getCausa()==MovimentoException.Causa.MORTE) {
-					throw new MovimentoException(MovimentoException.Causa.MORTE);
+					throw e;
 				}
 			}	
 		} else 
@@ -454,7 +454,7 @@ public class Turno {
 					this.spostamentoConOccupante(mosso, riga, colonna);
 				} catch (MovimentoException e){
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
-						throw new MovimentoException(MovimentoException.Causa.MORTE);
+						throw e;
 					}
 				}	
 			} else
@@ -511,7 +511,7 @@ public class Turno {
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
 				this.partita.identificaDinosauro(mosso).rimuoviDinosauro(mosso);
 				//se il dinosauro muore rilancio l'eccezione con causa Morte
-				throw new MovimentoException(MovimentoException.Causa.MORTE);
+				throw e;
 			}
 		}
 	}
@@ -552,7 +552,7 @@ public class Turno {
 				}
 			} catch (MovimentoException e) {
 				if(e.getCausa()==MovimentoException.Causa.MORTE) {
-					throw new MovimentoException(MovimentoException.Causa.MORTE);
+					throw e;
 				}
 			}
 		} else { //se e' erbivoro posso combattere solo contro quelli carnivori (per sopravvivenza e non per mangiare)
@@ -574,10 +574,10 @@ public class Turno {
 					}
 				} catch (MovimentoException e) {
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
-						throw new MovimentoException(MovimentoException.Causa.MORTE);
+						throw e;
 					}
 					if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
-						throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
+						throw e;
 					}
 				}
 			}
@@ -671,7 +671,7 @@ public class Turno {
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
 				this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
 				System.out.println("Dinosauro morto");
-				throw new MovimentoException(MovimentoException.Causa.MORTE);
+				throw e;
 			}
 		}
 	}
