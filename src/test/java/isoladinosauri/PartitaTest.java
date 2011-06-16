@@ -45,16 +45,6 @@ public class PartitaTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Partita#incrementaEtaGiocatori()}.
-	 */
-	@Test //FIXME:
-	public void testIncrementaEtaGiocatori() { //incrementa eta' di tutti i giocatori
-//		Partita p = inizializzaPartita();
-//		assertEquals(p.)
-//		assertEquals(1, p.incrementaEtaGiocatori());
-	}
-
-	/**
 	 * Test method for {@link isoladinosauri.Partita#identificaDinosauro(isoladinosauri.modellodati.Dinosauro)}.
 	 */
 	@Test
@@ -68,11 +58,17 @@ public class PartitaTest {
 		assertEquals(g, p.identificaDinosauro(d));
 	}
 
-//	/**
-//	 * Test method for {@link isoladinosauri.Partita#nascitaDinosauro(int)}.
-//	 */
-//	@Test // FIXME: aspettare per le uova
-//	public void testNascitaDinosauro() {
-//		fail("Not yet implemented");
-//	}
+	/**
+	 * Test method for {@link isoladinosauri.Partita#nascitaDinosauro(int)}.
+	 */
+	@Test
+	public void testNascitaDinosauro() {
+		Partita p = inizializzaPartita();
+		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		assertNull(p.identificaDinosauro(null));
+		Dinosauro d = new Carnivoro("11",1,1,1);
+		p.aggiungiGiocatore(g);
+		g.aggiungiDinosauro(d);
+		p.nascitaDinosauro(0); //FIXME: accetta anche un turno = 0
+	}
 }
