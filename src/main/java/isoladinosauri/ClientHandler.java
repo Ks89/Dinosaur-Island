@@ -617,10 +617,11 @@ public class ClientHandler extends Thread {
 					//cerco se il dinosauro appartiene al giocatore
 					boolean proprioDino = false;
 					for(int i=0; i<giocatore.getDinosauri().size(); i++) {
-						if(giocatore.getDinosauri().get(i).getId().equals(idDino)) {
+						if(giocatore.getDinosauri().get(i).equals(dinosauro)) {
 							proprioDino = true;
 						}
 					}
+										
 					String user = token.split("-")[0];
 					String razza = giocatore.getNomeSpecie();
 					String tipo = null;
@@ -637,22 +638,18 @@ public class ClientHandler extends Thread {
 					if(proprioDino) {
 						int energia = dinosauro.getEnergia();
 						//FIXME: turni vissuti
-						int turni = 1;//turni vissuti ??
+						int turni = dinosauro.getEtaDinosauro();
 						domanda = "@statoDinosauro"+","+user+","+razza+","+tipo+","+"{"+riga+","+colonna+"}"+","+dimensione+","+energia+","+turni;
-					}
-					else {
+					} else {
 						domanda = "@statoDinosauro"+","+user+","+razza+","+tipo+","+"{"+riga+","+colonna+"}"+","+dimensione;
 					}
-				}
-				else {
+				} else {
 					domanda = "@no,@idNonValido";
 				}
-			}
-			else {
+			} else {
 				domanda = "@no,@nonInPartita";
 			}
-		}
-		else {
+		} else {
 			domanda = "@no,@tokenNonValido";
 		}
 		return domanda;
@@ -786,8 +783,6 @@ public class ClientHandler extends Thread {
 		String nomeUtente = token.split("-")[0];
 		String domanda = null;
 		String idDino = richiesta.split(",")[2].split("=")[1];
-		System.out.println(richiesta);
-		System.out.println(richiesta.split("=")[3]);
 		String destinazione = richiesta.split("=")[3].replace("{","").replace("}", ""); //espressa come "X,Y"
 		int riga = Integer.parseInt(destinazione.split(",")[0]);
 		int colonna = Integer.parseInt(destinazione.split(",")[1]); 

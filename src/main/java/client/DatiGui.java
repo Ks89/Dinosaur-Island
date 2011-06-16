@@ -15,11 +15,8 @@ public class DatiGui {
 
 	private JLabel userRis;
 	private JLabel nomeSpecieRis;
-//	private JLabel etaRis;
-//	private JLabel tNascitaGiocatoreRis;
-//	private JLabel idDinosauroRis;
 	private JLabel dimensioneRis;
-//	private JLabel forzaRis;
+	private JLabel forzaRis;
 	private JLabel energiaRis;
 	private JLabel energiaMaxRis;
 	private JLabel tNascitaDinoRis;
@@ -36,11 +33,8 @@ public class DatiGui {
 		this.gui = gui;
 		this.userRis = new JLabel();
 		this.nomeSpecieRis = new JLabel();
-//		this.etaRis = new JLabel();
-//		this.tNascitaGiocatoreRis = new JLabel();
-//		this.idDinosauroRis = new JLabel();
 		this.dimensioneRis = new JLabel();
-//		this.forzaRis = new JLabel();
+		this.forzaRis = new JLabel();
 		this.energiaRis = new JLabel();
 		this.energiaMaxRis = new JLabel();
 		this.tNascitaDinoRis = new JLabel();
@@ -60,7 +54,7 @@ public class DatiGui {
 		} catch (InterruptedException ecc) {
 			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
-		
+				
 		String[] rispostaSplittata = this.gui.getClientGui().getRisposta().split(",");
 		int rigaDino = Integer.parseInt(this.gui.getClientGui().getRisposta().split(",")[4].replace("{", ""));
 		int colonnaDino = Integer.parseInt(this.gui.getClientGui().getRisposta().split(",")[5].replace("}", ""));
@@ -68,15 +62,16 @@ public class DatiGui {
 		this.userRis.setText(rispostaSplittata[1]);
 		this.nomeSpecieRis.setText(rispostaSplittata[2]);
 		
-//		this.etaRis.setText(giocatore.getEtaAttuale() + "");
-//		this.tNascitaGiocatoreRis.setText(giocatore.getTurnoNascita() + "");
-//		
-//		this.idDinosauroRis.setText(dino.getId());
 		this.dimensioneRis.setText(rispostaSplittata[6]);
-//		this.forzaRis.setText(dino.calcolaForza() + "");
-		this.energiaRis.setText(rispostaSplittata[6]); //FIXME
+		this.energiaRis.setText(rispostaSplittata[7]); //FIXME
 		this.energiaMaxRis.setText(Integer.parseInt(rispostaSplittata[6])*1000 + "");
-		this.tNascitaDinoRis.setText(rispostaSplittata[6]);
+		String tipo = rispostaSplittata[3];
+		if(tipo.equals("e")) {
+			this.forzaRis.setText((Integer.parseInt(rispostaSplittata[7]) * Integer.parseInt(rispostaSplittata[6])) + "");
+		} else {
+			this.forzaRis.setText((2 * Integer.parseInt(rispostaSplittata[7]) * Integer.parseInt(rispostaSplittata[6])) + "");
+		}
+		this.tNascitaDinoRis.setText(rispostaSplittata[8]);
 		this.posRis.setText(rigaDino + "," + colonnaDino);
 	}
 
@@ -89,7 +84,7 @@ public class DatiGui {
 		
 		this.aggiornaDati(idDinosauro);
 		creaDatiPanel = new JPanel();
-		creaDatiPanel.setLayout(new GridLayout(7,2));
+		creaDatiPanel.setLayout(new GridLayout(8,2));
 
 		JLabel userGiocatore = new JLabel(" User: ");
 		creaDatiPanel.add(userGiocatore);
@@ -99,28 +94,13 @@ public class DatiGui {
 		creaDatiPanel.add(nomeSpecie);
 		creaDatiPanel.add(nomeSpecieRis);
 
-//		JLabel eta = new JLabel(" Eta: ");
-//		creaDatiPanel.add(eta);
-//		creaDatiPanel.add(etaRis);
-
-//		JLabel tNascitaGiocatore = new JLabel(" Nascita: ");
-//		creaDatiPanel.add(tNascitaGiocatore);
-//		creaDatiPanel.add(tNascitaGiocatoreRis);
-//		
-//		creaDatiPanel.add(new JLabel());
-//		creaDatiPanel.add(new JLabel());
-//
-//		JLabel idDinosauro = new JLabel(" Id: ");
-//		creaDatiPanel.add(idDinosauro);
-//		creaDatiPanel.add(idDinosauroRis);
-
 		JLabel dimensione = new JLabel(" Dim: ");
 		creaDatiPanel.add(dimensione);
 		creaDatiPanel.add(dimensioneRis);
 
-//		JLabel forza = new JLabel(" Forza: ");
-//		creaDatiPanel.add(forza);
-//		creaDatiPanel.add(forzaRis);
+		JLabel forza = new JLabel(" Forza: ");
+		creaDatiPanel.add(forza);
+		creaDatiPanel.add(forzaRis);
 
 		JLabel energia = new JLabel(" Energia: ");
 		creaDatiPanel.add(energia);
