@@ -6,6 +6,8 @@ import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
 
+import Eccezioni.DeposizioneException;
+
 public class GiocatoreTest {
 
 	/**
@@ -46,43 +48,56 @@ public class GiocatoreTest {
 	}
 
 
-//	/**
-//	 * Test method for {@link isoladinosauri.Giocatore#aggiungiDinosauro(isoladinosauri.modellodati.Dinosauro)}.
-//	 */
-//	@Test //TODO: aspettare x le uova
-//	public void testAggiungiDinosauro() {
-//		fail("Not yet implemented");
-//	}
-//
-//	/**
-//	 * Test method for {@link isoladinosauri.Giocatore#rimuoviDinosauro(isoladinosauri.modellodati.Dinosauro)}.
-//	 */
-//	@Test //TODO: aspettare x le uova
-//	public void testRimuoviDinosauro() {
-//		Dinosauro d = new Carnivoro("11",1,1,1);
-//	}
+	/**
+	 * Test method for {@link isoladinosauri.Giocatore#aggiungiDinosauro(isoladinosauri.modellodati.Dinosauro)}.
+	 */
+	@Test //TODO: aspettare x le uova
+	public void testAggiungiDinosauro() {
+		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Dinosauro d = new Carnivoro("11",1,1,1);
+		assertTrue(g.aggiungiDinosauro(d));
+		assertTrue(g.aggiungiDinosauro(d));
+		assertTrue(g.aggiungiDinosauro(d));
+		assertTrue(g.aggiungiDinosauro(d));
+		assertTrue(g.aggiungiDinosauro(d));
+		assertFalse(g.aggiungiDinosauro(d));
+	}
 
-//	/**
-//	 * Test method for {@link isoladinosauri.Giocatore#aggiungiUovo(int, int)}.
-//	 */
-//	@Test //TODO: aspettare x le uova
-//	public void testAggiungiUovo() {
-//		fail("Not yet implemented");
-//	}
-//
-//	/**
-//	 * Test method for {@link isoladinosauri.Giocatore#rimuoviUova()}.
-//	 */
-//	@Test //TODO: aspettare x le uova
-//	public void testRimuoviUova() {
-//		fail("Not yet implemented");
-//	}
-//
-//	/**
-//	 * Test method for {@link isoladinosauri.Giocatore#eseguiDeposizionedeponiUovo(isoladinosauri.modellodati.Dinosauro)}.
-//	 */
-//	@Test //TODO: aspettare x le uova
-//	public void testEseguiDeposizionedeponiUovo() {
-//		fail("Not yet implemented");
-//	}
+	/**
+	 * Test method for {@link isoladinosauri.Giocatore#rimuoviDinosauro(isoladinosauri.modellodati.Dinosauro)}.
+	 */
+	@Test //TODO: rivedere x l'uso di assert
+	public void testRimuoviDinosauro() {
+		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Dinosauro d = new Carnivoro("11",1,1,1);
+		Cella cella = new Cella();
+		g.rimuoviDinosauro(d,cella);
+	}
+
+	/**
+	 * Test method for {@link isoladinosauri.Giocatore#eseguiDeposizionedeponiUovo(isoladinosauri.modellodati.Dinosauro)}.
+	 */
+	@Test //FIXME: non lo trova nella mappa
+	public void testEseguiDeposizionedeponiUovo() {
+		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Dinosauro d = new Carnivoro("11",1,1,1);
+		try {
+			g.eseguiDeposizionedeponiUovo(d);
+			fail("non ha generato eccezioni");
+		} catch (DeposizioneException e) {
+//			e.printStackTrace();
+		} catch (NullPointerException e) {
+//			e.printStackTrace();
+		}
+//		try {
+//			g.aggiungiUovo(d.getRiga(), d.getColonna(), d.getId());
+//			d.setEnergia(10);
+//			g.eseguiDeposizionedeponiUovo(d);
+//			fail("non ha generato eccezioni");
+//		} catch (DeposizioneException e) {
+////			e.printStackTrace();
+//		} catch (NullPointerException e) {
+////			e.printStackTrace();
+//		}
+	}
 }
