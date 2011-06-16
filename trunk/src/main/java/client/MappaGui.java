@@ -193,22 +193,42 @@ public class MappaGui {
 
 		for(int i=rigaFine;i>=rigaOrigine;i--) {
 			for(int j=colonnaOrigine;j<=colonnaFine;j++) {
-				if(mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].contains("v") || mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].contains("c")
-						|| mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].contains("t") || mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].contains("a")) {
-					mappaRicevuta[i][j] = mappaVisibilita[i-rigaOrigine][j-colonnaOrigine];
+
+				String cella = mappaVisibilita[i-rigaOrigine][j-colonnaOrigine];
+				String daVisualizzare = new String();
+				if(cella.contains("v") || cella.contains("c") || cella.contains("d")) {
+					daVisualizzare = mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].split(",")[1];
+				}
+
+				//ottengo lo stato della cella e la inserisco ina una String che poi usero' per metterla nel tooltip
+
+				if(cella.contains("v")) {
+					mappaRicevuta[i][j] = cella;
+					mappaGui[i][j].setToolTipText("Energia Vegetale: " + daVisualizzare);
 				} else {
-					if(mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].contains("d")) {
-						System.out.println(" - " + mappaVisibilita[i-rigaOrigine][j-colonnaOrigine]);
-						try {
-							String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
-							gui.getClientGui().statoDinosauro(idDinosauro);
-							String risposta = gui.getClientGui().getRisposta().split(",")[3];
-							//ora ho aggiunto alla cella i,j col dinosauro il tipo, cioe' c o e concatenando.
-							mappaRicevuta[i][j] = mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].concat(",").concat(risposta);
-						} catch (IOException e) {
-							JOptionPane.showMessageDialog(null,"IOException");
-						} catch (InterruptedException e) {
-							JOptionPane.showMessageDialog(null,"InterruptedException");
+					if (cella.contains("c")) {
+						mappaRicevuta[i][j] = cella;
+						mappaGui[i][j].setToolTipText("Energia Carogna: " + daVisualizzare);
+					} else {
+						if((cella.contains("a")) ||
+								(cella.contains("t"))) {
+							mappaRicevuta[i][j] = cella;
+						} else {
+							if(cella.contains("d")) {
+								System.out.println(" - " + mappaVisibilita[i-rigaOrigine][j-colonnaOrigine]);
+								try {
+									String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
+									gui.getClientGui().statoDinosauro(idDinosauro);
+									String risposta = gui.getClientGui().getRisposta().split(",")[3];
+									//ora ho aggiunto alla cella i,j col dinosauro il tipo, cioe' c o e concatenando.
+									mappaRicevuta[i][j] = cella.concat(",").concat(risposta);
+									mappaGui[i][j].setToolTipText("ID Dinosauro: " + daVisualizzare);
+								} catch (IOException e) {
+									JOptionPane.showMessageDialog(null,"IOException");
+								} catch (InterruptedException e) {
+									JOptionPane.showMessageDialog(null,"InterruptedException");
+								}
+							}
 						}
 					}
 				}
@@ -251,42 +271,19 @@ public class MappaGui {
 		}
 	}
 
+	/**
+	 * Metodo che rimuove tutti i tooltip dalla celle.
+	 */
+	public void resetToolTip() {
+		for(int i=0;i<MAX;i++) {
+			for(int j=0;j<MAX;j++) {
+				mappaGui[i][j].setToolTipText(null);
+			}
+		}
+	}
 
-	//	/**
-	//	 * Metodo per resettare la raggiungibilita' (contorno delle celle)
-	//	 * rimpostandolo su "grigio chiaro", come predefinito.
-	//	 */
-	//	public void resetRaggiungibilita (){
-	//		for(int i=MAX-1;i>=0;i--) {
-	//			for(int j=0;j<MAX;j++) {
-	//				mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-	//			}
-	//		}
-	//	}
-
-	//	/**
-	//	 * Metodo per rinizializzare la mappa dopo aver deposto un uovo, in pratica aggiorna
-	//	 * la mappa di gioco andando a verificare dove ci sono nuovi dinosauri nati.
-	//	 * @param carnivoroIcona Icon che rappresenta l'icona del Dinosauro Carnivoro.
-	//	 * @param erbivoroIcona Icon che rappresenta l'icona del Dinosauro Erbivoro.
-	//	 */
-	//	public void rinizializzaMappa(Icon carnivoroIcona, Icon erbivoroIcona) {
-	//		for(int i=0;i<40;i++) {
-	//			for(int j=0;j<40;j++) {
-	//				if(mappa[i][j] !=null && mappa[i][j].getDinosauro()!=null) {
-	//					if(mappa[i][j].getDinosauro() instanceof Carnivoro) {
-	//						mappaGui[i][j].setIcon(carnivoroIcona);
-	//					} else {
-	//						if(mappa[i][j].getDinosauro() instanceof Erbivoro) {
-	//							mappaGui[i][j].setIcon(erbivoroIcona);
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-
-
+	
+	
 	/**
 	 * Metodo per applicare la raggiungibilita' alla mappa.
 	 */
@@ -358,34 +355,38 @@ public class MappaGui {
 	class GestioneMouse implements MouseListener{
 		public void mouseClicked(MouseEvent e) {
 			JButton pulsante = (JButton)e.getSource();
-			int q, w = 0;
-			int rigaClic = 0, colonnaClic = 0;
-			for(q=0;q<MAX;q++) {
-				for(w=0;w<MAX;w++) {
-					if(pulsante.equals(mappaGui[q][w])) {
-						rigaClic =  q;
-						colonnaClic = w;  
+			if(pulsante.isEnabled()) {
+				int q, w = 0;
+				int rigaClic = 0, colonnaClic = 0;
+				for(q=0;q<MAX;q++) {
+					for(w=0;w<MAX;w++) {
+						if(pulsante.equals(mappaGui[q][w])) {
+							rigaClic =  q;
+							colonnaClic = w;  
+						}
 					}
-				}
-			}		
-			System.out.println("cliccati" + rigaClic + "," + colonnaClic);
-			String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
-			if(!gui.getMovimento()[gui.getIndiceDino()]) { // TODO indicedino
-				try {	
-					gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
-					String risposta = gui.getClientGui().getRisposta();
-					if(risposta.contains("@ok")) {
-						aggiornaStato(idDinosauro);
-						gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
+				}		
+				resetToolTip();
+
+				System.out.println("cliccati" + rigaClic + "," + colonnaClic);
+				String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
+				if(!gui.getMovimento()[gui.getIndiceDino()]) { // TODO indicedino
+					try {	
+						gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
+						String risposta = gui.getClientGui().getRisposta();
+						if(risposta.contains("@ok")) {
+							aggiornaStato(idDinosauro);
+							gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
+						}
+					} catch (IOException ecc) {
+						JOptionPane.showMessageDialog(null,"IOException");
+					} catch (InterruptedException ecc) {
+						JOptionPane.showMessageDialog(null,"InterruptedException");
 					}
-				} catch (IOException ecc) {
-					JOptionPane.showMessageDialog(null,"IOException");
-				} catch (InterruptedException ecc) {
-					JOptionPane.showMessageDialog(null,"InterruptedException");
+				} else {
+					//non si puo' eseguire il movimento
+					JOptionPane.showMessageDialog(null, "Azione di movimento gia' eseguita!");
 				}
-			} else {
-				//non si puo' eseguire il movimento
-				JOptionPane.showMessageDialog(null, "Azione di movimento gia' eseguita!");
 			}
 		}
 		public void mouseEntered(MouseEvent e) {
@@ -396,6 +397,7 @@ public class MappaGui {
 		}
 		public void mouseReleased(MouseEvent e) {
 		}
+
 	}
 
 

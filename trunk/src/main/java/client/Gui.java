@@ -294,32 +294,16 @@ public class Gui {
 				}
 		);
 
-		//				sceltaDinosauro.addItemListener(
-		//						new ItemListener() {
-		//							public void itemStateChanged(ItemEvent event) {
-		//								String selezionato = (String) sceltaDinosauro.getSelectedItem();
-		//								int i;
-		//								for(i=0;i<giocatore.getDinosauri().size();i++) {
-		//									if(giocatore.getDinosauri().get(i).getId().equals(selezionato)) {
-		//										break;
-		//									}
-		//								}
-		//								setIndiceDino(i);
-		//								mg.setIndiceDino(i);
-		//								datiGui.aggiornaDati();
-		//							}
-		//						}
-		//				);
-
 		cresci.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!getAzione()[getIndiceDino()]) { // TODO indicedino
+						if(!getAzione()[getIndiceDino()]) {
 							try {
 								String idDinosauro = getIdDinosauro(indiceDino);
 								getClientGui().crescitaDinosauro(idDinosauro);
 								String risposta = getClientGui().getRisposta();
 								if(risposta.equals("@ok")) {
+									mg.resetToolTip();
 									getClientGui().vistaLocale(idDinosauro);
 									mg.applicaVisiblita(getClientGui().getRisposta());
 									//aggiorno il panel col riassunto dello stato del dinosauro
@@ -359,6 +343,7 @@ public class Gui {
 								String risposta = getClientGui().getRisposta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
 								idDinosauro = risposta.replace("@ok,", "");
 								if(risposta.contains("@ok")) {
+									mg.resetToolTip();
 									getClientGui().statoDinosauro(idDinosauro);
 									System.out.println("out" + getClientGui().getRisposta());
 									getClientGui().vistaLocale(idDinosauro);
@@ -402,20 +387,11 @@ public class Gui {
 	}
 
 	public String getIdDinosauro(int indiceDino) {
-		//		try {
 		String risposta = this.listaDinosauri;
 		System.out.println("la risposta e': " + risposta);
 		risposta = risposta.replace("@listaDinosauri,", "");
 		String[] dinosauri = risposta.split(",");
 		return dinosauri[indiceDino];
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		} catch (InterruptedException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
-		//		return null;
 	}
 
 	public void resetAzioniEMovimenti() {
@@ -432,6 +408,8 @@ public class Gui {
 		String[] dinosauri = this.listaDinosauri.replace("@listaDinosauri,","").split(",");
 		this.maxIndiceDinosauri = dinosauri.length;
 
+		mg.resetToolTip();
+		
 		if(indiceDino + 1 < maxIndiceDinosauri) {
 			this.getMovimento()[this.indiceDino] = true;
 			this.getAzione()[this.indiceDino] = true;
@@ -461,23 +439,8 @@ public class Gui {
 			this.prossimoDinosauro();
 		}
 	}
-
-
-	//	public void prossimoDinosauro() {
-	//		this.indiceDino++;
-	//		if(this.turni[indiceDino]!=-1 && this.turni[indiceDino]<2) {
-	//			
-	//		}
-	//	}
-
-	//	public void eseguireAzione() {
-	//		JFrame turnoFrame = new JFrame();
-	//		turnoFrame.setLayout(new GridLayout(3,1));
-	//		turnoFrame.add(new JLabel("Hai 30 secondi per fare una scelta:"));
-	//		JButton pulsanteConferma = new JButton("Conferma");
-	//		JButton pulsantePassa = new JButton("Passa");
-	//	}
-
+	
+	
 	/**
 	 * @return Un int che rappresenta il numero del Dinosauro nella propria squadra.
 	 */
