@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.io.IOException;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -54,12 +55,10 @@ public class DatiGui {
 		
 		try {
 			this.gui.getClientGui().statoDinosauro(idDinosauro);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException ecc) {
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ecc) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 		
 		String[] rispostaSplittata = this.gui.getClientGui().getRisposta().split(",");

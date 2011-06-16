@@ -30,6 +30,7 @@ import Eccezioni.CrescitaException;
 import Eccezioni.DeposizioneException;
 import Eccezioni.MovimentoException;
 
+
 /**
  *	Classe principale che si occupa di creare la grafica dell'applicazione (lato client).
  */

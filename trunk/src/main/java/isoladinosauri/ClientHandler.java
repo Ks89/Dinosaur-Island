@@ -793,8 +793,6 @@ public class ClientHandler extends Thread {
 		int colonna = Integer.parseInt(destinazione.split(",")[1]); 
 		System.out.println("riga, colonna " + riga + "," + colonna);
 
-		this.partita.getIsola().stampaMappaRidotta();
-
 		// verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 		if(loggato) {
@@ -881,7 +879,9 @@ public class ClientHandler extends Thread {
 		for(int i=0;i<this.partita.getGiocatori().size();i++) {
 			for(int j=0;j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {
 				if(dinosauro.equals(this.partita.getGiocatori().get(i).getDinosauri().get(j)) &&
-						j==this.partita.getGiocatori().get(i).getDinosauri().size()-1) return true;
+						j==this.partita.getGiocatori().get(i).getDinosauri().size()-1) {
+					return true;
+				}
 			}
 		}
 		return false;

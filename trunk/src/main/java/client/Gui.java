@@ -85,10 +85,10 @@ public class Gui {
 			int colonnaDino = Integer.parseInt(this.getClientGui().getRisposta().split(",")[5].replace("}", ""));
 			this.inizializzaGrafica();
 			mg.setScrollBar(rigaDino, colonnaDino);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+		} catch (IOException ecc) {
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ecc) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 	}
 
@@ -105,12 +105,10 @@ public class Gui {
 		String idDinosauro = this.getIdDinosauro(this.getIndiceDino());
 		try {
 			this.getClientGui().statoDinosauro(idDinosauro);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException ecc) {
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ecc) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 		return this.getClientGui().getRisposta();
 	}
@@ -124,7 +122,7 @@ public class Gui {
 
 		try {
 			String answer = this.impostaMappa();
-			frame.add(this.creaRiassuntoDati(indiceDino)); //aggiungo infoPanel
+			frame.add(this.creaRiassuntoDati()); //aggiungo infoPanel
 			frame.add(this.mappaPanel);
 
 			MenuGui menuGui = new MenuGui(frame,this);		
@@ -132,12 +130,10 @@ public class Gui {
 
 			mg.applicaVisiblita(answer);
 			mg.applicaRaggiungibilita();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException ecc) {
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ecc) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 
 		frame.addWindowListener(
@@ -147,11 +143,11 @@ public class Gui {
 						try {
 							clientGui.logout();
 							frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						} catch (IOException e) {
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}									
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
+						}								
 					}
 					@Override
 					public void windowActivated(WindowEvent arg0) {
@@ -160,10 +156,10 @@ public class Gui {
 					public void windowClosed(WindowEvent arg0) {
 						try {
 							clientGui.uscitaPartita();
-						} catch (IOException e) {
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
 					}
 					@Override
@@ -191,7 +187,7 @@ public class Gui {
 	 * @param indiceDino int che rappresenta il numero del Dinosauro.
 	 * @return Un JPanel contenente il riassunto della situazione del Giocatore e del suo Dinosauro selezionato con indiceDino.
 	 */
-	private JPanel creaRiassuntoDati(int indiceDino) {
+	private JPanel creaRiassuntoDati() {
 		datiPanel = datiGui.creaDati("11");
 		infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,1));
@@ -235,10 +231,10 @@ public class Gui {
 			this.getClientGui().classifica();
 			String risposta = this.getClientGui().getRisposta();
 			System.out.println("classifica: " + risposta);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} catch (IOException ecc) {
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ecc) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 	}
 
@@ -287,15 +283,12 @@ public class Gui {
 						try {
 							getClientGui().uscitaPartita();
 							if(getClientGui().getRispostaServer().equals("@ok")) {
-								//TODO fare un qualche cosa che fa ripartire il programma
-								//da capo e bisogna per forza fare anche il login
+								frame.dispose();
 							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}						
 					}
 				}
@@ -342,10 +335,10 @@ public class Gui {
 									}
 								}
 								getAzione()[0] = true;
-							} catch (IOException e2) {
-								e2.printStackTrace();
-							} catch (InterruptedException e2) {
-								e2.printStackTrace();
+							} catch (IOException ecc) {
+								JOptionPane.showMessageDialog(null,"IOException");
+							} catch (InterruptedException ecc) {
+								JOptionPane.showMessageDialog(null,"InterruptedException");
 							}
 						} else {
 							//non si puo' eseguire il movimento
@@ -389,11 +382,10 @@ public class Gui {
 									}
 								}
 								getAzione()[0] = true;
-
-							} catch (IOException e2) {
-								e2.printStackTrace();
-							} catch (InterruptedException e2) {
-								e2.printStackTrace();
+							} catch (IOException ecc) {
+								JOptionPane.showMessageDialog(null,"IOException");
+							} catch (InterruptedException ecc) {
+								JOptionPane.showMessageDialog(null,"InterruptedException");
 							}
 						} else {
 							//non si puo' eseguire il movimento
@@ -533,7 +525,7 @@ public class Gui {
 	}
 
 	public void setMovimento(boolean[] movimento) {
-		this.movimento = movimento;
+		this.movimento = movimento.clone();
 	}
 
 	public boolean[] getAzione() {
@@ -541,6 +533,6 @@ public class Gui {
 	}
 
 	public void setAzione(boolean[] azione) {
-		this.azione = azione;
+		this.azione = azione.clone();
 	}
 }

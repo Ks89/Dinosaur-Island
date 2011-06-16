@@ -56,10 +56,10 @@ public class ClientGui {
 		this.inviaAlServer();
 	}
 
-	public void creaRazza(String nomeUtente, String password) throws IOException, InterruptedException{
+	public void creaRazza(String nomeUtente, String password,String nome, String tipo) throws IOException, InterruptedException{
 		bufferedWriter.flush();
 		this.token = nomeUtente + "-" + password;
-		richiesta="@creaRazza,token="+this.token+",nome="+nomeUtente+",tipo="+password;
+		richiesta = "@creaRazza,token=" + this.token + ",nome=" + nome + ",tipo=" + tipo;
 		this.inviaAlServer();
 	}
 

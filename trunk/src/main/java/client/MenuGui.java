@@ -61,6 +61,14 @@ public class MenuGui {
 				{
 					public void actionPerformed(ActionEvent event)
 					{
+						//esegue il logout
+						try {
+							gui.getClientGui().logout();
+						} catch (IOException e) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException e) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
+						}
 						frame.dispose();
 					}
 				}
@@ -87,9 +95,9 @@ public class MenuGui {
 							System.out.println("classifica: " + risposta);
 							JOptionPane.showMessageDialog(null, risposta);
 						} catch (IOException e) {
-							e.printStackTrace();
+							JOptionPane.showMessageDialog(null,"IOException");
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
 					}
 				}
