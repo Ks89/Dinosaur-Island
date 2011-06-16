@@ -14,6 +14,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -31,7 +32,7 @@ public class LoginGui {
 	private JTextField user;
 	private JTextField password;
 	private JTextField specie;
-	private boolean tipo;
+	private String tipo;
 	private JRadioButton carnivoroRButton = new JRadioButton ("carnivoro",false);
 	private JRadioButton erbivoroRButton = new JRadioButton ("erbivoro",false);
 	private JButton accedi;
@@ -95,7 +96,7 @@ public class LoginGui {
 		creazionePanel.add(erbivoroRButton);
 		creazionePanel.add(home);
 		creazionePanel.add(creaRazza);
-		
+
 		JPanel accessoPanel = new JPanel(new GridLayout(2,1));
 		accedi = new JButton("Accedi alla partita");
 		accessoPanel.add(new JLabel("Clicca per accedere"));
@@ -114,18 +115,18 @@ public class LoginGui {
 					public void actionPerformed(ActionEvent e) { 
 						try {
 							gui.getClientGui().eseguiLogin(user.getText(), password.getText());
-//							if(gui.getClientGui().getRispostaServer().contains("ok")) {
-								continua.setEnabled(true);
-//							}
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
+							//							if(gui.getClientGui().getRispostaServer().contains("ok")) {
+							continua.setEnabled(true);
+							//							}
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
 					}
 				}
 		);
-		
+
 		accedi.addActionListener( 
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
@@ -134,29 +135,27 @@ public class LoginGui {
 							gui.getClientGui().accessoPartita(user.getText(), password.getText());			
 							frameGiocatore.dispose();	
 							gui.preparaDati(user.getText(), password.getText());
-							
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}	
-							
 
 					}
 				}
 		);
-		
-		
+
+
 		creaRazza.addActionListener( 
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-							try {
-								gui.getClientGui().creaRazza(user.getText(), password.getText());
-							} catch (IOException e1) {
-								e1.printStackTrace();
-							} catch (InterruptedException e1) {
-								e1.printStackTrace();
-							}
+						try {
+							gui.getClientGui().creaRazza(user.getText(), password.getText(),specie.getText(),tipo);
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
+						}
 					}
 				}
 		);
@@ -165,10 +164,10 @@ public class LoginGui {
 					public void actionPerformed(ActionEvent e) { 
 						try {
 							gui.getClientGui().creaUtente(user.getText(), password.getText());
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
 					}
 				}
@@ -185,10 +184,10 @@ public class LoginGui {
 		{
 			accedi.setEnabled(true);
 			if(event.getSource() == carnivoroRButton) {
-				tipo = true;
+				tipo = "c";
 			}
 			if(event.getSource() == erbivoroRButton) {
-				tipo = false;
+				tipo = "e";
 			}
 		}
 	}

@@ -24,7 +24,7 @@ import javax.swing.JScrollPane;
  */
 public class MappaGui {
 
-	private static int MAX = 40;
+	private static final int MAX = 40;
 
 	private JButton[][] mappaGui;
 	private Gui gui;
@@ -206,9 +206,9 @@ public class MappaGui {
 							//ora ho aggiunto alla cella i,j col dinosauro il tipo, cioe' c o e concatenando.
 							mappaRicevuta[i][j] = mappaVisibilita[i-rigaOrigine][j-colonnaOrigine].concat(",").concat(risposta);
 						} catch (IOException e) {
-							e.printStackTrace();
+							JOptionPane.showMessageDialog(null,"IOException");
 						} catch (InterruptedException e) {
-							e.printStackTrace();
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
 					}
 				}
@@ -379,9 +379,9 @@ public class MappaGui {
 						gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
 					}
 				} catch (IOException ecc) {
-					ecc.printStackTrace();
+					JOptionPane.showMessageDialog(null,"IOException");
 				} catch (InterruptedException ecc) {
-					ecc.printStackTrace();
+					JOptionPane.showMessageDialog(null,"InterruptedException");
 				}
 			} else {
 				//non si puo' eseguire il movimento
@@ -420,9 +420,9 @@ public class MappaGui {
 			//aggiorno il panel col riassunto dello stato del dinosauro
 			dg.aggiornaDati(idDino);
 		} catch (IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"IOException");
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 	}
 

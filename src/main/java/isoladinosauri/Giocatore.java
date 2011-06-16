@@ -10,6 +10,7 @@ import java.util.Random;
 
 import Eccezioni.DeposizioneException;
 
+
 /**
  * Classe Giocatore, costituita da tutti gli attributi che 
  * lo identificano della partita.
@@ -80,7 +81,7 @@ public class Giocatore {
 		String idDinosauro = this.generaIdDinosauro();
 		
 		Dinosauro dinosauro;
-		if(this.tipoSpecie.equals("carnivoro")) {
+		if(this.tipoSpecie.equals("c")) {
 			dinosauro = new Carnivoro(idDinosauro,pos[0], pos[1], turnoNascita);
 			dinosauri.add((Carnivoro)dinosauro);
 			this.partita.getIsola().getMappa()[pos[0]][pos[1]].setDinosauro(dinosauro); 

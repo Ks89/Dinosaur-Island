@@ -4,6 +4,7 @@ import java.util.Random;
 
 import Eccezioni.MovimentoException;
 
+
 import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
@@ -457,7 +458,7 @@ public class Turno {
 						throw e;
 					}
 				}	
-			} else
+			} else {
 				//eseguo il movimento in una cella in cui c'e' una carogna e mi muovo
 				//con un erbivoro o una vegetazione con un carnivoro
 				try {
@@ -469,6 +470,7 @@ public class Turno {
 						this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
 					}
 				}
+			}
 	}
 
 	/**
@@ -545,11 +547,7 @@ public class Turno {
 			Carnivoro attaccante = (Carnivoro)dinosauro;
 			try {
 				boolean statoSpostamento = this.spostamentoConDinosauro(attaccante, riga, colonna);
-				if(statoSpostamento){
-					return true;
-				} else {
-					return false;
-				}
+				return statoSpostamento;
 			} catch (MovimentoException e) {
 				if(e.getCausa()==MovimentoException.Causa.MORTE) {
 					throw e;
@@ -567,11 +565,7 @@ public class Turno {
 				Erbivoro attaccante = (Erbivoro)dinosauro; 
 				try {
 					boolean statoSpostamento = this.spostamentoConDinosauro(attaccante, riga, colonna);
-					if(statoSpostamento){
-						return true;
-					} else {
-						return false;
-					}
+					return statoSpostamento;
 				} catch (MovimentoException e) {
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
 						throw e;
@@ -642,7 +636,7 @@ public class Turno {
 				//il dinosauro muore perche' non ha abbastanza energia per muoversi
 				//il metodo rimuoviDinosauro lo cancella dalla lista dei dinosauri e anche dalla cella
 				this.partita.identificaDinosauro(attaccante).rimuoviDinosauro(attaccante);
-				throw new MovimentoException(MovimentoException.Causa.MORTE);
+				throw e;
 			}
 		}
 		throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);

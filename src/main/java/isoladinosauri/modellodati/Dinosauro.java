@@ -6,6 +6,7 @@ import java.util.Random;
 import Eccezioni.CrescitaException;
 import Eccezioni.MovimentoException;
 
+
 /**
  * Superclasse ASTRATTA di Carnivoro ed Erbivoro che
  * implementa i metodi astratti: calcolaForza, mangia e combatti.
