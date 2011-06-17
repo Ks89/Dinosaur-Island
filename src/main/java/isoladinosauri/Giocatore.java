@@ -217,7 +217,7 @@ public class Giocatore {
 	 * andato bene, 'false': non e' stato possibile aggiungere il Dinosauro.
 	 */
 	public boolean aggiungiDinosauro(Dinosauro dinosauro) {
-		if(this.dinosauri.size() + this.getUova().size()<MAXDINO ) {
+		if(this.dinosauri.size() + this.getUova().size()<=MAXDINO ) {
 			this.dinosauri.add(dinosauro);
 		} else {
 			return false; //non posso aggiungere il dinosauro
@@ -307,6 +307,8 @@ public class Giocatore {
 			if((this.getDinosauri().size() + this.getUova().size()) < MAXDINO ) {
 				String idDinosauro = this.generaIdDinosauro();
 				System.out.println("ID Dinosauro: " + idDinosauro);
+				System.out.println("dinoSize: "+this.getDinosauri().size());
+				System.out.println("uovaSize: "+this.getUova().size());
 				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna(),idDinosauro);
 				return idDinosauro;
 			} else {
