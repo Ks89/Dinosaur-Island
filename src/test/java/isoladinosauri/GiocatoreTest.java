@@ -28,7 +28,7 @@ public class GiocatoreTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Giocatore g = new Giocatore(1,"pippo","c");
 		Utente u = new Utente("nomeUtente","pass");
 		Dinosauro d = new Carnivoro("11",1,1,1);
 		g.aggiungiDinosauro(d);
@@ -43,7 +43,7 @@ public class GiocatoreTest {
 	 */
 	@Test //FIXME: controllare
 	public void testGeneraIdDinosauro() {
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Giocatore g = new Giocatore(1,"pippo","c");
 		assertEquals("01", g.generaIdDinosauro());
 	}
 
@@ -51,16 +51,21 @@ public class GiocatoreTest {
 	/**
 	 * Test method for {@link isoladinosauri.Giocatore#aggiungiDinosauro(isoladinosauri.modellodati.Dinosauro)}.
 	 */
-	@Test //TODO: aspettare x le uova
+	@Test
 	public void testAggiungiDinosauro() {
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
-		Dinosauro d = new Carnivoro("11",1,1,1);
-		assertTrue(g.aggiungiDinosauro(d));
-		assertTrue(g.aggiungiDinosauro(d));
-		assertTrue(g.aggiungiDinosauro(d));
-		assertTrue(g.aggiungiDinosauro(d));
-		assertTrue(g.aggiungiDinosauro(d));
-		assertFalse(g.aggiungiDinosauro(d));
+		Giocatore g = new Giocatore(1,"stego","c");
+		Dinosauro d1 = new Carnivoro("11",1,1,1);
+		Dinosauro d2 = new Carnivoro("12",1,2,1);
+		Dinosauro d3 = new Carnivoro("13",2,1,1);
+		Dinosauro d4 = new Carnivoro("14",3,1,1);
+		Dinosauro d5 = new Carnivoro("15",3,2,1);
+		Dinosauro d6 = new Carnivoro("16",3,3,1);
+		g.aggiungiDinosauro(d1);
+		g.aggiungiDinosauro(d2);
+		g.aggiungiDinosauro(d3);
+		g.aggiungiDinosauro(d4);
+		g.aggiungiDinosauro(d5);
+		assertFalse(g.aggiungiDinosauro(d6));
 	}
 
 	/**
@@ -68,10 +73,13 @@ public class GiocatoreTest {
 	 */
 	@Test //TODO: rivedere x l'uso di assert
 	public void testRimuoviDinosauro() {
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
-		Dinosauro d = new Carnivoro("11",1,1,1);
-		Cella cella = new Cella();
-		g.rimuoviDinosauro(d,cella);
+		Partita p = inizializzaPartita();
+		Turno t = new Turno(p);
+		p.setTurnoCorrente(t);
+		Giocatore g = new Giocatore(1,"stego","c");
+		g.aggiungiInPartita(p);
+		Dinosauro d = g.getDinosauri().get(0);
+		g.rimuoviDinosauro(d);
 	}
 
 	/**
@@ -79,7 +87,7 @@ public class GiocatoreTest {
 	 */
 	@Test //FIXME: non lo trova nella mappa
 	public void testEseguiDeposizionedeponiUovo() {
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Giocatore g = new Giocatore(1,"stego","c");
 		Dinosauro d = new Carnivoro("11",1,1,1);
 		try {
 			g.eseguiDeposizionedeponiUovo(d);
