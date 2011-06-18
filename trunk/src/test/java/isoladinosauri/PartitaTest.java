@@ -26,7 +26,7 @@ public class PartitaTest {
 	public void testAggiungiGiocatore() {
 
 		Partita p = inizializzaPartita();
-		Giocatore g = new Giocatore(1,"pippo","erbivoro");
+		Giocatore g = new Giocatore(1,"pippo","e");
 		p.aggiungiGiocatore(g);
 		assertEquals(g, p.getGiocatori().get(0));
 	}
@@ -52,7 +52,7 @@ public class PartitaTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Giocatore g = new Giocatore(1,"pippo","c");
 		g.aggiungiInPartita(p);
 		assertNull(p.identificaDinosauro(null));
 		Dinosauro d = g.getDinosauri().get(0);
@@ -67,7 +67,7 @@ public class PartitaTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Giocatore g = new Giocatore(1,"stego","c");
 		g.aggiungiInPartita(p);
 		assertNull(p.identificaDinosauro(null));
 		Dinosauro d = g.getDinosauri().get(0);
@@ -75,7 +75,7 @@ public class PartitaTest {
 		d.setEnergia(4000);
 		try {
 			g.eseguiDeposizionedeponiUovo(d);
-			p.nascitaDinosauro(1);
+			p.nascitaDinosauro(1);//totale dinosauri=2
 		} catch (DeposizioneException e) {
 			fail("eccezione deposizione uovo");
 		}
@@ -84,7 +84,7 @@ public class PartitaTest {
 			d.setEnergia(4000);
 			try {
 				g.eseguiDeposizionedeponiUovo(d);
-				p.nascitaDinosauro(1);
+				p.nascitaDinosauro(1); //tot=3,4,5
 			} catch (DeposizioneException e) {
 				fail("eccezione deposizione uovo");
 			}
