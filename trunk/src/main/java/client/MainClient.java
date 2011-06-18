@@ -15,7 +15,7 @@ class MainClient {
 	 * Metodo main per eseguire la grafica del Client
 	 */
 	public static void main (String[] args) {		
-		Client client = new Client("localhost", 1234);
+		Client client = new Client("localhost", 1234,5678);
 		try {
 			client.inizializzaClient();
 			Gui gui = new Gui(client);

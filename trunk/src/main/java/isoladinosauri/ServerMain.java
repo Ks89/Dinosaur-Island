@@ -43,12 +43,14 @@ public class ServerMain {
 	 */
 	public void runServer() throws IOException {
 		ServerSocket serverSocket = new ServerSocket(porta);
+		ServerSocket serverSocketTurno = new ServerSocket(5678);
 		System.out.println("Server avviato. In attesa di connessioni...");
 		while (true) {
 			try {
 				Socket socket = serverSocket.accept();
+				Socket socketTurno = serverSocketTurno.accept();
 				System.out.println("Client connesso, creazione di un nuovo client handler.");
-				new ClientHandler(socket, partita,gestioneGiocatori,classifica).start();
+				new ClientHandler(socket, socketTurno, partita,gestioneGiocatori,classifica).start();
 			} catch (IOException e) {
 				System.out.println("Errore durante l'apertura di una connessione.");
 			}

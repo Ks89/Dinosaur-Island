@@ -15,18 +15,24 @@ public class Client {
 
 	private String host;
 	private int porta;
+	private int portaTurno; //porta per la gestione del socket col broadcast
 	private Socket socket;
+	private Socket socketTurno;
 	private BufferedReader bufferedReader;
 	private BufferedWriter bufferedWriter;
+	private BufferedReader bufferedReaderTurno;
+	private BufferedWriter bufferedWriterTurno;
 	private String richiesta;
+	private String rispostaTurno;
 	private String risposta;
 	private String token;
 	private String nomeUtente;
 
 
-	public Client (String host, int porta) {
+	public Client (String host, int porta, int portaTurno) {
 		this.host = host;
 		this.porta = porta;
+		this.portaTurno = portaTurno;
 	}
 	
 	
@@ -46,6 +52,9 @@ public class Client {
 		this.socket = new Socket(host, porta);
 		bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+		this.socketTurno = new Socket(host, portaTurno);
+		bufferedReaderTurno = new BufferedReader(new InputStreamReader(socketTurno.getInputStream()));
+		bufferedWriterTurno = new BufferedWriter(new OutputStreamWriter(socketTurno.getOutputStream()));
 	}
 
 	/**
@@ -60,6 +69,14 @@ public class Client {
 			System.out.println("Risposta server: " + risposta);
 		}
 		return risposta;
+	}
+	
+	public String getRispostaServerTurno() throws IOException, InterruptedException{
+		rispostaTurno = bufferedReaderTurno.readLine();
+		if (rispostaTurno != null) {
+			System.out.println("Risposta broadcast: " + rispostaTurno);
+		}
+		return rispostaTurno;
 	}
 
 	/**
@@ -259,8 +276,8 @@ public class Client {
 
 	//ricevi il cambio turno
 	public void cambioTurno(String nomeUtente) throws IOException, InterruptedException{
-		if(this.risposta.contains("@cambioTurno")) {
-			String utente = this.risposta.split(",")[1];
+		if(this.rispostaTurno.contains("@cambioTurno")) {
+			String utente = this.rispostaTurno.split(",")[1];
 			//controllo se il nomeUtente delo giocatore sul client e' uguale a quello mandato dal server
 			//in tal caso vuol dire che ho ottenuto il turno
 			if(utente.equals(nomeUtente)) {
