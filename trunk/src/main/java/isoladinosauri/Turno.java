@@ -10,7 +10,7 @@ import isoladinosauri.modellodati.Dinosauro;
 import isoladinosauri.modellodati.Erbivoro;
 import isoladinosauri.modellodati.Occupante;
 import isoladinosauri.modellodati.Vegetale;
-import isoladinosauri.salvataggio.StatoGiocatoreDB;
+
 
 /**
  * Questa classe viene utilizzata per: 

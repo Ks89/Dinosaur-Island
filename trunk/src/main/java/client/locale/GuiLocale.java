@@ -12,8 +12,6 @@ import isoladinosauri.Turno;
 import isoladinosauri.Utente;
 import isoladinosauri.modellodati.Dinosauro;
 
-import isoladinosauri.salvataggio.SalvataggioGiocatore;
-import isoladinosauri.salvataggio.StatoGiocatoreDB;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -111,16 +109,10 @@ public class GuiLocale {
 			tipoDinosauro = "erbivoro";
 		}
 		
-		//Caricamento dello stato giocatore salvato, se presente
-		SalvataggioGiocatore pers = StatoGiocatoreDB.loadGiocatore(user);
-		if (pers == null) {
+	
 		    giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);    
 		    giocatore.setUtente(new Utente(user, password));
-		} else {
-		    giocatore = (Giocatore)pers.getOggetto();
-		    //recupera la password salvata
-		    giocatore.getUtente().getPassword();
-		}
+
 		
 		giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);
 		giocatore.aggiungiInPartita(partita);
@@ -338,7 +330,6 @@ public class GuiLocale {
 		try {
 			boolean stato = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
 			//Salvataggio dello stato del giocatore ad ogni movimento
-	        StatoGiocatoreDB.store(giocatore.getUtente().getNomeUtente(), giocatore);
 			if(stato) {
 				System.out.println("Tutto ok");
 			} else {
