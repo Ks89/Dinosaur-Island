@@ -30,6 +30,7 @@ import isoladinosauri.GestioneServer;
 public class ClientHandler extends Thread {
 
 	private Socket socket;
+	private Socket socketTurno;
 	private static final int MAX = 40;
 	private static final String ERRORE = "Errore lettura file";
 	private Partita partita;
@@ -43,13 +44,72 @@ public class ClientHandler extends Thread {
 	private boolean eseguitaAzione = false;
 
 
-	//TODO metodo chiamato quando il client riceve il messaggio in broadcast di cambiaTurno
+	/**
+	 * Costruttore della classe ClientHandler che inizializza gli attributi socket, partita, gestioneGiocatori e classifica.
+	 * @param socket Riferimento al Socket.
+	 * @param partita Riferimento alla Partita.
+	 * @param gestioneGiocatori Riferimento a GestioneGiocatori contenenti le liste di utenti online e le razze create.
+	 * @param classifica Classifica dei giocatori.
+	 */
+	public ClientHandler(Socket socket, Socket socketTurno, Partita partita, GestioneServer gestioneGiocatori,Classifica classifica) {
+		this.socket = socket;
+		this.socketTurno = socketTurno;
+		this.partita = partita;
+		this.gestioneGiocatori = gestioneGiocatori;
+		this.classifica = classifica;
+	}
+
+	//TODO metodo chiamato quando il client riceve il messaggio in broadcast di cambioTurno
 	private void avviaTimerAzioni() {
 		TimerTask task = new TimerServer(this);
 		timer = new Timer();
-		timer.schedule(task, 2 * 60 * 1000);
+		timer.schedule(task, 10 * 1000);
+		//		timer.schedule(task, 2 * 60 * 1000);
 	}
 
+
+	/**
+	 * Metodo che invia in broadcast un messaggio
+	 * @return
+	 */
+	public void cambioTurno() {
+		String broadcast = null; //messaggio da inviare
+		//se l'ultimo dinosauro ha compiuto una mossa o azione eseguo il cambio turno
+		//questo metodo e' chiamato automaticamente dopo 2 minuti grazie al timer, nel caso in cui il client
+		//non faccia piu' nulla
+		System.out.println(eseguitaMossa + "," + eseguitaAzione);
+		if(eseguitaMossa && eseguitaAzione) {
+			if(indiceGiocatore + 1 < this.partita.getGiocatori().size()){
+				this.indiceGiocatore++; //passo al Giocatore dopo
+				//se ricevo il messaggio di passaTurno viene chiamato questo metodo che serve a cambiare il Turno
+				//oltre a inviare il mex in broadcast passa anche al prossimo giocatore incrementando indiceGiocatore.
+
+				broadcast = "@cambioTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente(); 
+				this.avviaTimerAzioni();
+
+			} else {
+				this.indiceGiocatore=0;
+				broadcast = "@cambioTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente();
+				System.out.println("Fine giro giocatori");
+				this.avviaTimerAzioni();
+				//TODO qui mettere aggiornamento classifica generale, aggiunta 
+			}
+		}
+		System.out.println("Domanda generate: " + broadcast);
+		this.inviacambioTurno(broadcast);
+		//		return domanda;
+	}
+
+	private void inviacambioTurno(String broadcast){
+		try {
+			BufferedWriter bufferedWriterTurno = new BufferedWriter(new OutputStreamWriter(socketTurno.getOutputStream()));
+			bufferedWriterTurno.write(broadcast);
+			bufferedWriterTurno.newLine();
+			bufferedWriterTurno.flush();
+		} catch (IOException e) {
+			System.out.println("Errore durante la connessione col Client.");
+		}
+	}
 
 	private String confermaTurno(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
@@ -107,7 +167,7 @@ public class ClientHandler extends Thread {
 				 */
 				this.eseguitaMossa = true;
 				this.eseguitaAzione = true;
-				this.cambiaTurno();
+				this.cambioTurno();
 				//				}
 
 			} else {
@@ -119,33 +179,6 @@ public class ClientHandler extends Thread {
 		return domanda;
 	}
 
-	/**
-	 * Metodo che invia in broadcast un messaggio
-	 * @return
-	 */
-	public String cambiaTurno() {
-		String domanda = null;
-		//se l'ultimo dinosauro ha compiuto una mossa o azione eseguo il cambia turno
-		//questo metodo e' chiamato automaticamente dopo 2 minuti grazie al timer, nel caso in cui il client
-		//non faccia piu' nulla
-		System.out.println(eseguitaMossa + "," + eseguitaAzione);
-		if(eseguitaMossa && eseguitaAzione) {
-			if(indiceGiocatore + 1 < this.partita.getGiocatori().size()){
-				this.indiceGiocatore++; //passo al Giocatore dopo
-				//se ricevo il messaggio di passaTurno viene chiamato questo metodo che serve a cambiare il Turno
-				//oltre a inviare il mex in broadcast passa anche al prossimo giocatore incrementando indiceGiocatore.
-				
-				domanda = "@cambiaTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente(); 
-				
-			} else {
-				this.indiceGiocatore=0;
-				domanda = "@cambiaTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente();
-				System.out.println("Fine giro giocatori");
-			}
-		}
-		System.out.println("Domanda generate: " + domanda);
-		return domanda;
-	}
 
 	private boolean verificaUltimoDinosauro (Dinosauro dinosauro) {
 		for(int i=0;i<this.partita.getGiocatori().size();i++) {
@@ -159,21 +192,6 @@ public class ClientHandler extends Thread {
 		return false;
 	}
 
-
-
-	/**
-	 * Costruttore della classe ClientHandler che inizializza gli attributi socket, partita, gestioneGiocatori e classifica.
-	 * @param socket Riferimento al Socket.
-	 * @param partita Riferimento alla Partita.
-	 * @param gestioneGiocatori Riferimento a GestioneGiocatori contenenti le liste di utenti online e le razze create.
-	 * @param classifica Classifica dei giocatori.
-	 */
-	public ClientHandler(Socket socket, Partita partita, GestioneServer gestioneGiocatori,Classifica classifica) {
-		this.socket = socket;
-		this.partita = partita;
-		this.gestioneGiocatori = gestioneGiocatori;
-		this.classifica = classifica;
-	}
 
 	/**
 	 * Metodo per eseguire ricerche nel file degli utenti.
@@ -813,7 +831,7 @@ public class ClientHandler extends Thread {
 							if(this.verificaUltimoDinosauro(dinosauro)) {
 								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
 								this.eseguitaAzione=true;
-								//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
+								//invia una notifica a tutti di cambioTurno con lo username del giocatore che puo' cmpiere le sue mosse
 							}
 
 						} catch (DeposizioneException de){
@@ -870,7 +888,7 @@ public class ClientHandler extends Thread {
 							if(this.verificaUltimoDinosauro(dinosauro)) {
 								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
 								this.eseguitaAzione=true;
-								//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
+								//invia una notifica a tutti di cambioTurno con lo username del giocatore che puo' cmpiere le sue mosse
 							}
 
 						} catch (CrescitaException ce){
@@ -932,7 +950,7 @@ public class ClientHandler extends Thread {
 								if(this.verificaUltimoDinosauro(dinosauro)) {
 									//se il dinosauro mosso e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
 									this.eseguitaMossa=true;
-									//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
+									//invia una notifica a tutti di cambioTurno con lo username del giocatore che puo' cmpiere le sue mosse
 								}
 
 							} else {
@@ -966,6 +984,8 @@ public class ClientHandler extends Thread {
 		}
 		return domanda;
 	}
+
+
 
 
 	public void run() {
@@ -1038,8 +1058,7 @@ public class ClientHandler extends Thread {
 				bufferedWriter.newLine();
 				bufferedWriter.flush();
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			System.out.println("Errore durante la connessione col Client.");
 		}
 	}
