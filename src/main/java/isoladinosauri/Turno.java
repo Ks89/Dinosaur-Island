@@ -374,10 +374,10 @@ public class Turno {
 				} catch (MovimentoException e){
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
 						throw e;
-//					} else {
-//						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
-//							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
-//						} else {
+					} else {
+						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
+							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
+						}// else {
 //							if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
 //								throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
 //							}
@@ -462,9 +462,9 @@ public class Turno {
 				//eseguo il movimento in una cella in cui c'e' una carogna e mi muovo
 				//con un erbivoro o una vegetazione con un carnivoro
 				try {
+					mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 					dinosauro.aggCordinate(riga, colonna);
 					destinazione.setDinosauro(dinosauro);
-					mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 				} catch (MovimentoException e){
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
 						this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
@@ -658,9 +658,9 @@ public class Turno {
 		int vecchiaColonna = dinosauro.getColonna();
 
 		try {
+			mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 			dinosauro.aggCordinate(riga, colonna);
 			destinazione.setDinosauro(dinosauro);
-			mappa[vecchiaRiga][vecchiaColonna].setDinosauro(null);
 		} catch (MovimentoException e){
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
 				this.partita.identificaDinosauro(dinosauro).rimuoviDinosauro(dinosauro);
