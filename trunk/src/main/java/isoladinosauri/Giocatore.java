@@ -217,7 +217,7 @@ public class Giocatore {
 	 * andato bene, 'false': non e' stato possibile aggiungere il Dinosauro.
 	 */
 	public boolean aggiungiDinosauro(Dinosauro dinosauro) {
-		if(this.dinosauri.size() + this.getUova().size()<MAXDINO ) {
+		if(this.dinosauri.size()<MAXDINO ) {
 			this.dinosauri.add(dinosauro);
 		} else {
 			return false; //non posso aggiungere il dinosauro
