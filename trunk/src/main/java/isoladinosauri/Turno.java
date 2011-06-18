@@ -374,10 +374,10 @@ public class Turno {
 				} catch (MovimentoException e){
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
 						throw e;
-//					} else {
-//						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
-//							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
-//						} else {
+					} else {
+						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
+							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
+						}// else {
 //							if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
 //								throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
 //							}

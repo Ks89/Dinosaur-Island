@@ -26,7 +26,9 @@ public class PartitaTest {
 	public void testAggiungiGiocatore() {
 
 		Partita p = inizializzaPartita();
-		Giocatore g = new Giocatore(1,"pippo","e");
+		Giocatore g = new Giocatore(1,"stego","e");
+		Utente u = new Utente("nomeUtente","pass");
+		g.setUtente(u);
 		p.aggiungiGiocatore(g);
 		assertEquals(g, p.getGiocatori().get(0));
 	}
@@ -37,7 +39,9 @@ public class PartitaTest {
 	@Test
 	public void testRimuoviGiocatore() {
 		Partita p = inizializzaPartita();
-		Giocatore g = new Giocatore(1,"pippo","e");
+		Giocatore g = new Giocatore(1,"stego","e");
+		Utente u = new Utente("nomeUtente","pass");
+		g.setUtente(u);
 		p.aggiungiGiocatore(g);
 		assertEquals(g, p.getGiocatori().get(0));
 		p.rimuoviGiocatore(g);
@@ -52,7 +56,9 @@ public class PartitaTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"pippo","c");
+		Giocatore g = new Giocatore(1,"stego","c");
+		Utente u = new Utente("nomeUtente","pass");
+		g.setUtente(u);
 		g.aggiungiInPartita(p);
 		assertNull(p.identificaDinosauro(null));
 		Dinosauro d = g.getDinosauri().get(0);
@@ -68,6 +74,8 @@ public class PartitaTest {
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
 		Giocatore g = new Giocatore(1,"stego","c");
+		Utente u = new Utente("nomeUtente","pass");
+		g.setUtente(u);
 		g.aggiungiInPartita(p);
 		assertNull(p.identificaDinosauro(null));
 		Dinosauro d = g.getDinosauri().get(0);
@@ -107,12 +115,4 @@ public class PartitaTest {
 		}
 		
 	}
-	
-//	/** TODO:
-//	 * Test method for {@link isoladinosauri.Partita#generaCoordinateNascituro(int, int)}.
-//	 */
-//	@Test
-//	public void testgeneraCoordinateNascituro() {
-//		fail("da fare");
-//	}
 }

@@ -1,6 +1,7 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
+import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
@@ -26,56 +27,28 @@ public class TurnoTest {
 		return d;
 	}
 	
-//	/** TODO:
-//	 * Test method for {@link isoladinosauri.Turno#illuminaMappa(isoladinosauri.Giocatore, int, int, int)}.
-//	 */
-//	@Test
-//	public void testIlluminaMappa() {
-//		fail("Not yet implemented");
-//	}
-
-//	/** TODO:
-//	 * Test method for {@link isoladinosauri.Turno#ottieniVisuale(int, int, int)}.
-//	 */
-//	@Test
-//	public void testOttieniVisuale() {
-//		fail("Not yet implemented");
-//	}
-
-//	/** TODO:
-//	 * Test method for {@link isoladinosauri.Turno#ottieniOrigineVisuale(int, int, int)}.
-//	 */
-//	@Test
-//	public void testOttieniOrigineVisuale() {
-//		fail("Not yet implemented");
-//	}
-
-
-//	/** TODO:
-//	 * Test method for {@link isoladinosauri.Turno#ottieniEstremoVisuale(int, int, int)}.
-//	 */
-//	@Test
-//	public void testOttieniEstremoVisuale() {
-//		fail("Not yet implemented");
-//	}
-
-//	/**
-//	 * Test method for {@link isoladinosauri.Turno#ottieniRaggiungibilita(int, int)}.
-//	 */
-//	@Test //FIXME: forse non va fatto
-//	public void testOttieniRaggiungibilita() {
-//		Partita p = inizializzaPartita();
-//		Turno t = new Turno(p);
-//	}
-
 	/**
 	 * Test method for {@link isoladinosauri.Turno#ottieniStradaPercorsa(int, int, int, int)}.
 	 */
-	@Test //FIXME: assertNull dovrebbe verificare ke restituisca null ma restituisce sempre null anche quando non dovrebbe
+	@Test
 	public void testOttieniStradaPercorsa() {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
-		assertNull(t.ottieniStradaPercorsa(1, 1, 2, 2));
+		p.setTurnoCorrente(t);
+		//creo un nuovo giocatore con un dinosauro (carnivoro)
+		Giocatore g = new Giocatore(1,"stego","c");
+		Utente u = new Utente("nomeUtente","pass");
+		g.setUtente(u);
+		g.aggiungiInPartita(p);
+		Dinosauro d = g.getDinosauri().get(0);
+		d.setRiga(1);
+		d.setColonna(2);
+		try {
+			t.spostaDinosauro(d, 1, 1);
+		} catch (MovimentoException e) {
+			fail("eccezione");
+		}
+		assertNull(t.ottieniStradaPercorsa(1, 1, 5, 5));
 	}
 
 	/**
@@ -87,7 +60,9 @@ public class TurnoTest {
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
 		//creo un nuovo giocatore con un dinosauro (carnivoro)
-		Giocatore g1 = new Giocatore(1,"pippo","c");
+		Giocatore g1 = new Giocatore(1,"stego1","c");
+		Utente u1 = new Utente("nomeUtente1","pass");
+		g1.setUtente(u1);
 		g1.aggiungiInPartita(p);
 		Dinosauro dG1 = g1.getDinosauri().get(0);
 		
@@ -127,7 +102,9 @@ public class TurnoTest {
 		}
 		
 		// creo un altro giocatore g2 con un dinosauro (erbivoro):
-		Giocatore g2 = new Giocatore(1,"pluto","e");
+		Giocatore g2 = new Giocatore(1,"stego2","e");
+		Utente u2 = new Utente("nomeUtente2","pass");
+		g2.setUtente(u2);
 		g2.aggiungiInPartita(p);
 		Dinosauro dG2 = g2.getDinosauri().get(0);
 		dG2 = inizializzaDinosauro(dG2,2000,1,2); // lo posiziono in (1,2) dove c'e' terra semplice
@@ -154,7 +131,9 @@ public class TurnoTest {
 		
 		//simile a prima ma questa volta la forza dell'erbivoro attaccante e' maggiore della forza del carnivoro attaccato
 		// creo un altro giocatore g3 con un dinosauro (erbivoro):
-		Giocatore g3 = new Giocatore(1,"paperino","e");
+		Giocatore g3 = new Giocatore(1,"stego3","e");
+		Utente u3 = new Utente("nomeUtente3","pass");
+		g3.setUtente(u3);
 		g3.aggiungiInPartita(p);
 		Dinosauro dG3 = g3.getDinosauri().get(0);
 		
@@ -172,7 +151,9 @@ public class TurnoTest {
 		}
 		
 		// creo un altro giocatore g4 con un dinosauro (carnivoro):
-		Giocatore g4 = new Giocatore(1,"topolino","c");
+		Giocatore g4 = new Giocatore(1,"stego4","c");
+		Utente u4 = new Utente("nomeUtente4","pass");
+		g4.setUtente(u4);
 		g4.aggiungiInPartita(p);
 		Dinosauro dG4 = g4.getDinosauri().get(0);
 		
@@ -192,7 +173,9 @@ public class TurnoTest {
 		}
 		
 		// creo un altro giocatore g5 con un dinosauro (carnivoro):
-		Giocatore g5 = new Giocatore(1,"paperone","c");
+		Giocatore g5 = new Giocatore(1,"stego5","c");
+		Utente u5 = new Utente("nomeUtente5","pass");
+		g5.setUtente(u5);
 		g5.aggiungiInPartita(p);
 		Dinosauro dG5 = g5.getDinosauri().get(0);
 		
@@ -210,11 +193,15 @@ public class TurnoTest {
 		}
 		
 		// creo un altro giocatore g6 con un dinosauro (erbivoro):
-		Giocatore g6 = new Giocatore(1,"giocatore6","e");
+		Giocatore g6 = new Giocatore(1,"stego6","e");
+		Utente u6 = new Utente("nomeUtente6","pass");
+		g6.setUtente(u6);
 		g6.aggiungiInPartita(p);
 		Dinosauro dG6 = g6.getDinosauri().get(0);
 		// creo un altro giocatore g7 con un dinosauro (erbivoro):
-		Giocatore g7 = new Giocatore(1,"giocatore7","e");
+		Giocatore g7 = new Giocatore(1,"stego7","e");
+		Utente u7 = new Utente("nomeUtente7","pass");
+		g7.setUtente(u7);
 		g7.aggiungiInPartita(p);
 		Dinosauro dG7 = g7.getDinosauri().get(0);
 		
@@ -241,17 +228,23 @@ public class TurnoTest {
 			fail("non ha generato eccezione erbivoro su erbivoro");
 		} catch (MovimentoException e) {
 			if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
-				System.out.println("ok generata eccezione per destinazione errata");
+				System.out.println("ok generata eccezione per destinazione errata (erbivoro su erbivoro)");
 			}
 		}
 	}
 
-//	/** TODO:
-//	 * Test method for {@link isoladinosauri.Turno#ricreaCarogne(isoladinosauri.Cella[][])}.
-//	 */
-//	@Test
-//	public void testRicreaCarogne() {
-//		fail("Not yet implemented");
-//	}
+	/**
+	 * Test method for {@link isoladinosauri.Turno#ricreaCarogne(isoladinosauri.Cella[][])}.
+	 */
+	@Test
+	public void testRicreaCarogne() {
+		Partita p = inizializzaPartita();
+		Turno t = new Turno(p);
+		p.setTurnoCorrente(t);
+		Carogna c = new Carogna();
+		c.setEnergia(0);
+		p.getIsola().getMappa()[2][2].setOccupante(c);
+		t.ricreaCarogne(p.getIsola().getMappa());
+	}
 
 }
