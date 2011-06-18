@@ -3,18 +3,18 @@ package isoladinosauri;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import isoladinosauri.ServerMultiClient;
+import isoladinosauri.ServerMain;
 import isoladinosauri.ClientHandler;
 
 
 /**
  * Classe per la gestione del Server.
  */
-public class ServerMultiClient {
+public class ServerMain {
 
 	private int porta;
 	private Partita partita;
-	private GestioneGiocatori gestioneGiocatori;
+	private GestioneServer gestioneGiocatori;
 	private Classifica classifica;
 
 	
@@ -22,7 +22,7 @@ public class ServerMultiClient {
 	 * Costruttore della classe ServerMultiClient che inizializza la mappa, la Partita, la Classifica ed il Turno.
 	 * @param porta int che rappresenta la porta di comunicazione.
 	 */
-	public ServerMultiClient(int porta) {
+	public ServerMain(int porta) {
 		this.porta = porta;
 //		GenerazioneMappa gm = new GenerazioneMappa();
 		CaricamentoMappa cm = new CaricamentoMappa();
@@ -32,7 +32,7 @@ public class ServerMultiClient {
 		this.partita = new Partita(new Isola(mappaCelle));
 		Turno t = new Turno(partita);
 		partita.setTurnoCorrente(t);
-		this.gestioneGiocatori = new GestioneGiocatori();
+		this.gestioneGiocatori = new GestioneServer();
 		this.classifica = new Classifica(this.partita);
 	}
 
@@ -61,7 +61,7 @@ public class ServerMultiClient {
 	 * Metodo che avvia il Server.
 	 */
 	public static void main(String[] args) {
-		ServerMultiClient serverMultiClient = new ServerMultiClient(1234);
+		ServerMain serverMultiClient = new ServerMain(1234);
 		try {
 			serverMultiClient.runServer();
 		} catch (IOException e) {

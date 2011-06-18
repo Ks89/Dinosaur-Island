@@ -1,5 +1,6 @@
 package isoladinosauri;
 
+import gestioneeccezioni.DeposizioneException;
 import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Dinosauro;
 import isoladinosauri.modellodati.Erbivoro;
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import Eccezioni.DeposizioneException;
 
 
 /**
@@ -217,7 +217,7 @@ public class Giocatore {
 	 * andato bene, 'false': non e' stato possibile aggiungere il Dinosauro.
 	 */
 	public boolean aggiungiDinosauro(Dinosauro dinosauro) {
-		if(this.dinosauri.size()<MAXDINO ) { //if(this.dinosauri.size() + this.getUova().size()<MAXDINO)
+		if(this.dinosauri.size() + this.getUova().size()<MAXDINO ) {
 			this.dinosauri.add(dinosauro);
 		} else {
 			return false; //non posso aggiungere il dinosauro
@@ -227,9 +227,10 @@ public class Giocatore {
 	}
 	
 
-	//FIXME rimuovere questo metodo, e far funzionare in modo universale quello sotto.
 	/**
-	 * Metodo per rimuovere un Dinosauro dalla lista associata al Giocatore.
+	 * Metodo per rimuovere un Dinosauro dalla lista associata al Giocatore passando anche la Cella.
+	 * L'utilita' e' che lo posso usare per rimuovere Dinosauri presenti in celle di partenza durante
+	 * un'azione di movimento.
 	 * @param dinosauro riferimento al Dinosauro che deve essere rimosso.
 	 * @param cella riferimento alla Cella su cui si trova il Dinosauro
 	 */
@@ -307,8 +308,6 @@ public class Giocatore {
 			if((this.getDinosauri().size() + this.getUova().size()) < MAXDINO ) {
 				String idDinosauro = this.generaIdDinosauro();
 				System.out.println("ID Dinosauro: " + idDinosauro);
-				System.out.println("dinoSize: "+this.getDinosauri().size());
-				System.out.println("uovaSize: "+this.getUova().size());
 				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna(),idDinosauro);
 				return idDinosauro;
 			} else {

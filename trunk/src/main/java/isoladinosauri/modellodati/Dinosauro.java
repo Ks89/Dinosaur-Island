@@ -1,10 +1,11 @@
 package isoladinosauri.modellodati;
 
 
+import gestioneeccezioni.CrescitaException;
+import gestioneeccezioni.MovimentoException;
+
 import java.util.Random;
 
-import Eccezioni.CrescitaException;
-import Eccezioni.MovimentoException;
 
 
 /**

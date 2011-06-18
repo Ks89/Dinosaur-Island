@@ -55,9 +55,9 @@ public class DatiGui {
 			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 				
-		String[] rispostaSplittata = this.gui.getClientGui().getRisposta().split(",");
-		int rigaDino = Integer.parseInt(this.gui.getClientGui().getRisposta().split(",")[4].replace("{", ""));
-		int colonnaDino = Integer.parseInt(this.gui.getClientGui().getRisposta().split(",")[5].replace("}", ""));
+		String[] rispostaSplittata = this.gui.getClientGui().getRichiesta().split(",");
+		int rigaDino = Integer.parseInt(this.gui.getClientGui().getRichiesta().split(",")[4].replace("{", ""));
+		int colonnaDino = Integer.parseInt(this.gui.getClientGui().getRichiesta().split(",")[5].replace("}", ""));
 		
 		this.userRis.setText(rispostaSplittata[1]);
 		this.nomeSpecieRis.setText(rispostaSplittata[2]);

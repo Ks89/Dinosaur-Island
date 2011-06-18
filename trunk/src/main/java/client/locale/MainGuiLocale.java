@@ -1,4 +1,4 @@
-package client.gui;
+package client.locale;
 
 /**
  *	Classe main che si occupa di lanciare l'interfaccia grafica sul Client.

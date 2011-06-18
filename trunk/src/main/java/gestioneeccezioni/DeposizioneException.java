@@ -1,4 +1,4 @@
-package Eccezioni;
+package gestioneeccezioni;
 
 /**
  * Classe per gestire le eccezioni sulla deposizione di un Dinosauro.

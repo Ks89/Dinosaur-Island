@@ -8,17 +8,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import Eccezioni.CrescitaException;
-import Eccezioni.DeposizioneException;
-import Eccezioni.MovimentoException;
 
+import gestioneeccezioni.CrescitaException;
+import gestioneeccezioni.DeposizioneException;
+import gestioneeccezioni.MovimentoException;
 import isoladinosauri.modellodati.Carnivoro;
 import isoladinosauri.modellodati.Carogna;
 import isoladinosauri.modellodati.Dinosauro;
 import isoladinosauri.modellodati.Erbivoro;
 import isoladinosauri.modellodati.Vegetale;
-import isoladinosauri.GestioneGiocatori;
+import isoladinosauri.timer.TimerServer;
+import isoladinosauri.GestioneServer;
+
 
 /**
  * Classe che si occupa del protocollo di comunicazione tra Server e Client.
@@ -29,12 +33,133 @@ public class ClientHandler extends Thread {
 	private static final int MAX = 40;
 	private static final String ERRORE = "Errore lettura file";
 	private Partita partita;
-	private GestioneGiocatori gestioneGiocatori;
+	private GestioneServer gestioneGiocatori;
 	private Classifica classifica;
-	
+	private Timer timer;
+	private int indiceGiocatore = 0;
+
 	//variabili usate soltanto per l'ultimo dinosauro di ogni giocatore
 	private boolean eseguitaMossa = false;
 	private boolean eseguitaAzione = false;
+
+
+	//TODO metodo chiamato quando il client riceve il messaggio in broadcast di cambiaTurno
+	private void avviaTimerAzioni() {
+		TimerTask task = new TimerServer(this);
+		timer = new Timer();
+		timer.schedule(task, 2 * 60 * 1000);
+	}
+
+
+	private String confermaTurno(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
+		System.out.println(richiesta);
+		String domanda = null;
+
+		// verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			// verifico se l'utente si trova in partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
+			}
+			if(inPartita) {
+				//				if(controllo se e il mio turno) {
+				//			} else {
+				domanda = "@ok";
+				//				
+				//			}
+			} else {
+				domanda = "@no,@nonInPartita";
+			}
+		} else {
+			domanda = "@no,@tokenNonValido";
+		}
+		return domanda;
+	}
+
+
+	private String passaTurno(String richiesta) {
+		String token = richiesta.split(",")[1].split("=")[1];
+		String nomeUtente = token.split("-")[0];
+		System.out.println(richiesta);
+		String domanda = null;
+
+		// verifico se l'utente e' loggato
+		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
+		if(loggato) {
+			// verifico se l'utente si trova in partita
+			boolean inPartita = false;
+			if(this.individuaGiocatore(nomeUtente)!=null) {
+				inPartita = true;
+			}
+			if(inPartita) {
+
+				//				if(controllo se e il mio turno) {
+				//				} else {
+				//quindi ora eseguo il cambio del Turno e passo al prossimo giocatore
+				domanda = "@ok";
+				/*
+				 * passando il turno e' come se l'utente avesse accettato di non giocare e il server
+				 * ne prende atto impostando eseguitaMossa e eseguitaAzione, per l'ultimo dinosauro dell'utente a true.
+				 */
+				this.eseguitaMossa = true;
+				this.eseguitaAzione = true;
+				this.cambiaTurno();
+				//				}
+
+			} else {
+				domanda = "@no,@nonInPartita";
+			}
+		} else {
+			domanda = "@no,@tokenNonValido";
+		}
+		return domanda;
+	}
+
+	/**
+	 * Metodo che invia in broadcast un messaggio
+	 * @return
+	 */
+	public String cambiaTurno() {
+		String domanda = null;
+		//se l'ultimo dinosauro ha compiuto una mossa o azione eseguo il cambia turno
+		//questo metodo e' chiamato automaticamente dopo 2 minuti grazie al timer, nel caso in cui il client
+		//non faccia piu' nulla
+		System.out.println(eseguitaMossa + "," + eseguitaAzione);
+		if(eseguitaMossa && eseguitaAzione) {
+			if(indiceGiocatore + 1 < this.partita.getGiocatori().size()){
+				this.indiceGiocatore++; //passo al Giocatore dopo
+				//se ricevo il messaggio di passaTurno viene chiamato questo metodo che serve a cambiare il Turno
+				//oltre a inviare il mex in broadcast passa anche al prossimo giocatore incrementando indiceGiocatore.
+				
+				domanda = "@cambiaTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente(); 
+				
+			} else {
+				this.indiceGiocatore=0;
+				domanda = "@cambiaTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente();
+				System.out.println("Fine giro giocatori");
+			}
+		}
+		System.out.println("Domanda generate: " + domanda);
+		return domanda;
+	}
+
+	private boolean verificaUltimoDinosauro (Dinosauro dinosauro) {
+		for(int i=0;i<this.partita.getGiocatori().size();i++) {
+			for(int j=0;j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {
+				if(dinosauro.equals(this.partita.getGiocatori().get(i).getDinosauri().get(j)) &&
+						j==this.partita.getGiocatori().get(i).getDinosauri().size()-1) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
 
 	/**
 	 * Costruttore della classe ClientHandler che inizializza gli attributi socket, partita, gestioneGiocatori e classifica.
@@ -43,7 +168,7 @@ public class ClientHandler extends Thread {
 	 * @param gestioneGiocatori Riferimento a GestioneGiocatori contenenti le liste di utenti online e le razze create.
 	 * @param classifica Classifica dei giocatori.
 	 */
-	public ClientHandler(Socket socket, Partita partita, GestioneGiocatori gestioneGiocatori,Classifica classifica) {
+	public ClientHandler(Socket socket, Partita partita, GestioneServer gestioneGiocatori,Classifica classifica) {
 		this.socket = socket;
 		this.partita = partita;
 		this.gestioneGiocatori = gestioneGiocatori;
@@ -123,7 +248,7 @@ public class ClientHandler extends Thread {
 		return password;
 	}
 
-	
+
 	/**
 	 * @param nomeFileFisico
 	 * @param riga
@@ -208,7 +333,7 @@ public class ClientHandler extends Thread {
 		String domanda;
 		String nickname = richiesta.split(",")[1].split("=")[1];
 		String password = richiesta.split(",")[2].split("=")[1];
-		
+
 		// verifico se l'utente si trova in partital'utente e' gia' esistente
 		boolean trovato = cercaNelFile("Utenti.txt",nickname,null," ",0);
 		if(trovato) {
@@ -278,7 +403,7 @@ public class ClientHandler extends Thread {
 		return domanda;
 	}
 
-	
+
 	/**
 	 * Metodo per accedere alla Partita.
 	 * @param richiesta String che rappresenta la richiesta ottenuta dal Client.
@@ -288,7 +413,6 @@ public class ClientHandler extends Thread {
 
 		String domanda = null;
 		int k=0;
-
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		// cerco se l'utente e' loggato
@@ -621,7 +745,7 @@ public class ClientHandler extends Thread {
 							proprioDino = true;
 						}
 					}
-										
+
 					String user = token.split("-")[0];
 					String razza = giocatore.getNomeSpecie();
 					String tipo = null;
@@ -678,21 +802,20 @@ public class ClientHandler extends Thread {
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				Dinosauro dinosauro = this.individuaDinosauro(idDino);
 				if(dinosauro!=null) {
-//					if(dinosauro.getEtaDinosauro()<dinosauro.getDurataVita()) {
-//						//FIXME: eta' attuale e' il numero dei turni e non delle mosse
-//						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
-//					} else {
+					if(this.verificaUltimoDinosauro(dinosauro)) {
+						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
+					} else {
 						try {
 							String idNuovoDinosauro = giocatore.eseguiDeposizionedeponiUovo(dinosauro);
 							domanda = "@ok,"+idNuovoDinosauro;
 							partita.nascitaDinosauro(1);
-							
+
 							if(this.verificaUltimoDinosauro(dinosauro)) {
 								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
 								this.eseguitaAzione=true;
 								//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
 							}
-							
+
 						} catch (DeposizioneException de){
 							if(de.getCausa()==DeposizioneException.Causa.MORTE) {
 								domanda = "@no,@mortePerInedia";							}
@@ -700,7 +823,7 @@ public class ClientHandler extends Thread {
 								domanda = "@no,@raggiuntoNumeroMaxDinosauri";
 							}
 						}
-//					}
+					}
 				}
 				else {
 					domanda = "@no,@idNonValido";
@@ -739,17 +862,17 @@ public class ClientHandler extends Thread {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
 
-					if(dinosauro.getEtaDinosauro()<dinosauro.getDurataVita()) {						
+					if(this.verificaUltimoDinosauro(dinosauro)) {						
 						try {
 							dinosauro.aumentaDimensione();
 							domanda = "@ok";
-							
+
 							if(this.verificaUltimoDinosauro(dinosauro)) {
 								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
 								this.eseguitaAzione=true;
 								//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
 							}
-							
+
 						} catch (CrescitaException ce){
 							if(ce.getCausa()==CrescitaException.Causa.MORTE) {
 								domanda = "@no,@mortePerInedia";
@@ -799,7 +922,7 @@ public class ClientHandler extends Thread {
 			if(inPartita) {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
-					if(dinosauro.getEtaDinosauro()<=dinosauro.getDurataVita()) {
+					if(this.verificaUltimoDinosauro(dinosauro)) {
 
 						try {
 							boolean statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dinosauro, riga, colonna);
@@ -811,7 +934,7 @@ public class ClientHandler extends Thread {
 									this.eseguitaMossa=true;
 									//invia una notifica a tutti di cambiaTurno con lo username del giocatore che puo' cmpiere le sue mosse
 								}
-			
+
 							} else {
 								System.out.println("Problema");
 							}
@@ -843,45 +966,7 @@ public class ClientHandler extends Thread {
 		}
 		return domanda;
 	}
-	
-	
-//	public String confermaTurno(String richiesta) {
-//		String token = richiesta.split(",")[1].split("=")[1];
-//		System.out.println(richiesta);
-//
-//		// verifico se l'utente e' loggato
-//		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
-//		if(loggato) {
-//			// verifico se l'utente si trova in partita
-//			boolean inPartita = false;
-//			if(this.individuaGiocatore(nomeUtente)!=null) {
-//				inPartita = true;
-//			}
-//			if(inPartita) {
-//	
-//				
-//				
-//			} else {
-//				domanda = "@no,@nonInPartita";
-//			}
-//		} else {
-//			domanda = "@no,@tokenNonValido";
-//		}
-//		return domanda;
-//	}
-	
-	private boolean verificaUltimoDinosauro (Dinosauro dinosauro) {
-		for(int i=0;i<this.partita.getGiocatori().size();i++) {
-			for(int j=0;j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {
-				if(dinosauro.equals(this.partita.getGiocatori().get(i).getDinosauri().get(j)) &&
-						j==this.partita.getGiocatori().get(i).getDinosauri().size()-1) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
+
 
 	public void run() {
 
@@ -940,6 +1025,12 @@ public class ClientHandler extends Thread {
 					bufferedWriter.write(domanda);
 				} else if (comando.equals("@deponiUovo")) {
 					domanda = deponiUovo(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@confermaTurno")) {
+					domanda = confermaTurno(richiesta);
+					bufferedWriter.write(domanda);
+				} else if (comando.equals("@passaTurno")) {
+					domanda = passaTurno(richiesta);
 					bufferedWriter.write(domanda);
 				} else {
 					bufferedWriter.write("@unknownCommand");
