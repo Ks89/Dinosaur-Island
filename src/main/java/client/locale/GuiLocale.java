@@ -1,5 +1,8 @@
-package client.gui;
+package client.locale;
 
+import gestioneeccezioni.CrescitaException;
+import gestioneeccezioni.DeposizioneException;
+import gestioneeccezioni.MovimentoException;
 import isoladinosauri.CaricamentoMappa;
 import isoladinosauri.Cella;
 import isoladinosauri.Giocatore;
@@ -8,6 +11,9 @@ import isoladinosauri.Partita;
 import isoladinosauri.Turno;
 import isoladinosauri.Utente;
 import isoladinosauri.modellodati.Dinosauro;
+
+import isoladinosauri.salvataggio.SalvataggioGiocatore;
+import isoladinosauri.salvataggio.StatoGiocatoreDB;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -26,9 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import Eccezioni.CrescitaException;
-import Eccezioni.DeposizioneException;
-import Eccezioni.MovimentoException;
+
 
 
 /**
@@ -106,6 +110,18 @@ public class GuiLocale {
 		} else {
 			tipoDinosauro = "erbivoro";
 		}
+		
+		//Caricamento dello stato giocatore salvato, se presente
+		SalvataggioGiocatore pers = StatoGiocatoreDB.loadGiocatore(user);
+		if (pers == null) {
+		    giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);    
+		    giocatore.setUtente(new Utente(user, password));
+		} else {
+		    giocatore = (Giocatore)pers.getOggetto();
+		    //recupera la password salvata
+		    giocatore.getUtente().getPassword();
+		}
+		
 		giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);
 		giocatore.aggiungiInPartita(partita);
 		dino = giocatore.getDinosauri().get(indiceDino);
@@ -321,18 +337,20 @@ public class GuiLocale {
 		
 		try {
 			boolean stato = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
+			//Salvataggio dello stato del giocatore ad ogni movimento
+	        StatoGiocatoreDB.store(giocatore.getUtente().getNomeUtente(), giocatore);
 			if(stato) {
 				System.out.println("Tutto ok");
 			} else {
 				System.out.println("Problema");
 			}
 		} catch (MovimentoException e){
-			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCATO) {
-				JOptionPane.showMessageDialog(null, "Vince attaccante!");
-			}
-			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCANTE) {
-				JOptionPane.showMessageDialog(null, "Vince attaccato!");
-			}
+//			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCATO) {
+//				JOptionPane.showMessageDialog(null, "Vince attaccante!");
+//			}
+//			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCANTE) {
+//				JOptionPane.showMessageDialog(null, "Vince attaccato!");
+//			}
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
 				JOptionPane.showMessageDialog(null, "Il Dinosauro e' morto!");
 			}

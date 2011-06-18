@@ -9,8 +9,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.*;
+
 
 /**
  *	Classe principale che si occupa di creare la grafica dell'applicazione (lato client).
@@ -33,12 +36,17 @@ public class Gui {
 	private JButton cresci;
 	private JButton deponi;
 	private JButton prossimoDinosauro;
+	private Timer timer;
+	private JFrame frameTurno;
 
 	private String[][] mappaRicevuta;
 	private DatiGui datiGui;
 	private MappaGui mg;
-	private ClientGui clientGui;
+	private Client clientGui;
+	//	private LoginGui loginGui;
+
 	private boolean[] movimento = {false,false,false,false,false};
+
 	private boolean[] azione = {false,false,false,false,false};
 
 	private static final long serialVersionUID = 1L;
@@ -46,7 +54,7 @@ public class Gui {
 	/**
 	 * Costruttore della classe Gui che inizializza le classi clientGui, dayaGui e mappaGui.
 	 */
-	public Gui (ClientGui clientGui) {
+	public Gui (Client clientGui) {
 		this.clientGui = clientGui;
 		datiGui = new DatiGui(this);
 		mg = new MappaGui(this,datiGui);
@@ -58,6 +66,8 @@ public class Gui {
 		this.deponi.setEnabled(false);
 		this.prossimoDinosauro.setEnabled(false);
 		mg.disattivaAzioniMappa();
+		//invio 
+
 	}
 
 	public void attivaAzioniGui() {
@@ -65,6 +75,71 @@ public class Gui {
 		this.deponi.setEnabled(true);
 		this.prossimoDinosauro.setEnabled(true);
 		mg.attivaAzioniMappa();
+		this.indiceDino=0;
+		this.avviaTimer();
+	}
+
+	private void avvioSecondoTimer() {
+		//credo un nuovo timer da 2 minuti
+		timer = new Timer();
+		TimerTask task = new TimerClient(this);
+		timer.schedule(task, 2 * 60 * 1000);
+	}
+
+
+	//TODO metodo chiamato quando il client riceve il messaggio in broadcast di cambiaTurno
+	private void avviaTimer() {
+
+		TimerTask task = new TimerClient(this);
+		timer = new Timer();
+		timer.schedule(task, 30 * 1000);
+
+		frameTurno = new JFrame();
+		frameTurno.setLayout(new GridLayout(2,1));
+		frameTurno.setAlwaysOnTop(true);
+
+		JButton conferma = new JButton("Conferma");
+		JButton rifiuta = new JButton("Rifiuta");
+
+		conferma.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) { 
+						timer.cancel();
+						try {
+							getClientGui().confermaTurno();
+							attivaAzioniGui();
+							frameTurno.dispose();
+						} catch (IOException e2) {
+							e2.printStackTrace();
+						} catch (InterruptedException e2) {
+							e2.printStackTrace();
+						}
+						avvioSecondoTimer();			
+					}
+				}
+		);
+
+		rifiuta.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) { 
+						timer.cancel();
+						try {
+							getClientGui().passaTurno();
+							disattivaAzioniGui();
+							frameTurno.dispose();
+						} catch (IOException e2) {
+							e2.printStackTrace();
+						} catch (InterruptedException e2) {
+							e2.printStackTrace();
+						}
+					}
+				}
+		);
+
+		frameTurno.add(conferma);
+		frameTurno.add(rifiuta);
+		frameTurno.setVisible(true);
+		frameTurno.pack();
 	}
 
 	/**
@@ -77,12 +152,12 @@ public class Gui {
 			this.caricaMappa();
 
 			this.getClientGui().listaDinosauri();
-			this.listaDinosauri = this.getClientGui().getRisposta();
+			this.listaDinosauri = this.getClientGui().getRichiesta();
 			System.out.println(this.listaDinosauri);
 
 			this.getClientGui().statoDinosauro("11");
-			int rigaDino = Integer.parseInt(this.getClientGui().getRisposta().split(",")[4].replace("{", ""));
-			int colonnaDino = Integer.parseInt(this.getClientGui().getRisposta().split(",")[5].replace("}", ""));
+			int rigaDino = Integer.parseInt(this.getClientGui().getRichiesta().split(",")[4].replace("{", ""));
+			int colonnaDino = Integer.parseInt(this.getClientGui().getRichiesta().split(",")[5].replace("}", ""));
 			this.inizializzaGrafica();
 			mg.setScrollBar(rigaDino, colonnaDino);
 		} catch (IOException ecc) {
@@ -94,7 +169,7 @@ public class Gui {
 
 	public String impostaMappa() throws IOException, InterruptedException {
 		this.getClientGui().vistaLocale("11");
-		String answer = this.getClientGui().getRisposta();
+		String answer = this.getClientGui().getRichiesta();
 
 		this.mappaPanel= mg.creaMappa(mg.creaMappaVisibilita(answer));
 		this.setMappaGui(mg.getMappaGui());
@@ -110,7 +185,7 @@ public class Gui {
 		} catch (InterruptedException ecc) {
 			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
-		return this.getClientGui().getRisposta();
+		return this.getClientGui().getRichiesta();
 	}
 
 	/**
@@ -135,6 +210,10 @@ public class Gui {
 		} catch (InterruptedException ecc) {
 			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
+
+		this.disattivaAzioniGui();
+		this.indiceDino=0;
+		this.avviaTimer();
 
 		frame.addWindowListener(
 				new WindowListener() {
@@ -198,7 +277,7 @@ public class Gui {
 
 	public void caricaMappa() throws IOException, InterruptedException {
 		this.getClientGui().mappaGenerale();
-		String risposta = this.getClientGui().getRisposta();
+		String risposta = this.getClientGui().getRichiesta();
 
 		if(risposta.contains("@mappaGenerale")) {
 			int maxRighe = Integer.parseInt(risposta.split(",")[1].replace("{", ""));
@@ -229,7 +308,7 @@ public class Gui {
 	public void ottieniClassifica() {
 		try {
 			this.getClientGui().classifica();
-			String risposta = this.getClientGui().getRisposta();
+			String risposta = this.getClientGui().getRichiesta();
 			System.out.println("classifica: " + risposta);
 		} catch (IOException ecc) {
 			JOptionPane.showMessageDialog(null,"IOException");
@@ -297,15 +376,15 @@ public class Gui {
 		cresci.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!getAzione()[getIndiceDino()]) {
+						if(!azione[getIndiceDino()]) {
 							try {
 								String idDinosauro = getIdDinosauro(indiceDino);
 								getClientGui().crescitaDinosauro(idDinosauro);
-								String risposta = getClientGui().getRisposta();
+								String risposta = getClientGui().getRichiesta();
 								if(risposta.equals("@ok")) {
 									mg.resetToolTip();
 									getClientGui().vistaLocale(idDinosauro);
-									mg.applicaVisiblita(getClientGui().getRisposta());
+									mg.applicaVisiblita(getClientGui().getRichiesta());
 									//aggiorno il panel col riassunto dello stato del dinosauro
 									datiGui.aggiornaDati(idDinosauro);
 									prossimoDinosauro();
@@ -318,7 +397,7 @@ public class Gui {
 										}
 									}
 								}
-								getAzione()[0] = true;
+								azione[0] = true;
 							} catch (IOException ecc) {
 								JOptionPane.showMessageDialog(null,"IOException");
 							} catch (InterruptedException ecc) {
@@ -336,24 +415,24 @@ public class Gui {
 		deponi.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!getAzione()[getIndiceDino()]) { 
+						if(!azione[getIndiceDino()]) { 
 							try {
 								String idDinosauro = getIdDinosauro(indiceDino);
 								getClientGui().deponiUovo(idDinosauro);
-								String risposta = getClientGui().getRisposta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
+								String risposta = getClientGui().getRichiesta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
 								idDinosauro = risposta.replace("@ok,", "");
 								if(risposta.contains("@ok")) {
 									mg.resetToolTip();
 									getClientGui().statoDinosauro(idDinosauro);
-									System.out.println("out" + getClientGui().getRisposta());
+									System.out.println("out" + getClientGui().getRichiesta());
 									getClientGui().vistaLocale(idDinosauro);
-									mg.applicaVisiblita(getClientGui().getRisposta());
+									mg.applicaVisiblita(getClientGui().getRichiesta());
 									//aggiorno il panel col riassunto dello stato del dinosauro
 									datiGui.aggiornaDati(idDinosauro);
 
 									//TODO per reinizializzae la lista dei dinosauri
 									getClientGui().listaDinosauri();
-									listaDinosauri = getClientGui().getRisposta();
+									listaDinosauri = getClientGui().getRichiesta();
 									System.out.println(listaDinosauri);
 									prossimoDinosauro();
 
@@ -366,7 +445,7 @@ public class Gui {
 										}
 									}
 								}
-								getAzione()[0] = true;
+								azione[0] = true;
 							} catch (IOException ecc) {
 								JOptionPane.showMessageDialog(null,"IOException");
 							} catch (InterruptedException ecc) {
@@ -383,7 +462,7 @@ public class Gui {
 	}
 
 	public void assegnaTurniDinosauri() {
-//		if()
+		//		if()
 	}
 
 	public String getIdDinosauro(int indiceDino) {
@@ -397,8 +476,8 @@ public class Gui {
 	public void resetAzioniEMovimenti() {
 		//ottengo la lista dei dinosauri del giocatore
 		for(int i=0;i<5;i++) {
-			this.getMovimento()[i] = false;
-			this.getAzione()[i] = false;
+			this.movimento[i] = false;
+			this.azione[i] = false;
 		}
 	}
 
@@ -409,38 +488,47 @@ public class Gui {
 		this.maxIndiceDinosauri = dinosauri.length;
 
 		mg.resetToolTip();
-		
+
 		if(indiceDino + 1 < maxIndiceDinosauri) {
-			this.getMovimento()[this.indiceDino] = true;
-			this.getAzione()[this.indiceDino] = true;
+			this.movimento[this.indiceDino] = true;
+			this.azione[this.indiceDino] = true;
 			this.indiceDino++;
 			System.out.println(this.indiceDino);
 			String idDino = this.getIdDinosauro(indiceDino);
 			System.out.println("id dino con quell'indice: " + idDino);
 			mg.aggiornaStato(idDino);
 		} else {
-			//TODO il turno finisce per forza e viene inviato al server il messaggio
+			//il turno finisce per forza e viene inviato al server il messaggio
 
+			//FIXME
 			//non tenerlo nella versione definitiva perche' dovra' essere fatto quando un metodi ricevera' un messaggio dal server 
 			//che indica l'assegnazione del turno
 			this.indiceDino = 0;
 			for(int i=0;i<maxIndiceDinosauri;i++) {
-				this.getMovimento()[i] = false;
-				this.getAzione()[i] = false;
+				this.movimento[i] = false;
+				this.azione[i] = false;
 			}
 			this.disattivaAzioniGui();
 			mg.disattivaAzioniMappa();
-			//invia messaggio 
+
+			//invia messaggio per passare il turno
+			try {
+				this.getClientGui().passaTurno();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public void verificaTurno(int indiceDino) {
-		if(this.getMovimento()[indiceDino] && this.getAzione()[indiceDino]) {
+		if(this.movimento[indiceDino] && this.azione[indiceDino]) {
 			this.prossimoDinosauro();
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return Un int che rappresenta il numero del Dinosauro nella propria squadra.
 	 */
@@ -472,7 +560,7 @@ public class Gui {
 	/**
 	 * @return Un riferimento all'oggetto clientGui di tipo ClientGui, contenente tutti i metodi per richiedere i messaggi al server.
 	 */
-	public ClientGui getClientGui() {
+	public Client getClientGui() {
 		return clientGui;
 	}
 
@@ -483,19 +571,26 @@ public class Gui {
 		return mappaRicevuta;
 	}
 
-	public boolean[] getMovimento() {
-		return movimento;
-	}
-
+	/**
+	 * @param movimento array di 5 boolean per impostare che il Dinosauro ha eseguito il movimento.
+	 */
 	public void setMovimento(boolean[] movimento) {
 		this.movimento = movimento.clone();
 	}
 
-	public boolean[] getAzione() {
-		return azione;
+	/**
+	 * @return Un array di 5 boolean per indicare se il Dinosauro i-esimo ha compiuto un'azione di movimento.
+	 */
+	public boolean[] getMovimento() {
+		return movimento;
 	}
+	//	
+	//	public LoginGui getLoginGui() {
+	//		return loginGui;
+	//	}
+	//
+	//	public void setLoginGui(LoginGui loginGui) {
+	//		this.loginGui = loginGui;
+	//	}
 
-	public void setAzione(boolean[] azione) {
-		this.azione = azione.clone();
-	}
 }

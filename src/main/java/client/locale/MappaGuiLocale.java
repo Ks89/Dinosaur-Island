@@ -1,4 +1,4 @@
-package client.gui;
+package client.locale;
 
 import isoladinosauri.Cella;
 import isoladinosauri.Giocatore;

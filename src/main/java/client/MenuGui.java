@@ -87,7 +87,7 @@ public class MenuGui {
 					{
 						try {
 							gui.getClientGui().classifica(); 
-							String risposta = gui.getClientGui().getRisposta();
+							String risposta = gui.getClientGui().getRichiesta();
 							risposta = risposta.replace("@classifica,{", "");
 							risposta = risposta.replace("{", "");
 							risposta = risposta.replace("},", "\n");

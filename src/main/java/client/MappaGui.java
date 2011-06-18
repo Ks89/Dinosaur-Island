@@ -219,7 +219,7 @@ public class MappaGui {
 								try {
 									String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
 									gui.getClientGui().statoDinosauro(idDinosauro);
-									String risposta = gui.getClientGui().getRisposta().split(",")[3];
+									String risposta = gui.getClientGui().getRichiesta().split(",")[3];
 									//ora ho aggiunto alla cella i,j col dinosauro il tipo, cioe' c o e concatenando.
 									mappaRicevuta[i][j] = cella.concat(",").concat(risposta);
 									mappaGui[i][j].setToolTipText("ID Dinosauro: " + daVisualizzare);
@@ -373,7 +373,7 @@ public class MappaGui {
 				if(!gui.getMovimento()[gui.getIndiceDino()]) { // TODO indicedino
 					try {	
 						gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
-						String risposta = gui.getClientGui().getRisposta();
+						String risposta = gui.getClientGui().getRichiesta();
 						if(risposta.contains("@ok")) {
 							aggiornaStato(idDinosauro);
 							gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
@@ -410,11 +410,11 @@ public class MappaGui {
 		try {
 			//ricevo nuovamente la mappa con la vista locale				
 			gui.getClientGui().vistaLocale(idDino);
-			applicaVisiblita(gui.getClientGui().getRisposta());
+			applicaVisiblita(gui.getClientGui().getRichiesta());
 			applicaRaggiungibilita();
 
 			gui.getClientGui().statoDinosauro(idDino);
-			String[] risposta = gui.getClientGui().getRisposta().split(",");
+			String[] risposta = gui.getClientGui().getRichiesta().split(",");
 			int riga = Integer.parseInt(risposta[4].replace("{",""));
 			int colonna = Integer.parseInt(risposta[5].replace("}",""));
 			setScrollBar(riga,colonna);

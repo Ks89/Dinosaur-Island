@@ -24,6 +24,9 @@ import javax.swing.JTextField;
  * di accedere alla Partita inserendo il nome della specie e il tipo di dinosauro scelto.
  */
 public class LoginGui { 
+
+	private static final String ERRORE = "Devi inserire la password e il nome utente";
+
 	private Gui gui;
 	private static JFrame frameGiocatore = new JFrame("Aggiunta giocatore");
 	private static CardLayout cardLayout = new CardLayout();
@@ -113,15 +116,18 @@ public class LoginGui {
 		login.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						try {
-							gui.getClientGui().eseguiLogin(user.getText(), password.getText());
-							//							if(gui.getClientGui().getRispostaServer().contains("ok")) {
-							continua.setEnabled(true);
-							//							}
-						} catch (IOException ecc) {
-							JOptionPane.showMessageDialog(null,"IOException");
-						} catch (InterruptedException ecc) {
-							JOptionPane.showMessageDialog(null,"InterruptedException");
+						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+							try {
+								gui.getClientGui().eseguiLogin(user.getText(), password.getText());
+								continua.setEnabled(true);
+							} catch (IOException ecc) {
+								JOptionPane.showMessageDialog(null,"IOException");
+							} catch (InterruptedException ecc) {
+								JOptionPane.showMessageDialog(null,"InterruptedException");
+							}
+						} else {
+							JOptionPane.showMessageDialog(null,ERRORE);
+							continua.setEnabled(false);
 						}
 					}
 				}
@@ -130,17 +136,20 @@ public class LoginGui {
 		accedi.addActionListener( 
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						try {
-							System.out.println(user.getText() +"," +  password.getText());
-							gui.getClientGui().accessoPartita(user.getText(), password.getText());			
-							frameGiocatore.dispose();	
-							gui.preparaDati(user.getText(), password.getText());
-						} catch (IOException ecc) {
-							JOptionPane.showMessageDialog(null,"IOException");
-						} catch (InterruptedException ecc) {
-							JOptionPane.showMessageDialog(null,"InterruptedException");
-						}	
-
+						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+							try {
+								System.out.println(user.getText() +"," +  password.getText());
+								gui.getClientGui().accessoPartita(user.getText(), password.getText());			
+								frameGiocatore.dispose();	
+								gui.preparaDati(user.getText(), password.getText());
+							} catch (IOException ecc) {
+								JOptionPane.showMessageDialog(null,"IOException");
+							} catch (InterruptedException ecc) {
+								JOptionPane.showMessageDialog(null,"InterruptedException");
+							}	
+						} else {
+							JOptionPane.showMessageDialog(null,ERRORE);
+						}
 					}
 				}
 		);
@@ -149,12 +158,16 @@ public class LoginGui {
 		creaRazza.addActionListener( 
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						try {
-							gui.getClientGui().creaRazza(user.getText(), password.getText(),specie.getText(),tipo);
-						} catch (IOException ecc) {
-							JOptionPane.showMessageDialog(null,"IOException");
-						} catch (InterruptedException ecc) {
-							JOptionPane.showMessageDialog(null,"InterruptedException");
+						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+							try {
+								gui.getClientGui().creaRazza(user.getText(), password.getText(),specie.getText(),tipo);
+							} catch (IOException ecc) {
+								JOptionPane.showMessageDialog(null,"IOException");
+							} catch (InterruptedException ecc) {
+								JOptionPane.showMessageDialog(null,"InterruptedException");
+							}
+						} else {
+							JOptionPane.showMessageDialog(null,ERRORE);
 						}
 					}
 				}
@@ -162,12 +175,16 @@ public class LoginGui {
 		registrati.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						try {
-							gui.getClientGui().creaUtente(user.getText(), password.getText());
-						} catch (IOException ecc) {
-							JOptionPane.showMessageDialog(null,"IOException");
-						} catch (InterruptedException ecc) {
-							JOptionPane.showMessageDialog(null,"InterruptedException");
+						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+							try {
+								gui.getClientGui().creaUtente(user.getText(), password.getText());
+							} catch (IOException ecc) {
+								JOptionPane.showMessageDialog(null,"IOException");
+							} catch (InterruptedException ecc) {
+								JOptionPane.showMessageDialog(null,"InterruptedException");
+							}
+						} else {
+							JOptionPane.showMessageDialog(null,ERRORE);
 						}
 					}
 				}

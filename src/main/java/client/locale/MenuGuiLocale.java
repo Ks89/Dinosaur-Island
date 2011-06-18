@@ -1,7 +1,9 @@
-package client.gui;
+package client.locale;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import isoladinosauri.salvataggio.StatoGiocatoreDB;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -58,6 +60,7 @@ public class MenuGuiLocale {
 				{
 					public void actionPerformed(ActionEvent event)
 					{
+					    StatoGiocatoreDB.stopDBServer();
 						frame.dispose();
 					}
 				}

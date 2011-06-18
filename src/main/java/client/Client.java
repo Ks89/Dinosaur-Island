@@ -1,195 +1,294 @@
-//package client;
-//
-//import java.io.*;
-//import java.net.Socket;
-//import java.net.UnknownHostException;
-//import java.util.Scanner;
-//import client.Client;
-//
-//
-//
-//public class Client {
-//	
-//	private String host;
-//	private int port;
-//	
-//	public Client(String host, int port) {
-//		this.host = host;
-//		this.port = port;
-//	}
-//	
-//	public void runClient() throws IOException, InterruptedException {
-//		System.out.println("Connecting to server. Host: " + host + " - port: " + port);
-//		Socket socket = new Socket(host, port);
-//		System.out.println("Connected.");
-//		BufferedReader keyboardReader = new BufferedReader(new InputStreamReader(System.in));
-//		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-//		String request=null;
-//		String answer;
-//		String nickname;
-//		String password;
-//		String token;
-//		String nomeRazza;
-//		String idDino;
-//		String tipoRazza;
-//		int scelta=0;
-//		Scanner input = new Scanner(System.in);
-//		while (true){
-//			while(scelta!=99) {
-//				System.out.println("1 - @creaUtente");
-//				System.out.println("2 - @login");
-//				System.out.println("3 - @creaRazza");
-//				System.out.println("4 - @accessoPartita");
-//				System.out.println("5 - @uscitaPartita");
-//				System.out.println("6 - @listaGiocatori");
-//				System.out.println("7 - @logout");
-//				System.out.println("8 - @mappaGenerale");
-//				System.out.println("9 - @listaDinosauri");
-//				System.out.println("10 - @vistaLocale");
-//				System.out.println("11 - @statoDinosauro");
-//				System.out.println("12 - @movimentoDinosauro");
-//				System.out.println("13 - @crescitaDinosauro");
-//				System.out.println("14 - @deponiUovo");
-//				System.out.println("99 - termina client");
-//				scelta = input.nextInt();
-//				switch(scelta) {
-//				case 1:
-//					bufferedWriter.flush();
-//					System.out.println("nome utente: ");
-//					nickname = keyboardReader.readLine();
-//					System.out.println("password: ");
-//					password = keyboardReader.readLine();
-//					request="@creaUtente,user="+nickname+",pass="+password;
-//					break;
-//				case 2:
-//					bufferedWriter.flush();
-//					System.out.println("nome utente: ");
-//					nickname = keyboardReader.readLine();
-//					System.out.println("password: ");
-//					password = keyboardReader.readLine();
-//					request="@login,user="+nickname+",pass="+password;
-//					break;
-//				case 3:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					System.out.println("nome razza: ");
-//					nomeRazza = keyboardReader.readLine();
-//					System.out.println("tipo [e/c]: ");
-//					tipoRazza = keyboardReader.readLine();
-//					request="@creaRazza,token="+token+",nome="+nomeRazza+",tipo="+tipoRazza;
-//					break;
-//				case 4:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					request="@accessoPartita,token="+token;
-//					break;
-//				case 5:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					request="@uscitaPartita,token="+token;
-//					break;
-//				case 6:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					request="@listaGiocatori,token="+token;
-//					break;
-//				case 7:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					request="@logout,token="+token;
-//					break;
-//				case 8:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					request="@mappaGenerale,token="+token;
-//					break;
-//				case 9:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					request="@listaDinosauri,token="+token;
-//					break;
-//				case 10:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					System.out.println("idDino: ");
-//					idDino = keyboardReader.readLine();
-//					request="@vistaLocale,token="+token+",idDino="+idDino;
-//					break;
-//				case 11:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					System.out.println("idDino: ");
-//					idDino = keyboardReader.readLine();
-//					request="@statoDinosauro,token="+token+",idDino="+idDino;
-//					break;
-//				case 12: //movimento dinosauro
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					System.out.println("idDino: ");
-//					idDino = keyboardReader.readLine();
-//					System.out.println("destinazione: ");
-//					String destinazione = keyboardReader.readLine();
-//					request="@muoviDinosauro,token=" + token + ",idDino=" + idDino + ",dest={" + destinazione + "}";
-//					break;
-//				case 13:
-//					//TODO crescita
-//					break;	
-//				case 14:
-//					bufferedWriter.flush();
-//					System.out.println("token: ");
-//					token = keyboardReader.readLine();
-//					System.out.println("idDino: ");
-//					idDino = keyboardReader.readLine();
-//					request="@deponiUovo,token="+token+",idDino="+idDino;
-//					break;
-//				default:
-//					bufferedWriter.flush();
-//					System.out.println("scelta non consentita\n");
-//					break;
-//				}
-//				if(scelta!=99) {
-//					System.out.println("Sending request to server: " + request);
-//					bufferedWriter.write(request);
-//					bufferedWriter.newLine();
-//					bufferedWriter.flush();
-//					answer = bufferedReader.readLine();
-//					if (answer != null) {
-//						System.out.println("Server response: " + answer);
-//					}
-//				}
-//			}
-//			socket.close();
-//			System.out.println("Terminating client.");
-//			break;
-//		}
-//
-//	}
-//		public static void main(String[] args) {
-//			Client client = new Client("localhost", 1234);
-//			try {
-//				client.runClient();
-//			} catch (UnknownHostException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//	}
-//
-//}
+package client;
+
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+import client.Client;
+
+
+/**
+ *	Classe che si occupa di inviare i messaggi
+ *	al server e di ricevere la risposta.
+ */
+public class Client {
+
+	private String host;
+	private int porta;
+	private Socket socket;
+	private BufferedReader bufferedReader;
+	private BufferedWriter bufferedWriter;
+	private String richiesta;
+	private String risposta;
+	private String token;
+	private String nomeUtente;
+
+
+	public Client (String host, int porta) {
+		this.host = host;
+		this.porta = porta;
+	}
+	
+	
+	/**
+	 * @return Una string rappresentanta la risposta del Server.
+	 */
+	public String getRichiesta() {
+		return risposta;
+	}
+
+	/**
+	 * Metodo per inizializzare il Client.
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
+	public void inizializzaClient() throws UnknownHostException, IOException {
+		this.socket = new Socket(host, porta);
+		bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+	}
+
+	/**
+	 * Metodo per ottenere la risposta dal Server.
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public String getRispostaServer() throws IOException, InterruptedException{
+		risposta = bufferedReader.readLine();
+		if (risposta != null) {
+			System.out.println("Risposta server: " + risposta);
+		}
+		return risposta;
+	}
+
+	/**
+	 * Metodo per registrarsi.
+	 * @param nomeUtente
+	 * @param password
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void creaUtente(String nomeUtente, String password) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@creaUtente,user="+nomeUtente+",pass="+password;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per eseguire il login.
+	 * @param nomeUtente
+	 * @param password
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void eseguiLogin(String nomeUtente, String password) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@login,user="+nomeUtente+",pass="+password;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per creare la razza.
+	 * @param nomeUtente
+	 * @param password
+	 * @param nome
+	 * @param tipo
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void creaRazza(String nomeUtente, String password,String nome, String tipo) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		this.token = nomeUtente + "-" + password;
+		richiesta = "@creaRazza,token=" + this.token + ",nome=" + nome + ",tipo=" + tipo;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per eseguire il logout.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void logout() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@logout,token="+this.token;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per richiedere la classifica.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void classifica() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@classifica,token="+this.token;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per uscire dalla Partita.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void uscitaPartita() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@uscitaPartita,token="+this.token;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per ottenere la mappa generale.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void mappaGenerale() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@mappaGenerale,token="+this.token;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per ottenere lo stato del Dinosauro.
+	 * @param idDino
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void statoDinosauro(String idDino) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@statoDinosauro,token="+token+",idDino="+idDino;
+		this.inviaAlServer();
+	}	
+
+	/**
+	 * Metodo per accedere in Partita.
+	 * @param nomeUtente
+	 * @param password
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void accessoPartita(String nomeUtente, String password) throws IOException, InterruptedException{
+		this.nomeUtente = nomeUtente;
+		bufferedWriter.flush();
+		richiesta="@accessoPartita,token="+token;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per ottenere la vista locale.
+	 * @param idDino
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void vistaLocale(String idDino) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@vistaLocale,token="+token+",idDino="+idDino;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per far crescere un Dinosauro.
+	 * @param idDino
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void crescitaDinosauro(String idDino) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@cresciDinosauro,token="+token+",idDino="+idDino;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per deporre un uovo.
+	 * @param idDino
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void deponiUovo(String idDino) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@deponiUovo,token="+token+",idDino="+idDino;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per eseguire un movimento.
+	 * @param idDino
+	 * @param riga
+	 * @param colonna
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void muoviDinosauro(String idDino,int riga, int colonna) throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@muoviDinosauro,token=" + token + ",idDino=" + idDino + ",dest={" + riga + "," + colonna + "}";
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per ottenere la lista dei Dinosauri.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void listaDinosauri() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@listaDinosauri,token="+token;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per confermare il Turno.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void confermaTurno() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@confermaTurno,token="+token;
+		this.inviaAlServer();
+	}
+
+	/**
+	 * Metodo per passare il turno.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void passaTurno() throws IOException, InterruptedException{
+		bufferedWriter.flush();
+		richiesta="@passaTurno,token="+token;
+		this.inviaAlServer();
+	}
+
+	//ricevi il cambio turno
+	public void cambioTurno(String nomeUtente) throws IOException, InterruptedException{
+		if(this.risposta.contains("@cambioTurno")) {
+			String utente = this.risposta.split(",")[1];
+			//controllo se il nomeUtente delo giocatore sul client e' uguale a quello mandato dal server
+			//in tal caso vuol dire che ho ottenuto il turno
+			if(utente.equals(nomeUtente)) {
+//				this.avviaPrimoTimer();
+			}
+			//ricevo il cambio turno
+		}
+	}
+
+
+	/**
+	 * Metodo per inviare al Server la richiesta effettuata.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void inviaAlServer() throws IOException, InterruptedException{
+		System.out.println("Invio richiesta al server: " + richiesta);
+		bufferedWriter.write(richiesta);
+		bufferedWriter.newLine();
+		bufferedWriter.flush();
+		this.getRispostaServer();	
+	}
+	
+	public String getNomeUtente() {
+		return nomeUtente;
+	}
+
+	public void setNomeUtente(String nomeUtente) {
+		this.nomeUtente = nomeUtente;
+	}
+}
