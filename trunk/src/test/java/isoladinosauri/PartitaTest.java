@@ -56,7 +56,7 @@ public class PartitaTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"stego","c");
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
 		g.aggiungiInPartita(p);
@@ -73,7 +73,7 @@ public class PartitaTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"stego","c");
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
 		g.aggiungiInPartita(p);

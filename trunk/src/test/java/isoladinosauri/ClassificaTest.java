@@ -1,12 +1,14 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
+import gestioneeccezioni.CrescitaException;
+import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
 
 public class ClassificaTest {
 
-	public Partita inizializzaPartita() {
+	private Partita inizializzaPartita() {
 		CaricamentoMappa cm = new CaricamentoMappa();
 		Cella[][] mappaCelle;
 		mappaCelle = cm.caricaDaFile();
@@ -14,18 +16,39 @@ public class ClassificaTest {
 		Partita p = new Partita(i);
 		return p;
 	}
-	//FIXME: da rivedere entrambi per l'uso di assert	
+	
 	/**
 	 * Test method for {@link isoladinosauri.Classifica#aggiungiTuplaClassifica(isoladinosauri.Giocatore)}.
 	 */
 	@Test
-	public void testAggiungiTuplaClassifica() {
+	public void testAggiungiTuplaClassifica() { //questo metodo usa anche cercaInClassifica() e aggiornaPuntiTupla()
 		Partita p = inizializzaPartita();
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
-		Utente u = new Utente("nomeUtente","pass");
-		g.setUtente(u);
+		Turno t = new Turno(p);
+		p.setTurnoCorrente(t);
+		//creo un nuovo giocatore con un dinosauro (carnivoro)
+		Giocatore g1 = new Giocatore(1,"trex","c");
+		Utente u1 = new Utente("nomeUtente1","pass");
+		g1.setUtente(u1);
+		g1.aggiungiInPartita(p);
+		Dinosauro dG1 = g1.getDinosauri().get(0);
 		Classifica c = new Classifica(p);
-		c.aggiungiTuplaClassifica(g);
+		assertEquals(0, c.getClassificaGiocatori().size());
+		c.aggiungiTuplaClassifica(g1); //aggiungo g1 in classifica
+		assertEquals(1, c.getClassificaGiocatori().size());
+		try {
+			dG1.aumentaDimensione();
+		} catch (CrescitaException e) {
+			fail("eccezione");
+		}
+		c.aggiungiTuplaClassifica(g1); //faccio aggiornare la classifica
+		//creo un nuovo giocatore con un dinosauro (erbivoro)
+		Giocatore g2 = new Giocatore(1,"stego","e");
+		Utente u2 = new Utente("nomeUtente2","pass");
+		g2.setUtente(u2);
+		g2.aggiungiInPartita(p);
+		assertEquals(1, c.getClassificaGiocatori().size());
+		c.aggiungiTuplaClassifica(g2); //aggiungo g2 in classifica
+		assertEquals(2, c.getClassificaGiocatori().size());
 	}
 
 	/**
@@ -34,10 +57,19 @@ public class ClassificaTest {
 	@Test
 	public void testAggiornaClassificaStati() {
 		Partita p = inizializzaPartita();
-		Giocatore g = new Giocatore(1,"pippo","carnivoro");
+		Turno t = new Turno(p);
+		p.setTurnoCorrente(t);
+		//creo un nuovo giocatore con un dinosauro (carnivoro)
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
+		g.aggiungiInPartita(p);
+		assertEquals(1, p.getGiocatori().size());
 		Classifica c = new Classifica(p);
+		c.aggiungiTuplaClassifica(g);
+		c.aggiornaClassificaStati();
+		p.rimuoviGiocatore(g);
+		assertEquals(0, p.getGiocatori().size());
 		c.aggiornaClassificaStati();
 	}
 }

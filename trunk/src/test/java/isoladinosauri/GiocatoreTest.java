@@ -14,7 +14,7 @@ public class GiocatoreTest {
 	 * Test method for {@link isoladinosauri.Giocatore#aggiungiInPartita(isoladinosauri.Partita)}.
 	 */
 	
-	public Partita inizializzaPartita() {
+	private Partita inizializzaPartita() {
 		CaricamentoMappa cm = new CaricamentoMappa();
 		Cella[][] mappaCelle;
 		mappaCelle = cm.caricaDaFile();
@@ -28,7 +28,7 @@ public class GiocatoreTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"stego","c");
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
 		assertEquals(0, p.getGiocatori().size());
@@ -41,7 +41,7 @@ public class GiocatoreTest {
 	 */
 	@Test
 	public void testAggiungiDinosauro() {
-		Giocatore g = new Giocatore(1,"stego","c");
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
 		Dinosauro d1 = new Carnivoro("11",1,1,1);
@@ -66,7 +66,7 @@ public class GiocatoreTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"stego","c");
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
 		g.aggiungiInPartita(p);
@@ -83,26 +83,27 @@ public class GiocatoreTest {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
-		Giocatore g = new Giocatore(1,"stego","c");
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
 		g.aggiungiInPartita(p);
 		Dinosauro d = g.getDinosauri().get(0);
 		try {
-			g.aggiungiUovo(d.getRiga(), d.getColonna(), d.getId());
 			d.setEnergia(4000);
-			g.eseguiDeposizionedeponiUovo(d);
+			String idPrimoNato = g.eseguiDeposizionedeponiUovo(d);
 			assertEquals(2500,d.getEnergia());
+			assertEquals("12",idPrimoNato);
 		} catch (DeposizioneException e) {
 			fail("eccezione");
-		}		
+		}
+		String idSecondoNato = new String("");
 		try {
-			g.aggiungiUovo(d.getRiga(), d.getColonna(), d.getId());
 			d.setEnergia(10);
-			g.eseguiDeposizionedeponiUovo(d);
+			idSecondoNato =	g.eseguiDeposizionedeponiUovo(d);
 			fail("non ha generato eccezione x mancanza di energia");
 		} catch (DeposizioneException e) {
 			System.out.println("ok generata eccezione x mancanza di energia");
-		} 
+			assertEquals("", idSecondoNato);
+		}
 	}
 }
