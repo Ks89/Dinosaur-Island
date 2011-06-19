@@ -6,6 +6,7 @@ import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
 
+import gestioneeccezioni.DeposizioneException;
 import gestioneeccezioni.MovimentoException;
 
 public class TurnoTest {
@@ -36,7 +37,7 @@ public class TurnoTest {
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
 		//creo un nuovo giocatore con un dinosauro (carnivoro)
-		Giocatore g = new Giocatore(1,"stego","c");
+		Giocatore g = new Giocatore(1,"trex","c");
 		Utente u = new Utente("nomeUtente","pass");
 		g.setUtente(u);
 		g.aggiungiInPartita(p);
@@ -60,7 +61,7 @@ public class TurnoTest {
 		Turno t = new Turno(p);
 		p.setTurnoCorrente(t);
 		//creo un nuovo giocatore con un dinosauro (carnivoro)
-		Giocatore g1 = new Giocatore(1,"stego1","c");
+		Giocatore g1 = new Giocatore(1,"trex1","c");
 		Utente u1 = new Utente("nomeUtente1","pass");
 		g1.setUtente(u1);
 		g1.aggiungiInPartita(p);
@@ -151,7 +152,7 @@ public class TurnoTest {
 		}
 		
 		// creo un altro giocatore g4 con un dinosauro (carnivoro):
-		Giocatore g4 = new Giocatore(1,"stego4","c");
+		Giocatore g4 = new Giocatore(1,"trex4","c");
 		Utente u4 = new Utente("nomeUtente4","pass");
 		g4.setUtente(u4);
 		g4.aggiungiInPartita(p);
@@ -173,7 +174,7 @@ public class TurnoTest {
 		}
 		
 		// creo un altro giocatore g5 con un dinosauro (carnivoro):
-		Giocatore g5 = new Giocatore(1,"stego5","c");
+		Giocatore g5 = new Giocatore(1,"trex5","c");
 		Utente u5 = new Utente("nomeUtente5","pass");
 		g5.setUtente(u5);
 		g5.aggiungiInPartita(p);
@@ -230,6 +231,27 @@ public class TurnoTest {
 			if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
 				System.out.println("ok generata eccezione per destinazione errata (erbivoro su erbivoro)");
 			}
+		}
+		
+		
+		//faccio generare un figlio per poi far muovere il padre sopra di lui x generare eccezione
+		String idDinoNato = new String("");
+		try {
+			idDinoNato = g7.eseguiDeposizionedeponiUovo(dG7);
+		} catch (DeposizioneException e) {
+			fail("eccezione");
+		}
+		p.nascitaDinosauro(1);
+		Dinosauro dinoNato = g7.getDinosauri().get(1);
+		assertEquals(idDinoNato, dinoNato.getId());
+		System.out.println("coord dG7="+dG7.getRiga()+","+dG7.getColonna());
+		System.out.println("coord dinoNato="+dinoNato.getRiga()+","+dinoNato.getColonna());
+		//faccio spostare due dinosauri dello stesso giocatore uno sopra l'altro x fare generare l'eccezione
+		try {
+			t.spostaDinosauro(dG7, dinoNato.getRiga(), dinoNato.getColonna());
+			fail("non ha generato eccezione x movimento sopra un proprio dino");
+		} catch (MovimentoException e) {
+			System.out.println("ok generata eccezione x movimento sopra un proprio dino");
 		}
 	}
 
