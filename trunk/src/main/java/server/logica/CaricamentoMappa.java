@@ -113,14 +113,20 @@ public class CaricamentoMappa {
 			//se vegetale crea cella e mette come occupante il vegetale
 			Cella cella=new Cella();
 			//chiamo costruttore predef che inzializza energiaMax random
-			cella.setOccupante(new Vegetale()); 
+			Vegetale vegetale = new Vegetale();
+			vegetale.setRiga(riga);
+			vegetale.setColonna(colonna);
+			cella.setOccupante(vegetale); 
 			this.mappa[riga][colonna]=cella;
 		}
 		if(elemento.equals("c")) {
 			//se carogna crea cella e mette come occupante la carogna
 			Cella cella=new Cella();
 			//chiamo costruttore predef che inzializza energiaMax random
-			cella.setOccupante(new Carogna());
+			Carogna carogna = new Carogna();
+			carogna.setRiga(riga);
+			carogna.setColonna(colonna);
+			cella.setOccupante(carogna);
 			this.mappa[riga][colonna]=cella;
 		}
 	}
