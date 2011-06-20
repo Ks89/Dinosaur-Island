@@ -7,9 +7,9 @@ import java.util.TimerTask;
 
 public class TimerServer extends TimerTask {
 
-	private ClientHandler ch;
+	private GestoreClient ch;
 	
-	public TimerServer(ClientHandler ch) {
+	public TimerServer(GestoreClient ch) {
 		this.ch = ch;
 	}
 	

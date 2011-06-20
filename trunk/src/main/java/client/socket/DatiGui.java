@@ -46,7 +46,7 @@ public class DatiGui {
 	 * @param indiceDino int che rappresenta il numero del Dinosauro selezionato.
 	 */
 	public void aggiornaDati(String idDinosauro) {
-		
+		System.out.println("ID DINOSAURO AGGIORNA DATI: " + idDinosauro);
 		try {
 			this.gui.getClientGui().statoDinosauro(idDinosauro);
 		} catch (IOException ecc) {
@@ -67,9 +67,9 @@ public class DatiGui {
 		this.nomeSpecieRis.setText(rispostaSplittata[2]);
 		
 		this.dimensioneRis.setText(rispostaSplittata[6]);
-//		this.energiaRis.setText(rispostaSplittata[7]); //FIXME
+		this.energiaRis.setText(rispostaSplittata[7]); //FIXME
 		
-		this.energiaRis.setText("cc");
+//		this.energiaRis.setText("cc");
 		this.energiaMaxRis.setText(Integer.parseInt(rispostaSplittata[6])*1000 + "");
 		String tipo = rispostaSplittata[3];
 //		if(tipo.equals("e")) {

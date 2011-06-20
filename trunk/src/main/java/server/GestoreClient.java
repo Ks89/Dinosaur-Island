@@ -35,7 +35,7 @@ import gestioneeccezioni.MovimentoException;
  * Implementa due socket, uno per la comunicazione col client e uno per
  * inviare messaggi in broadcast.
  */
-public class ClientHandler extends Thread {
+public class GestoreClient extends Thread {
 
 	private Socket socket;
 	private Socket socketTurno;
@@ -60,7 +60,7 @@ public class ClientHandler extends Thread {
 	 * @param gestioneGiocatori Riferimento a GestioneGiocatori contenenti le liste di utenti online e le razze create.
 	 * @param classifica Classifica dei giocatori.
 	 */
-	public ClientHandler(Socket socket, Socket socketTurno, Partita partita, GestioneGiocatori gestioneGiocatori,Classifica classifica) {
+	public GestoreClient(Socket socket, Socket socketTurno, Partita partita, GestioneGiocatori gestioneGiocatori,Classifica classifica) {
 		this.socket = socket;
 		this.socketTurno = socketTurno;
 		this.partita = partita;
@@ -97,8 +97,9 @@ public class ClientHandler extends Thread {
 				System.out.println("Fine giro giocatori");
 			}
 			broadcast = "@cambioTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente(); 
-			this.partita.incrementaEtaGiocatori();
+			this.partita.nascitaDinosauro(1);
 			this.classifica.aggiornaClassificaStati();
+			this.partita.incrementaEtaGiocatori();
 			this.partita.getIsola().cresciEConsuma();
 			this.partita.getTurnoCorrente().ricreaCarogne(this.partita.getIsola().getMappa());
 			this.avviaTimerAzioni();
@@ -841,13 +842,10 @@ public class ClientHandler extends Thread {
 				Giocatore giocatore = this.individuaGiocatore(token.split("-")[0]);
 				Dinosauro dinosauro = this.individuaDinosauro(idDino);
 				if(dinosauro!=null) {
-					if(this.verificaUltimoDinosauro(dinosauro)) {
-						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
-					} else {
+//					if(this.verificaUltimoDinosauro(dinosauro)) {
 						try {
 							String idNuovoDinosauro = giocatore.eseguiDeposizionedeponiUovo(dinosauro);
 							domanda = "@ok,"+idNuovoDinosauro;
-							partita.nascitaDinosauro(1);
 							this.classifica.aggiungiTuplaClassifica(giocatore);
 
 							if(this.verificaUltimoDinosauro(dinosauro)) {
@@ -863,7 +861,9 @@ public class ClientHandler extends Thread {
 								domanda = "@no,@raggiuntoNumeroMaxDinosauri";
 							}
 						}
-					}
+//					} else {
+//						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
+//					}
 				}
 				else {
 					domanda = "@no,@idNonValido";
@@ -903,7 +903,7 @@ public class ClientHandler extends Thread {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
 
-					if(this.verificaUltimoDinosauro(dinosauro)) {						
+//					if(this.verificaUltimoDinosauro(dinosauro)) {						
 						try {
 							dinosauro.aumentaDimensione();
 							domanda = "@ok";
@@ -923,9 +923,9 @@ public class ClientHandler extends Thread {
 								domanda = "@no,@raggiuntaDimensioneMax";
 							}
 						}
-					} else {
-						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
-					}
+//					} else {
+//						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
+//					}
 				} else {
 					domanda = "@no,@idNonValido";
 				}
@@ -964,7 +964,7 @@ public class ClientHandler extends Thread {
 			if(inPartita) {
 				if(this.verificaIdDinosauro(idDino)) {
 					Dinosauro dinosauro = this.individuaDinosauro(idDino);
-					if(this.verificaUltimoDinosauro(dinosauro)) {
+//					if(this.verificaUltimoDinosauro(dinosauro)) {
 
 						try {
 							boolean statoMovimento = partita.getTurnoCorrente().spostaDinosauro(dinosauro, riga, colonna);
@@ -994,9 +994,9 @@ public class ClientHandler extends Thread {
 								domanda = "@no,@destinazioneNonValida";
 							}
 						}
-					} else {
-						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
-					}
+//					} else {
+//						domanda = "@no,@raggiuntoLimiteMosseDinosauro";
+//					}
 				} else {
 					domanda = "@no,@idNonValido";
 				}
