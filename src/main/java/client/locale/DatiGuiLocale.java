@@ -1,11 +1,13 @@
 package client.locale;
 
-import isoladinosauri.Giocatore;
-import isoladinosauri.modellodati.Dinosauro;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import server.logica.Giocatore;
+import server.modellodati.Dinosauro;
+
 
 /**
  * Classe che si occupa di inizializzare il Panel con il riassunto 

@@ -55,9 +55,13 @@ public class DatiGui {
 			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 				
-		String[] rispostaSplittata = this.gui.getClientGui().getRichiesta().split(",");
-		int rigaDino = Integer.parseInt(this.gui.getClientGui().getRichiesta().split(",")[4].replace("{", ""));
-		int colonnaDino = Integer.parseInt(this.gui.getClientGui().getRichiesta().split(",")[5].replace("}", ""));
+		String risp = this.gui.getClientGui().getRichiesta();
+
+		System.out.println("stato Dinosauro: " + risp);
+
+		String[] rispostaSplittata = risp.split(",");
+		int rigaDino = Integer.parseInt(risp.split(",")[4].replace("{", ""));
+		int colonnaDino = Integer.parseInt(risp.split(",")[5].replace("}", ""));
 		
 		this.userRis.setText(rispostaSplittata[1]);
 		this.nomeSpecieRis.setText(rispostaSplittata[2]);

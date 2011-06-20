@@ -1,17 +1,26 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
-import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
+
+import server.logica.CaricamentoMappa;
+import server.logica.Cella;
+import server.logica.Giocatore;
+import server.logica.Isola;
+import server.logica.Partita;
+import server.logica.Turno;
+import server.logica.Utente;
+import server.modellodati.Carnivoro;
+import server.modellodati.Dinosauro;
+
 
 import gestioneeccezioni.DeposizioneException;
 
 public class GiocatoreTest {
 
 	/**
-	 * Test method for {@link isoladinosauri.Giocatore#aggiungiInPartita(isoladinosauri.Partita)}.
+	 * Test method for {@link server.logica.Giocatore#aggiungiInPartita(server.logica.Partita)}.
 	 */
 	
 	private Partita inizializzaPartita() {
@@ -37,7 +46,7 @@ public class GiocatoreTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Giocatore#aggiungiDinosauro(isoladinosauri.modellodati.Dinosauro)}.
+	 * Test method for {@link server.logica.Giocatore#aggiungiDinosauro(server.modellodati.Dinosauro)}.
 	 */
 	@Test
 	public void testAggiungiDinosauro() {
@@ -59,7 +68,7 @@ public class GiocatoreTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Giocatore#rimuoviDinosauro(isoladinosauri.modellodati.Dinosauro)}.
+	 * Test method for {@link server.logica.Giocatore#rimuoviDinosauro(server.modellodati.Dinosauro)}.
 	 */
 	@Test
 	public void testRimuoviDinosauro() {
@@ -76,7 +85,7 @@ public class GiocatoreTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Giocatore#eseguiDeposizionedeponiUovo(isoladinosauri.modellodati.Dinosauro)}.
+	 * Test method for {@link server.logica.Giocatore#eseguiDeposizionedeponiUovo(server.modellodati.Dinosauro)}.
 	 */
 	@Test
 	public void testEseguiDeposizionedeponiUovo() {

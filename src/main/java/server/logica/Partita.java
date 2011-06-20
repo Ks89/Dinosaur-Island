@@ -1,11 +1,14 @@
-package isoladinosauri;
+package server.logica;
 
-import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Dinosauro;
-import isoladinosauri.modellodati.Erbivoro;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+import server.modellodati.Carnivoro;
+import server.modellodati.Dinosauro;
+import server.modellodati.Erbivoro;
+
 
 
 /**

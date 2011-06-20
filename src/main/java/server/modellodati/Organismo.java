@@ -1,4 +1,4 @@
-package isoladinosauri.modellodati;
+package server.modellodati;
 
 /**
  * Classe ASTRATTA che identifica un generico Organismo,

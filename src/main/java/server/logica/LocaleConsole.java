@@ -1,3 +1,4 @@
+package server.logica;
 //package isoladinosauri;
 //
 //import isoladinosauri.modellodati.Carogna;
@@ -6,9 +7,9 @@
 //
 //import java.util.Scanner;
 //
-//import Eccezioni.CrescitaException;
-//import Eccezioni.DeposizioneException;
-//import Eccezioni.MovimentoException;
+//import gestioneeccezioni.CrescitaException;
+//import gestioneeccezioni.DeposizioneException;
+//import gestioneeccezioni.MovimentoException;
 //
 ///**
 // * Classe richiamata dal main per simulare il gioco in Locale con grafica
@@ -37,7 +38,7 @@
 //		scelta = input.nextInt();
 //		switch(scelta) {
 //		case 1 :
-//			mappaCelle = cm.caricaDaFile();
+//			mappaCelle = cm.caricaDaFile("mappaTestAcquaUovo.txt");
 //			i = new Isola(mappaCelle);		
 //			break;
 //		default :

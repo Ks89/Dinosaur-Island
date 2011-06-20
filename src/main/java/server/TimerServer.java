@@ -1,4 +1,5 @@
-package isoladinosauri;
+package server;
+
 
 
 import java.util.TimerTask;

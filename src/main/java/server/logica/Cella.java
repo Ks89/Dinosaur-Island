@@ -1,7 +1,7 @@
-package isoladinosauri;
+package server.logica;
  
-import isoladinosauri.modellodati.Dinosauro;
-import isoladinosauri.modellodati.Occupante;
+import server.modellodati.Dinosauro;
+import server.modellodati.Occupante;
 
 /**
  * Classe usata per contenere due interfacce

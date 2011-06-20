@@ -1,15 +1,18 @@
 package isoladinosauri.modellodati;
 
 import static org.junit.Assert.*;
-import isoladinosauri.CaricamentoMappa;
-import isoladinosauri.Cella;
-import isoladinosauri.Giocatore;
-import isoladinosauri.Isola;
-import isoladinosauri.Partita;
-import isoladinosauri.Turno;
-import isoladinosauri.Utente;
 
 import org.junit.Test;
+
+import server.logica.CaricamentoMappa;
+import server.logica.Cella;
+import server.logica.Giocatore;
+import server.logica.Isola;
+import server.logica.Partita;
+import server.logica.Turno;
+import server.logica.Utente;
+import server.modellodati.Dinosauro;
+
 
 import gestioneeccezioni.CrescitaException;
 
@@ -25,7 +28,7 @@ public class DinosauroTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#calcolaRaggioVisibilita()}.
+	 * Test method for {@link server.modellodati.Dinosauro#calcolaRaggioVisibilita()}.
 	 */
 	@Test
 	public void testCalcolaRaggioVisibilita() {
@@ -64,7 +67,7 @@ public class DinosauroTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.modellodati.Dinosauro#aumentaDimensione()}.
+	 * Test method for {@link server.modellodati.Dinosauro#aumentaDimensione()}.
 	 */
 	@Test
 	public void testAumentaDimensione() {

@@ -1,10 +1,16 @@
-package isoladinosauri;
+package server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import isoladinosauri.ServerMain;
-import isoladinosauri.ClientHandler;
+
+import server.ServerMain;
+import server.logica.CaricamentoMappa;
+import server.logica.Cella;
+import server.logica.Classifica;
+import server.logica.Isola;
+import server.logica.Partita;
+import server.logica.Turno;
 
 
 /**
@@ -14,7 +20,7 @@ public class ServerMain {
 
 	private int porta;
 	private Partita partita;
-	private GestioneServer gestioneGiocatori;
+	private GestioneGiocatori gestioneGiocatori;
 	private Classifica classifica;
 
 	
@@ -32,7 +38,7 @@ public class ServerMain {
 		this.partita = new Partita(new Isola(mappaCelle));
 		Turno t = new Turno(partita);
 		partita.setTurnoCorrente(t);
-		this.gestioneGiocatori = new GestioneServer();
+		this.gestioneGiocatori = new GestioneGiocatori();
 		this.classifica = new Classifica(this.partita);
 	}
 

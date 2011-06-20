@@ -10,6 +10,8 @@ import java.util.StringTokenizer;
 
 import org.junit.Test;
 
+import server.logica.PosizionaVegetazione;
+
 public class PosizionaVegetazioneTest {
 	private static final int MAX = 40;
 	
@@ -54,7 +56,7 @@ public class PosizionaVegetazioneTest {
 	}
 	
 	/**
-	 * Test method for {@link isoladinosauri.PosizionaVegetazione#posizionaVegetazione(java.lang.String[][])}.
+	 * Test method for {@link server.logica.PosizionaVegetazione#posizionaVegetazione(java.lang.String[][])}.
 	 */
 	@Test
 	public void testPosizionaVegetazione() {

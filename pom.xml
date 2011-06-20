@@ -52,7 +52,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>client.locale.MainGuiLocale</mainClass>
+							<mainClass>client.ClientMain</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

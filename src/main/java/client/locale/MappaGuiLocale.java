@@ -1,12 +1,5 @@
 package client.locale;
 
-import isoladinosauri.Cella;
-import isoladinosauri.Giocatore;
-import isoladinosauri.Turno;
-import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Carogna;
-import isoladinosauri.modellodati.Erbivoro;
-import isoladinosauri.modellodati.Vegetale;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,6 +16,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+
+import server.logica.Cella;
+import server.logica.Giocatore;
+import server.logica.Turno;
+import server.modellodati.Carnivoro;
+import server.modellodati.Carogna;
+import server.modellodati.Erbivoro;
+import server.modellodati.Vegetale;
+
 
 /**
  * Classe che inizializza il JScrollPane contenente la mappa di JButton.

@@ -1,4 +1,4 @@
-package isoladinosauri;
+package server.logica;
 
 /**
  * Questa classe costituisce una singola riga della classifica dei giocatori.

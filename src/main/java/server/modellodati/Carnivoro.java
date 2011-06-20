@@ -1,4 +1,4 @@
-package isoladinosauri.modellodati;
+package server.modellodati;
 
 /**
  * Classe che identifica un dinosauro Carnivoro,

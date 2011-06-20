@@ -1,13 +1,16 @@
-package isoladinosauri;
+package server.logica;
 
-import isoladinosauri.modellodati.Carogna;
-import isoladinosauri.modellodati.Vegetale;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.StringTokenizer;
+
+import server.modellodati.Carogna;
+import server.modellodati.Vegetale;
+
 
 /**
  * Classe che si occupa del caricamento della mappa da file.
