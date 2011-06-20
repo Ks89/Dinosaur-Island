@@ -1,4 +1,4 @@
-package client;
+package client.socket;
 
 import java.awt.CardLayout;
 import java.awt.Container;

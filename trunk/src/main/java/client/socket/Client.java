@@ -1,10 +1,10 @@
-package client;
+package client.socket;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import client.Client;
+import client.socket.Client;
 
 
 /**
