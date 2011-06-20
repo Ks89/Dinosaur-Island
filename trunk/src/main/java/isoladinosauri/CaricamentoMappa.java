@@ -32,12 +32,12 @@ public class CaricamentoMappa {
 	 * della creazione di un Occupante.
 	 * @return La mappa di gioco costituita da un array bidimensionali di Celle.
 	 */
-	public Cella[][] caricaDaFile() {
+	public Cella[][] caricaDaFile(String nomeFile) {
 		BufferedReader br = null;
 		Reader reader = null;
 		try {  	
 			//fr = new FileReader("mappaTestAcquaUovo.txt");
-			reader = new InputStreamReader(this.getClass().getResourceAsStream("/mappaTestAcquaUovo.txt"));
+			reader = new InputStreamReader(this.getClass().getResourceAsStream("/"+nomeFile));
 			br = new BufferedReader(reader);
 			String riga = br.readLine();
 			StringTokenizer st = null;	
