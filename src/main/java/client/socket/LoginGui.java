@@ -158,7 +158,7 @@ public class LoginGui {
 		creaRazza.addActionListener( 
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+						if(!(user.getText().isEmpty() || password.getText().isEmpty() || specie.getText().isEmpty())) {
 							try {
 								gui.getClientGui().creaRazza(user.getText(), password.getText(),specie.getText(),tipo);
 							} catch (IOException ecc) {

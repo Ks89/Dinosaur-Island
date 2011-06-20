@@ -35,16 +35,16 @@ public class Gui {
 	private JButton deponi;
 	private JButton prossimoDinosauro;
 	private Timer timer;
-	private JFrame frameTurno;
+
+	private JButton conferma;
+	private JButton passa;
 
 	private String[][] mappaRicevuta;
 	private DatiGui datiGui;
 	private MappaGui mg;
 	private Client clientGui;
-	//	private LoginGui loginGui;
 
 	private boolean[] movimento = {false,false,false,false,false};
-
 	private boolean[] azione = {false,false,false,false,false};
 
 	private static final long serialVersionUID = 1L;
@@ -64,22 +64,24 @@ public class Gui {
 	public Timer getTimer() {
 		return timer;
 	}
-	
+
 	public void disattivaAzioniGui() {
 		this.cresci.setEnabled(false);
 		this.deponi.setEnabled(false);
 		this.prossimoDinosauro.setEnabled(false);
-		mg.disattivaAzioniMappa();
+		this.conferma.setEnabled(false);
+		this.passa.setEnabled(false);
+		this.mg.disattivaAzioniMappa();
 		//invio 
 
 	}
 
 	public void attivaAzioniGui() {
-		timer.cancel();
+		this.timer.cancel();
 		this.cresci.setEnabled(true);
 		this.deponi.setEnabled(true);
 		this.prossimoDinosauro.setEnabled(true);
-		mg.attivaAzioniMappa();
+		this.mg.attivaAzioniMappa();
 		this.indiceDino=0;
 		this.avviaTimer();
 	}
@@ -91,64 +93,19 @@ public class Gui {
 		timer.schedule(task, 2 * 60 * 1000);
 	}
 
-	
+
 	private void avviaTimer() {
 		TimerTask task = new TimerClient(this);
 		timer = new Timer();
 		timer.schedule(task, 30 * 1000);
 	}
 
-	//TODO metodo chiamato quando il client riceve il messaggio in broadcast di cambiaTurno
-	public void creaFrameTurno() {
 
+	public void ottieniIlTurno() {
+		conferma.setEnabled(true);
+		passa.setEnabled(true);
 		this.avviaTimer();
 
-		frameTurno = new JFrame();
-		frameTurno.setLayout(new GridLayout(2,1));
-		frameTurno.setAlwaysOnTop(true);
-
-		JButton conferma = new JButton("Conferma");
-		JButton rifiuta = new JButton("Rifiuta");
-
-		conferma.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) { 
-						timer.cancel();
-						try {
-							getClientGui().confermaTurno();
-							attivaAzioniGui();
-						} catch (IOException e2) {
-							e2.printStackTrace();
-						} catch (InterruptedException e2) {
-							e2.printStackTrace();
-						}
-						frameTurno.dispose();
-						avvioSecondoTimer();
-					}
-				}
-		);
-
-		rifiuta.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) { 
-						timer.cancel();
-						try {
-							getClientGui().passaTurno();
-							disattivaAzioniGui();
-						} catch (IOException e2) {
-							e2.printStackTrace();
-						} catch (InterruptedException e2) {
-							e2.printStackTrace();
-						}
-						frameTurno.dispose();
-					}
-				}
-		);
-
-		frameTurno.add(conferma);
-		frameTurno.add(rifiuta);
-		frameTurno.setVisible(true);
-		frameTurno.pack();
 	}
 
 	/**
@@ -203,6 +160,7 @@ public class Gui {
 	private void inizializzaGrafica() {
 		frame = new JFrame("Isola dei dinosauri BETA1");
 		frame.setLayout(new FlowLayout());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		try {
 			String answer = this.impostaMappa();
@@ -222,15 +180,14 @@ public class Gui {
 
 		this.disattivaAzioniGui();
 		this.indiceDino=0;
-		this.creaFrameTurno();
+		this.ottieniIlTurno();
 
 		frame.addWindowListener(
 				new WindowListener() {
 					@Override
 					public void windowClosing(WindowEvent arg0) {
 						try {
-							clientGui.logout();
-							frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+							clientGui.uscitaPartita();
 						} catch (IOException ecc) {
 							JOptionPane.showMessageDialog(null,"IOException");
 						} catch (InterruptedException ecc) {
@@ -243,7 +200,7 @@ public class Gui {
 					@Override
 					public void windowClosed(WindowEvent arg0) {
 						try {
-							clientGui.uscitaPartita();
+							clientGui.logout();
 						} catch (IOException ecc) {
 							JOptionPane.showMessageDialog(null,"IOException");
 						} catch (InterruptedException ecc) {
@@ -332,13 +289,13 @@ public class Gui {
 	 */
 	private JPanel azioni() {
 		JPanel panelAzioni = new JPanel();
-		panelAzioni.setLayout(new GridLayout(7,1));
+		panelAzioni.setLayout(new GridLayout(10,1));
 		JLabel titolo = new JLabel("Azioni");
 		cresci = new JButton("Cresci");
 		deponi = new JButton("Deponi");
 
 		//TODO
-		this.ottieniClassifica();
+		//		this.ottieniClassifica();
 
 		JPanel selezionePanel = new JPanel(new GridLayout(1,2));
 		selezionePanel.add(new JLabel("   Seleziona: "));
@@ -348,6 +305,8 @@ public class Gui {
 		JButton uscitaPartita = new JButton("Uscita Partita");
 		prossimoDinosauro = new JButton("Prossimo dinosauro");
 
+		conferma = new JButton("Conferma");
+		passa = new JButton("Passa");
 
 		panelAzioni.add(titolo);
 		panelAzioni.add(cresci);
@@ -355,6 +314,48 @@ public class Gui {
 		panelAzioni.add(new JLabel());
 		panelAzioni.add(uscitaPartita);
 		panelAzioni.add(prossimoDinosauro);
+		panelAzioni.add(new JLabel());
+		panelAzioni.add(conferma);
+		panelAzioni.add(passa);
+
+
+
+		conferma.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) { 
+						timer.cancel();
+						try {
+							getClientGui().confermaTurno();
+							attivaAzioniGui();
+						} catch (IOException e2) {
+							e2.printStackTrace();
+						} catch (InterruptedException e2) {
+							e2.printStackTrace();
+						}
+						conferma.setEnabled(false);
+						passa.setEnabled(false);
+						avvioSecondoTimer();
+					}
+				}
+		);
+
+		passa.addActionListener(
+				new ActionListener() {
+					public void actionPerformed(ActionEvent e) { 
+						timer.cancel();
+						try {
+							getClientGui().passaTurno();
+							disattivaAzioniGui();
+						} catch (IOException e2) {
+							e2.printStackTrace();
+						} catch (InterruptedException e2) {
+							e2.printStackTrace();
+						}
+						conferma.setEnabled(false);
+						passa.setEnabled(false);
+					}
+				}
+		);
 
 		prossimoDinosauro.addActionListener(
 				new ActionListener() {

@@ -843,6 +843,7 @@ public class ClientHandler extends Thread {
 							String idNuovoDinosauro = giocatore.eseguiDeposizionedeponiUovo(dinosauro);
 							domanda = "@ok,"+idNuovoDinosauro;
 							partita.nascitaDinosauro(1);
+							this.classifica.aggiungiTuplaClassifica(giocatore);
 
 							if(this.verificaUltimoDinosauro(dinosauro)) {
 								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
@@ -888,7 +889,8 @@ public class ClientHandler extends Thread {
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 		// verifico se l'utente si trova in partita
 		boolean inPartita = false;
-		if(this.individuaGiocatore(nomeUtente)!=null) {
+		Giocatore giocatore = this.individuaGiocatore(nomeUtente);
+		if(giocatore!=null) {
 			inPartita = true;
 		}
 		if(loggato) {
@@ -902,6 +904,7 @@ public class ClientHandler extends Thread {
 							domanda = "@ok";
 
 							if(this.verificaUltimoDinosauro(dinosauro)) {
+								this.classifica.aggiungiTuplaClassifica(giocatore);
 								//se il dinosauro che ha compiuto l'azione e' l'ultimo nell'arrayList dei Dinosauri del Giocatore
 								this.eseguitaAzione=true;
 								//invia una notifica a tutti di cambioTurno con lo username del giocatore che puo' cmpiere le sue mosse
