@@ -13,6 +13,7 @@ import server.logica.Turno;
 import server.logica.Utente;
 import server.modellodati.Carogna;
 import server.modellodati.Dinosauro;
+import server.modellodati.Vegetale;
 
 
 import gestioneeccezioni.DeposizioneException;
@@ -35,6 +36,23 @@ public class TurnoTest {
 		d.setRiga(r);
 		d.setColonna(c);
 		return d;
+	}
+	
+	/**
+	 * Test method for {@link server.logica.Turno#illuminaMappa(server.logica.Giocatore, int, int, int)}.
+	 */
+	@Test
+	public void illuminaMappa() {
+		Partita p = inizializzaPartita();
+		Turno t = new Turno(p);
+		p.setTurnoCorrente(t);
+		Giocatore g = new Giocatore(1,"trex","c");
+		Utente u = new Utente("nomeUtente","pass");
+		g.setUtente(u);
+		g.aggiungiInPartita(p);
+		t.illuminaMappa(g, 1, 1, 3);
+		t.illuminaMappa(g, 20, 20, 2);
+		t.illuminaMappa(g, 38, 38, 3);
 	}
 	
 	/**
@@ -88,13 +106,13 @@ public class TurnoTest {
 		//spostamento su terra semplice
 		dG1 = inizializzaDinosauro(dG1,4000,1,1);
 		try {
-			t.spostaDinosauro(dG1, 2, 2);
+			t.spostaDinosauro(dG1, 2, 1);
 		} catch (MovimentoException e) {
 			fail("eccezione movimento");
 
 		}
 		
-		//spostamento su vegetazione
+		//spostamento su vegetazione con carnivoro quindi senza mangiarla
 		dG1 = inizializzaDinosauro(dG1,4000,1,1);
 		try {
 			t.spostaDinosauro(dG1, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
@@ -103,13 +121,69 @@ public class TurnoTest {
 		}
 		
 		
-		//spostamento su carogna
+		//spostamento su carogna con carnivoro con piena energia quindi non la mangia
 		dG1 = inizializzaDinosauro(dG1,4000,38,37);
 		try {
 			t.spostaDinosauro(dG1, 38, 38); // in (38,38) c'e' una carogna (origine in alto a sx)
 		} catch (MovimentoException e) {
 			fail("eccezione movimento");
 		}
+		
+		//spostamento su carogna con carnivoro con poca energia quindi la mangia
+		dG1 = inizializzaDinosauro(dG1,100,38,37);
+		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
+		Carogna carogna = new Carogna();
+		p.getIsola().getMappa()[38][38].setDinosauro(null);
+		p.getIsola().getMappa()[38][38].setOccupante(carogna);
+		try {
+			t.spostaDinosauro(dG1, 38, 38); // in (38,38) c'e' una carogna (origine in alto a sx)
+		} catch (MovimentoException e) {
+			fail("eccezione movimento");
+		}
+		
+		
+		// creo un altro giocatore g8 con un dinosauro (erbivoro):
+		Giocatore g8 = new Giocatore(1,"stego8","e");
+		Utente u8 = new Utente("nomeUtente8","pass");
+		g8.setUtente(u8);
+		g8.aggiungiInPartita(p);
+		Dinosauro dG8 = g8.getDinosauri().get(0);
+		//spostamento su vegetazione con erbivoro con max energia quindi non la mangia
+		dG8 = inizializzaDinosauro(dG8,2000,1,2); // lo posiziono in (1,2) dove c'e' terra semplice
+		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
+		Vegetale vegetale0 = new Vegetale();
+		p.getIsola().getMappa()[1][3].setDinosauro(null);
+		p.getIsola().getMappa()[1][3].setOccupante(vegetale0);
+		try {
+			t.spostaDinosauro(dG8, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
+		} catch (MovimentoException e) {
+			fail("eccezione movimento");
+		}
+		
+		//spostamento su vegetazione con erbivoro con poca energia quindi la mangia
+		dG8 = inizializzaDinosauro(dG8,100,1,2);
+		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
+		Vegetale vegetale1 = new Vegetale();
+		p.getIsola().getMappa()[1][3].setDinosauro(null);
+		p.getIsola().getMappa()[1][3].setOccupante(vegetale1);
+		try {
+			t.spostaDinosauro(dG8, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
+		} catch (MovimentoException e) {
+			fail("eccezione movimento");
+		}
+		
+		//spostamento su carogna con erbivoro quindi non la mangia
+		dG8 = inizializzaDinosauro(dG8,4000,1,2);
+		//rimetto nella mappa una vegetazione sovrascrivendola al dino mosso in precedenza
+		Vegetale vegetale2 = new Vegetale();
+		p.getIsola().getMappa()[1][3].setDinosauro(null);
+		p.getIsola().getMappa()[1][3].setOccupante(vegetale2);
+		try {
+			t.spostaDinosauro(dG8, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
+		} catch (MovimentoException e) {
+			fail("eccezione movimento");
+		}
+		
 		
 		// creo un altro giocatore g2 con un dinosauro (erbivoro):
 		Giocatore g2 = new Giocatore(1,"stego2","e");
@@ -127,7 +201,7 @@ public class TurnoTest {
 		} catch (MovimentoException e1) {
 			fail("eccezione movimento");
 		}
-	
+		
 		
 		// spostamento di un erbivoro su un carnivoro piu' forte di lui presente in (1,1)
 		try {
