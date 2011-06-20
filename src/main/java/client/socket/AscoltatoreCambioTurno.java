@@ -2,6 +2,8 @@ package client.socket;
 
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 public class AscoltatoreCambioTurno extends Thread {
 
 	private Gui gui;
@@ -13,22 +15,20 @@ public class AscoltatoreCambioTurno extends Thread {
 	public void run() {
 		while(true) {
 			try {
-				System.out.println(this.gui.getClientGui().getRispostaServerTurno());
-				System.out.println("risposta broadcast: " + this.gui.getClientGui().getRispostaServerTurno());
+				String messaggioServer = this.gui.getClientGui().getRispostaServerTurno();
+				System.out.println("risposta broadcast: " + messaggioServer);
 				
-				//qui c'e' qualche cosa che non va
 				
-				if(this.gui.getClientGui().getRispostaServerTurno().contains("@cambioTurno") ) {
-					System.out.println("entrato nell'if 2");
+				if(messaggioServer.contains("@cambioTurno") ) {
 					System.out.println("User da confrontare in ascoltatorecambioturno: " + this.gui.getClientGui().getNomeUtente());
-					if(this.gui.getClientGui().getRispostaServerTurno().split(",")[1].equals(this.gui.getClientGui().getNomeUtente())) {
-						this.gui.attivaAzioniGui();
+					if(messaggioServer.split(",")[1].equals(this.gui.getClientGui().getNomeUtente())) {
+						this.gui.creaFrameTurno();
 					}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"InterruptedException");
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"InterruptedException");
 			}
 		}
 		

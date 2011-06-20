@@ -37,7 +37,7 @@ public class ClientHandler extends Thread {
 	private Partita partita;
 	private GestioneServer gestioneGiocatori;
 	private Classifica classifica;
-	private Timer timer;
+	private Timer timer = new Timer();
 	private int indiceGiocatore = 0;
 
 	//variabili usate soltanto per l'ultimo dinosauro di ogni giocatore
@@ -65,9 +65,9 @@ public class ClientHandler extends Thread {
 	 * Metodo richiamato quando il client riceve il messaggio in broadcast di cambioTurno
 	 */
 	private void avviaTimerAzioni() {
+		timer.cancel();
 		TimerTask task = new TimerServer(this);
 		timer = new Timer();
-//		timer.schedule(task, 10 * 1000);
 		timer.schedule(task, 2 * 60 * 1000);
 	}
 
@@ -176,7 +176,7 @@ public class ClientHandler extends Thread {
 				//				} else {
 				//quindi ora eseguo il cambio del Turno e passo al prossimo giocatore
 				domanda = "@ok";
-//				timer.cancel();
+				timer.cancel();
 				/*
 				 * passando il turno e' come se l'utente avesse accettato di non giocare e il server
 				 * ne prende atto impostando eseguitaMossa e eseguitaAzione, per l'ultimo dinosauro dell'utente a true.

@@ -21,12 +21,12 @@ public class Client {
 	private BufferedReader bufferedReader;
 	private BufferedWriter bufferedWriter;
 	private BufferedReader bufferedReaderTurno;
-	private BufferedWriter bufferedWriterTurno;
 	private String richiesta;
 	private String rispostaTurno;
 	private String risposta;
 	private String token;
 	private String nomeUtente;
+	private Gui gui;
 
 
 	public Client (String host, int porta, int portaTurno) {
@@ -35,6 +35,9 @@ public class Client {
 		this.portaTurno = portaTurno;
 	}
 	
+	public void setGui(Gui gui) {
+		this.gui = gui;
+	}
 	
 	/**
 	 * @return Una string rappresentanta la risposta del Server.
@@ -54,7 +57,6 @@ public class Client {
 		bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 		this.socketTurno = new Socket(host, portaTurno);
 		bufferedReaderTurno = new BufferedReader(new InputStreamReader(socketTurno.getInputStream()));
-		bufferedWriterTurno = new BufferedWriter(new OutputStreamWriter(socketTurno.getOutputStream()));
 	}
 
 	/**
@@ -269,6 +271,7 @@ public class Client {
 	 * @throws InterruptedException
 	 */
 	public void passaTurno() throws IOException, InterruptedException{
+		this.gui.getTimer().cancel();
 		bufferedWriter.flush();
 		richiesta="@passaTurno,token="+token;
 		this.inviaAlServer();
