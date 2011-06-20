@@ -63,15 +63,21 @@ public class DatiGui {
 		this.nomeSpecieRis.setText(rispostaSplittata[2]);
 		
 		this.dimensioneRis.setText(rispostaSplittata[6]);
-		this.energiaRis.setText(rispostaSplittata[7]); //FIXME
+//		this.energiaRis.setText(rispostaSplittata[7]); //FIXME
+		
+		this.energiaRis.setText("cc");
 		this.energiaMaxRis.setText(Integer.parseInt(rispostaSplittata[6])*1000 + "");
 		String tipo = rispostaSplittata[3];
-		if(tipo.equals("e")) {
-			this.forzaRis.setText((Integer.parseInt(rispostaSplittata[7]) * Integer.parseInt(rispostaSplittata[6])) + "");
-		} else {
-			this.forzaRis.setText((2 * Integer.parseInt(rispostaSplittata[7]) * Integer.parseInt(rispostaSplittata[6])) + "");
-		}
-		this.tNascitaDinoRis.setText(rispostaSplittata[8]);
+//		if(tipo.equals("e")) {
+//			this.forzaRis.setText((Integer.parseInt(rispostaSplittata[7]) * Integer.parseInt(rispostaSplittata[6])) + "");
+//		} else {
+//			this.forzaRis.setText((2 * Integer.parseInt(rispostaSplittata[7]) * Integer.parseInt(rispostaSplittata[6])) + "");
+//		}
+//		this.tNascitaDinoRis.setText(rispostaSplittata[8]);
+
+		this.tNascitaDinoRis.setText("bb");
+		this.forzaRis.setText("aa");
+		
 		this.posRis.setText(rigaDino + "," + colonnaDino);
 	}
 

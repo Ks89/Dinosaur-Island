@@ -303,7 +303,7 @@ public class MappaGui {
 				raggio=4;
 			}
 		}
-
+		
 		//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
 		int inizioRiga = rigaDino - raggio;
 		int inizioColonna = colonnaDino - raggio;
