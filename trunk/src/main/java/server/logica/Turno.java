@@ -1,15 +1,18 @@
-package isoladinosauri;
+package server.logica;
+
 
 import java.util.Random;
 
+import server.modellodati.Carnivoro;
+import server.modellodati.Carogna;
+import server.modellodati.Dinosauro;
+import server.modellodati.Erbivoro;
+import server.modellodati.Occupante;
+import server.modellodati.Vegetale;
+
+
 
 import gestioneeccezioni.MovimentoException;
-import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Carogna;
-import isoladinosauri.modellodati.Dinosauro;
-import isoladinosauri.modellodati.Erbivoro;
-import isoladinosauri.modellodati.Occupante;
-import isoladinosauri.modellodati.Vegetale;
 
 
 /**

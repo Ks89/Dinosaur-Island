@@ -1,4 +1,4 @@
-package isoladinosauri;
+package server.logica;
 
 import java.util.Random;
 

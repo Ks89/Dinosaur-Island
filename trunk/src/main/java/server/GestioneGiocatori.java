@@ -1,7 +1,10 @@
-package isoladinosauri;
+package server;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+import server.logica.Giocatore;
 
 /**
  * Classe per gestire gli Utenti loggati e le specie create.

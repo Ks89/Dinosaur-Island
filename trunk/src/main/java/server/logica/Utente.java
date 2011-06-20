@@ -1,4 +1,4 @@
-package isoladinosauri;
+package server.logica;
 
 /**
  * Questa classe viene utilizzata solo per gestire 

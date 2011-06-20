@@ -1,10 +1,19 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
-import isoladinosauri.modellodati.Carogna;
-import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
+
+import server.logica.CaricamentoMappa;
+import server.logica.Cella;
+import server.logica.Giocatore;
+import server.logica.Isola;
+import server.logica.Partita;
+import server.logica.Turno;
+import server.logica.Utente;
+import server.modellodati.Carogna;
+import server.modellodati.Dinosauro;
+
 
 import gestioneeccezioni.DeposizioneException;
 import gestioneeccezioni.MovimentoException;
@@ -29,7 +38,7 @@ public class TurnoTest {
 	}
 	
 	/**
-	 * Test method for {@link isoladinosauri.Turno#ottieniStradaPercorsa(int, int, int, int)}.
+	 * Test method for {@link server.logica.Turno#ottieniStradaPercorsa(int, int, int, int)}.
 	 */
 	@Test
 	public void testOttieniStradaPercorsa() {
@@ -53,7 +62,7 @@ public class TurnoTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Turno#spostaDinosauro(isoladinosauri.modellodati.Dinosauro, int, int)}.
+	 * Test method for {@link server.logica.Turno#spostaDinosauro(server.modellodati.Dinosauro, int, int)}.
 	 */
 	@Test //TODO: da finire!!
 	public void testSpostaDinosauro() {
@@ -256,7 +265,7 @@ public class TurnoTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Turno#ricreaCarogne(isoladinosauri.Cella[][])}.
+	 * Test method for {@link server.logica.Turno#ricreaCarogne(server.logica.Cella[][])}.
 	 */
 	@Test
 	public void testRicreaCarogne() {

@@ -2,9 +2,19 @@ package isoladinosauri;
 
 import static org.junit.Assert.*;
 import gestioneeccezioni.CrescitaException;
-import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
+
+import server.logica.CaricamentoMappa;
+import server.logica.Cella;
+import server.logica.Classifica;
+import server.logica.Giocatore;
+import server.logica.Isola;
+import server.logica.Partita;
+import server.logica.Turno;
+import server.logica.Utente;
+import server.modellodati.Dinosauro;
+
 
 public class ClassificaTest {
 
@@ -18,7 +28,7 @@ public class ClassificaTest {
 	}
 	
 	/**
-	 * Test method for {@link isoladinosauri.Classifica#aggiungiTuplaClassifica(isoladinosauri.Giocatore)}.
+	 * Test method for {@link server.logica.Classifica#aggiungiTuplaClassifica(server.logica.Giocatore)}.
 	 */
 	@Test
 	public void testAggiungiTuplaClassifica() { //questo metodo usa anche cercaInClassifica() e aggiornaPuntiTupla()
@@ -52,7 +62,7 @@ public class ClassificaTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Classifica#aggiornaClassificaStati()}.
+	 * Test method for {@link server.logica.Classifica#aggiornaClassificaStati()}.
 	 */
 	@Test
 	public void testAggiornaClassificaStati() {

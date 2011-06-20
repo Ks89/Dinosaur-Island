@@ -1,4 +1,4 @@
-package isoladinosauri;
+package server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,16 +11,23 @@ import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import server.logica.Cella;
+import server.logica.Classifica;
+import server.logica.Giocatore;
+import server.logica.Partita;
+import server.logica.Utente;
+import server.modellodati.Carnivoro;
+import server.modellodati.Carogna;
+import server.modellodati.Dinosauro;
+import server.modellodati.Erbivoro;
+import server.modellodati.Vegetale;
+
+
+
 
 import gestioneeccezioni.CrescitaException;
 import gestioneeccezioni.DeposizioneException;
 import gestioneeccezioni.MovimentoException;
-import isoladinosauri.modellodati.Carnivoro;
-import isoladinosauri.modellodati.Carogna;
-import isoladinosauri.modellodati.Dinosauro;
-import isoladinosauri.modellodati.Erbivoro;
-import isoladinosauri.modellodati.Vegetale;
-import isoladinosauri.GestioneServer;
 
 
 /**
@@ -35,7 +42,7 @@ public class ClientHandler extends Thread {
 	private static final int MAX = 40;
 	private static final String ERRORE = "Errore lettura file";
 	private Partita partita;
-	private GestioneServer gestioneGiocatori;
+	private GestioneGiocatori gestioneGiocatori;
 	private Classifica classifica;
 	private Timer timer = new Timer();
 	private int indiceGiocatore = 0;
@@ -53,7 +60,7 @@ public class ClientHandler extends Thread {
 	 * @param gestioneGiocatori Riferimento a GestioneGiocatori contenenti le liste di utenti online e le razze create.
 	 * @param classifica Classifica dei giocatori.
 	 */
-	public ClientHandler(Socket socket, Socket socketTurno, Partita partita, GestioneServer gestioneGiocatori,Classifica classifica) {
+	public ClientHandler(Socket socket, Socket socketTurno, Partita partita, GestioneGiocatori gestioneGiocatori,Classifica classifica) {
 		this.socket = socket;
 		this.socketTurno = socketTurno;
 		this.partita = partita;
@@ -627,13 +634,11 @@ public class ClientHandler extends Thread {
 	 * @return Una String con la risposta del Server.
 	 */
 	private String listaDinosauri(String richiesta) {
-
-		String token;
 		String domanda = null;
 		String listaDino=new String();
-
-		token = richiesta.split(",")[1].split("=")[1];
+		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
+		
 		//verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);
 		if(loggato) {

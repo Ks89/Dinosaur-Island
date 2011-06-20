@@ -1,4 +1,4 @@
-package isoladinosauri.modellodati;
+package server.modellodati;
 
 /**
  * Interfaccia per gestire Vegetazione e Carogna.

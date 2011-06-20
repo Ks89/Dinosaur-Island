@@ -1,16 +1,25 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
-import isoladinosauri.modellodati.Dinosauro;
 
 import org.junit.Test;
+
+import server.logica.CaricamentoMappa;
+import server.logica.Cella;
+import server.logica.Giocatore;
+import server.logica.Isola;
+import server.logica.Partita;
+import server.logica.Turno;
+import server.logica.Utente;
+import server.modellodati.Dinosauro;
+
 
 import gestioneeccezioni.DeposizioneException;
 
 public class PartitaTest {
 
 	/**
-	 * Test method for {@link isoladinosauri.Partita#aggiungiGiocatore(isoladinosauri.Giocatore)}.
+	 * Test method for {@link server.logica.Partita#aggiungiGiocatore(server.logica.Giocatore)}.
 	 */
 	
 	private Partita inizializzaPartita() {
@@ -34,7 +43,7 @@ public class PartitaTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Partita#rimuoviGiocatore(isoladinosauri.Giocatore)}.
+	 * Test method for {@link server.logica.Partita#rimuoviGiocatore(server.logica.Giocatore)}.
 	 */
 	@Test
 	public void testRimuoviGiocatore() {
@@ -49,7 +58,7 @@ public class PartitaTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Partita#identificaDinosauro(isoladinosauri.modellodati.Dinosauro)}.
+	 * Test method for {@link server.logica.Partita#identificaDinosauro(server.modellodati.Dinosauro)}.
 	 */
 	@Test
 	public void testIdentificaDinosauro() {
@@ -66,7 +75,7 @@ public class PartitaTest {
 	}
 
 	/**
-	 * Test method for {@link isoladinosauri.Partita#nascitaDinosauro(int)}.
+	 * Test method for {@link server.logica.Partita#nascitaDinosauro(int)}.
 	 */
 	@Test
 	public void testNascitaDinosauro() {
