@@ -56,7 +56,7 @@ public class ServerMain {
 				Socket socket = serverSocket.accept();
 				Socket socketTurno = serverSocketTurno.accept();
 				System.out.println("Client connesso, creazione di un nuovo client handler.");
-				new ClientHandler(socket, socketTurno, partita,gestioneGiocatori,classifica).start();
+				new GestoreClient(socket, socketTurno, partita,gestioneGiocatori,classifica).start();
 			} catch (IOException e) {
 				System.out.println("Errore durante l'apertura di una connessione.");
 			}

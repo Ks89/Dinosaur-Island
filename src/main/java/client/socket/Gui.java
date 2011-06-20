@@ -108,6 +108,11 @@ public class Gui {
 
 	}
 
+	private void aggiornaListaDinosauri() throws IOException, InterruptedException {
+		this.getClientGui().listaDinosauri();
+		this.listaDinosauri = this.getClientGui().getRichiesta();
+	}
+
 	/**
 	 * Metodo che si occupa di preparare i dati per poi inizializzare la grafica.
 	 * @param user String che rappresenta il nome dell'utente al momento del login.
@@ -117,8 +122,7 @@ public class Gui {
 		try {
 			this.caricaMappa();
 
-			this.getClientGui().listaDinosauri();
-			this.listaDinosauri = this.getClientGui().getRichiesta();
+			this.aggiornaListaDinosauri();
 			System.out.println(this.listaDinosauri);
 
 			this.getClientGui().statoDinosauro("11");
@@ -134,7 +138,7 @@ public class Gui {
 	}
 
 	public String impostaMappa() throws IOException, InterruptedException {
-		this.getClientGui().vistaLocale("11");
+		this.getClientGui().vistaLocale(this.getIdDinosauro(indiceDino));
 		String answer = this.getClientGui().getRichiesta();
 
 		this.mappaPanel= mg.creaMappa(mg.creaMappaVisibilita(answer));
@@ -327,14 +331,15 @@ public class Gui {
 						try {
 							getClientGui().confermaTurno();
 							attivaAzioniGui();
+							conferma.setEnabled(false);
+							passa.setEnabled(false);
+							avvioSecondoTimer();
+							aggiornaListaDinosauri();
 						} catch (IOException e2) {
 							e2.printStackTrace();
 						} catch (InterruptedException e2) {
 							e2.printStackTrace();
 						}
-						conferma.setEnabled(false);
-						passa.setEnabled(false);
-						avvioSecondoTimer();
 					}
 				}
 		);
@@ -428,33 +433,34 @@ public class Gui {
 						if(!azione[getIndiceDino()]) { 
 							try {
 								String idDinosauro = getIdDinosauro(indiceDino);
+								System.out.println("Iddinosauro " + idDinosauro + "," + "indiceDino" + indiceDino);
 								getClientGui().deponiUovo(idDinosauro);
-								String risposta = getClientGui().getRichiesta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
-								idDinosauro = risposta.replace("@ok,", "");
-								if(risposta.contains("@ok")) {
-									mg.resetToolTip();
-									getClientGui().statoDinosauro(idDinosauro);
-									System.out.println("out" + getClientGui().getRichiesta());
-									getClientGui().vistaLocale(idDinosauro);
-									mg.applicaVisiblita(getClientGui().getRichiesta());
-									//aggiorno il panel col riassunto dello stato del dinosauro
-									datiGui.aggiornaDati(idDinosauro);
-
-									//TODO per reinizializzae la lista dei dinosauri
-									getClientGui().listaDinosauri();
-									listaDinosauri = getClientGui().getRichiesta();
-									System.out.println(listaDinosauri);
-									prossimoDinosauro();
-
-								} else {
-									if(risposta.contains("@raggiuntaDimensioneMax")) {
-										JOptionPane.showMessageDialog(null, "Raggiunta dimensione massima");
-									} else {
-										if(risposta.contains("@mortePerInedia")) {
-											JOptionPane.showMessageDialog(null, "Il dinosauro e' morto perche' senza energia");
-										}
-									}
-								}
+								//								String risposta = getClientGui().getRichiesta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
+								//								idDinosauro = risposta.replace("@ok,", "");
+								//								if(risposta.contains("@ok")) {
+								//									mg.resetToolTip();
+								//									getClientGui().statoDinosauro(idDinosauro);
+								//									System.out.println("out" + getClientGui().getRichiesta());
+								//									getClientGui().vistaLocale(idDinosauro);
+								//									mg.applicaVisiblita(getClientGui().getRichiesta());
+								//									//aggiorno il panel col riassunto dello stato del dinosauro
+								//									datiGui.aggiornaDati(idDinosauro);
+								//
+								//									//TODO per reinizializzae la lista dei dinosauri
+								//									getClientGui().listaDinosauri();
+								//									listaDinosauri = getClientGui().getRichiesta();
+								//									System.out.println(listaDinosauri);
+								//									prossimoDinosauro();
+								//
+								//								} else {
+								//									if(risposta.contains("@raggiuntaDimensioneMax")) {
+								//										JOptionPane.showMessageDialog(null, "Raggiunta dimensione massima");
+								//									} else {
+								//										if(risposta.contains("@mortePerInedia")) {
+								//											JOptionPane.showMessageDialog(null, "Il dinosauro e' morto perche' senza energia");
+								//										}
+								//									}
+								//								}
 								azione[0] = true;
 							} catch (IOException ecc) {
 								JOptionPane.showMessageDialog(null,"IOException");
@@ -471,13 +477,9 @@ public class Gui {
 		return panelAzioni;
 	}
 
-	public void assegnaTurniDinosauri() {
-		//		if()
-	}
-
 	public String getIdDinosauro(int indiceDino) {
 		String risposta = this.listaDinosauri;
-		System.out.println("la risposta e': " + risposta);
+		System.out.println("Lista dinosauri: " + risposta);
 		risposta = risposta.replace("@listaDinosauri,", "");
 		String[] dinosauri = risposta.split(",");
 		return dinosauri[indiceDino];
@@ -495,6 +497,7 @@ public class Gui {
 
 		//metodo per cambiare dinosauro e automaticamente setta a true (cioe' azione  e movimento eseguito) i 2 array
 		String[] dinosauri = this.listaDinosauri.replace("@listaDinosauri,","").split(",");
+		System.out.println("lista dinosauri: " + this.listaDinosauri);
 		this.maxIndiceDinosauri = dinosauri.length;
 
 		mg.resetToolTip();

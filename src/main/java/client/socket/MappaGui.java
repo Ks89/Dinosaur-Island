@@ -282,37 +282,48 @@ public class MappaGui {
 		}
 	}
 
-	
-	
-	/**
-	 * Metodo per applicare la raggiungibilita' alla mappa.
-	 */
-	public void applicaRaggiungibilita () {
+	private int[] ottieniCordinateRagg () {
 		String risposta = gui.ottieniStatoDinosauro();
 
 		int rigaDino = Integer.parseInt(risposta.split(",")[4].replace("{", ""));
 		int colonnaDino = Integer.parseInt(risposta.split(",")[5].replace("}", ""));
-		int dimensione = Integer.parseInt(risposta.split(",")[6]);
-		int raggio;
-		if(dimensione==1) {
-			raggio=2;
+
+		//calcolo raggio raggiungibilita', che e' sempre 3 per i carnivori e 2 per gli erbivori
+		int raggio=0;
+		if(risposta.split(",")[3].equals("c")) {
+			raggio=3;
 		} else {
-			if(dimensione==2 || dimensione==3) {
-				raggio=3;
-			} else {
-				raggio=4;
+			if(risposta.split(",")[3].equals("e")) {
+				raggio=2;
 			}
 		}
-		
+
 		//ottengo la riga e la colonna di dove si trova il dinosauro nella vista di raggiungibilita
-		int inizioRiga = rigaDino - raggio;
-		int inizioColonna = colonnaDino - raggio;
-		int fineRiga = rigaDino + raggio;
-		int fineColonna = colonnaDino + raggio;
+		int coordinate[] = new int[4];
+		coordinate[0] = rigaDino - raggio;
+		coordinate[1] = colonnaDino - raggio;
+		coordinate[2] = rigaDino + raggio;
+		coordinate[3] = colonnaDino + raggio;
+		return coordinate;
+	}
+
+
+	/**
+	 * Metodo per applicare la raggiungibilita' alla mappa.
+	 */
+	public void applicaRaggiungibilita () {
+		/*
+		 * coordinate: 
+		 * [0] - inizioRiga
+		 * [1] - inizioColonna
+		 * [2] - fineRiga
+		 * [3] - fineColonna
+		 */
+		int coordinate[] = this.ottieniCordinateRagg();
 
 		for(int i=MAX-1;i>=0;i--) {
 			for(int j=0;j<MAX;j++) {
-				if((i>=inizioRiga && i<=fineRiga) && (j>=inizioColonna && j<=fineColonna))  {
+				if((i>=coordinate[0] && i<=coordinate[2]) && (j>=coordinate[1] && j<=coordinate[3]))  {
 
 					if(!(this.gui.getMappaRicevuta()[i][j].equals("a"))) {
 						mappaGui[i][j].setBorder(BorderFactory.createLineBorder(Color.YELLOW,3));
@@ -365,27 +376,34 @@ public class MappaGui {
 							colonnaClic = w;  
 						}
 					}
-				}		
-				resetToolTip();
+				}	
 
-				System.out.println("cliccati" + rigaClic + "," + colonnaClic);
-				String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
-				if(!gui.getMovimento()[gui.getIndiceDino()]) { // TODO indicedino
-					try {	
-						gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
-						String risposta = gui.getClientGui().getRichiesta();
-						if(risposta.contains("@ok")) {
-							aggiornaStato(idDinosauro);
-							gui.getMovimento()[gui.getIndiceDino()] = true; //TODO indiceDino
+				int coordinate[] = ottieniCordinateRagg();
+
+				if((rigaClic>=coordinate[0] && rigaClic<=coordinate[2]) && (colonnaClic>=coordinate[1] && colonnaClic<=coordinate[3]))  {
+					resetToolTip();
+
+					System.out.println("cliccati" + rigaClic + "," + colonnaClic);
+					String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
+					if(!gui.getMovimento()[gui.getIndiceDino()]) {
+						try {	
+							gui.getClientGui().muoviDinosauro(idDinosauro, rigaClic, colonnaClic);
+							String risposta = gui.getClientGui().getRichiesta();
+							if(risposta.contains("@ok")) {
+								aggiornaStato(idDinosauro);
+								gui.getMovimento()[gui.getIndiceDino()] = true;
+							}
+						} catch (IOException ecc) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ecc) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
-					} catch (IOException ecc) {
-						JOptionPane.showMessageDialog(null,"IOException");
-					} catch (InterruptedException ecc) {
-						JOptionPane.showMessageDialog(null,"InterruptedException");
+					} else {
+						//non si puo' eseguire il movimento
+						JOptionPane.showMessageDialog(null, "Azione di movimento gia' eseguita!");
 					}
 				} else {
-					//non si puo' eseguire il movimento
-					JOptionPane.showMessageDialog(null, "Azione di movimento gia' eseguita!");
+					JOptionPane.showMessageDialog(null, "Destinazione non raggiungibile!");
 				}
 			}
 		}
