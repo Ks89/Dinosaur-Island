@@ -86,7 +86,7 @@ public class GuiLocale {
 	 */
 	public GuiLocale () {
 		this.cm = new CaricamentoMappa();
-		this.mappa = cm.caricaDaFile();
+		this.mappa = cm.caricaDaFile("mappaTestAcquaUovo.txt");
 		this.isola = new Isola(this.mappa);
 		this.partita = new Partita(isola);
 		this.t = new Turno(partita);

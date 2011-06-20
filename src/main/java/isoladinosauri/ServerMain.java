@@ -27,7 +27,7 @@ public class ServerMain {
 //		GenerazioneMappa gm = new GenerazioneMappa();
 		CaricamentoMappa cm = new CaricamentoMappa();
 		
-		Cella[][] mappaCelle = cm.caricaDaFile();
+		Cella[][] mappaCelle = cm.caricaDaFile("mappaTestAcquaUovo.txt");
 //		Cella[][] mappaCelle = cm.caricaMappa(gm.creaMappaCasuale());
 		this.partita = new Partita(new Isola(mappaCelle));
 		Turno t = new Turno(partita);

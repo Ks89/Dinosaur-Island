@@ -11,7 +11,7 @@ public class ClassificaTest {
 	private Partita inizializzaPartita() {
 		CaricamentoMappa cm = new CaricamentoMappa();
 		Cella[][] mappaCelle;
-		mappaCelle = cm.caricaDaFile();
+		mappaCelle = cm.caricaDaFile("mappaTestAcquaUovo.txt");
 		Isola i = new Isola(mappaCelle);
 		Partita p = new Partita(i);
 		return p;
