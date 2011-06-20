@@ -54,11 +54,17 @@ public class Gui {
 	 */
 	public Gui (Client clientGui) {
 		this.clientGui = clientGui;
+		this.clientGui.setGui(this);
 		datiGui = new DatiGui(this);
 		mg = new MappaGui(this,datiGui);
 		this.maxIndiceDinosauri = 1;
 	}
 
+	//metodo per far avere il timer a Client
+	public Timer getTimer() {
+		return timer;
+	}
+	
 	public void disattivaAzioniGui() {
 		this.cresci.setEnabled(false);
 		this.deponi.setEnabled(false);
@@ -69,6 +75,7 @@ public class Gui {
 	}
 
 	public void attivaAzioniGui() {
+		timer.cancel();
 		this.cresci.setEnabled(true);
 		this.deponi.setEnabled(true);
 		this.prossimoDinosauro.setEnabled(true);
@@ -84,13 +91,17 @@ public class Gui {
 		timer.schedule(task, 2 * 60 * 1000);
 	}
 
-
-	//TODO metodo chiamato quando il client riceve il messaggio in broadcast di cambiaTurno
+	
 	private void avviaTimer() {
-
 		TimerTask task = new TimerClient(this);
 		timer = new Timer();
 		timer.schedule(task, 30 * 1000);
+	}
+
+	//TODO metodo chiamato quando il client riceve il messaggio in broadcast di cambiaTurno
+	public void creaFrameTurno() {
+
+		this.avviaTimer();
 
 		frameTurno = new JFrame();
 		frameTurno.setLayout(new GridLayout(2,1));
@@ -111,8 +122,8 @@ public class Gui {
 						} catch (InterruptedException e2) {
 							e2.printStackTrace();
 						}
-						avvioSecondoTimer();
 						frameTurno.dispose();
+						avvioSecondoTimer();
 					}
 				}
 		);
@@ -211,7 +222,7 @@ public class Gui {
 
 		this.disattivaAzioniGui();
 		this.indiceDino=0;
-		this.avviaTimer();
+		this.creaFrameTurno();
 
 		frame.addWindowListener(
 				new WindowListener() {
@@ -512,6 +523,7 @@ public class Gui {
 			//invia messaggio per passare il turno
 			try {
 				this.getClientGui().passaTurno();
+				timer.cancel();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
