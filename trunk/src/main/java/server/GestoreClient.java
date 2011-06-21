@@ -219,10 +219,10 @@ public class GestoreClient extends Thread {
 	/**
 	 * Metodo per eseguire ricerche nel file degli utenti.
 	 * @param nomeFileFisico String che rappresenta il nome del file.
-	 * @param parametro1
-	 * @param parametro2
-	 * @param carSplit
-	 * @param posSplit
+	 * @param parametro1 String che rappresenta il primo termine di ricerca,in questo caso il nickname dell'utente da cercare
+	 * @param parametro2 String che rappresenta il secondo termine di ricerca,in questo caso la password dell'utente da cercare
+	 * @param carSplit String che rappresenta il carattere separatore per lo split
+	 * @param posSplit int che rappresenta la posizione dello split
 	 * @return Un boolean: 'true' - l'elemento e' stato trovato, 'false' - non e' stato trovato.
 	 */
 	private boolean cercaNelFile(String nomeFileFisico, String parametro1, String parametro2, String carSplit, int posSplit) {
@@ -258,11 +258,12 @@ public class GestoreClient extends Thread {
 	}
 
 	/**
-	 * @param nomeFileFisico
-	 * @param nomeUtente
-	 * @param carSplit
-	 * @param posSplit
-	 * @return
+	 * Metodo per ottenere la password di un utente conoscendo il suo nickname.
+	 * @param nomeFileFisico String che rappresenta il nome del file.
+	 * @param nomeUtente String che rappresenta il nickname
+	 * @param carSplit String che rappresenta il carattere separatore per lo split
+	 * @param posSplit int che rappresenta la posizione dello split
+	 * @return una String: la password cercata
 	 */
 	private String ottieniPassDaFile(String nomeFileFisico,String nomeUtente, String carSplit, int posSplit) {
 
@@ -291,8 +292,9 @@ public class GestoreClient extends Thread {
 
 
 	/**
-	 * @param nomeFileFisico
-	 * @param riga
+	 * Metodo per inserire una riga in un file.
+	 * @param nomeFileFisico String che rappresenta il nome del file.
+	 * @param riga String che rappresenta la riga da inserire
 	 */
 	private void scriviNelFile(String nomeFileFisico, String riga) {
 		try {
