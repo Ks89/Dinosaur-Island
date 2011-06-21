@@ -379,7 +379,7 @@ public class Turno {
 						throw e;
 					} else {
 						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
-							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
+							throw e;
 						}
 					}
 				}	
@@ -547,8 +547,7 @@ public class Turno {
 		if(dinosauro instanceof Carnivoro) {
 			Carnivoro attaccante = (Carnivoro)dinosauro;
 			try {
-				boolean statoSpostamento = this.spostamentoConDinosauro(attaccante, riga, colonna);
-				return statoSpostamento;
+				return this.spostamentoConDinosauro(attaccante, riga, colonna);
 			} catch (MovimentoException e) {
 				if(e.getCausa()==MovimentoException.Causa.MORTE) {
 					throw e;
@@ -565,8 +564,7 @@ public class Turno {
 			} else { //combatto contro un carnivoro
 				Erbivoro attaccante = (Erbivoro)dinosauro; 
 				try {
-					boolean statoSpostamento = this.spostamentoConDinosauro(attaccante, riga, colonna);
-					return statoSpostamento;
+					return this.spostamentoConDinosauro(attaccante, riga, colonna);
 				} catch (MovimentoException e) {
 					if(e.getCausa()==MovimentoException.Causa.MORTE) {
 						throw e;

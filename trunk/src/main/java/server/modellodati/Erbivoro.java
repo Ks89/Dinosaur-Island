@@ -57,9 +57,11 @@ public class Erbivoro extends Dinosauro {
 		if(dinosauro instanceof Carnivoro) {
 			nemico = (Carnivoro)dinosauro;
 		} else {
-//			if(dinosauro instanceof Erbivoro) { 
+			if(dinosauro instanceof Erbivoro) { 
 				nemico = (Erbivoro)dinosauro;
-//			}
+			} else {
+				nemico = null;
+			}
 		}
 		
 		if(this.calcolaForza()>=nemico.calcolaForza()) {

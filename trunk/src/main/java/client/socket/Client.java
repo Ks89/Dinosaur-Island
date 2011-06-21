@@ -294,22 +294,6 @@ public class Client {
 		this.inviaAlServer();
 	}
 
-	/**
-	 * Metodo che riceve il cambioTurno dal server.
-	 * @param nomeUtente String che rappresenta il nome dell'utente.
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	public void cambioTurno(String nomeUtente) throws IOException, InterruptedException{
-		if(this.rispostaTurno.contains("@cambioTurno")) {
-			String utente = this.rispostaTurno.split(",")[1];
-			//controllo se il nomeUtente delo giocatore sul client e' uguale a quello mandato dal server
-			//in tal caso vuol dire che ho ottenuto il turno
-			if(utente.equals(nomeUtente)) {
-			}
-		}
-	}
-
 
 	/**
 	 * Metodo per inviare al Server la richiesta effettuata.

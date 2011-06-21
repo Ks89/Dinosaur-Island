@@ -4,8 +4,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
@@ -104,8 +102,18 @@ public class Gui {
 	public void ottieniIlTurno() {
 		conferma.setEnabled(true);
 		passa.setEnabled(true);
-		mg.aggiornaStato(this.getIdDinosauro(indiceDino));
-		this.avviaTimer();
+		String idDino = this.getIdDinosauro(indiceDino);
+		mg.aggiornaStato(idDino);
+		try {
+			this.getClientGui().vistaLocale(idDino);
+			mg.applicaVisiblita(this.getClientGui().getRichiesta());
+			mg.applicaRaggiungibilita();
+			this.avviaTimer();
+		} catch (IOException ecc) {
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ecc) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
+		}
 	}
 
 	private void aggiornaListaDinosauri() throws IOException, InterruptedException {
@@ -304,7 +312,7 @@ public class Gui {
 	 */
 	private JPanel azioni() {
 		JPanel panelAzioni = new JPanel();
-		panelAzioni.setLayout(new GridLayout(10,1));
+		panelAzioni.setLayout(new GridLayout(9,1));
 		JLabel titolo = new JLabel("Azioni");
 		cresci = new JButton("Cresci");
 		deponi = new JButton("Deponi");
@@ -313,7 +321,6 @@ public class Gui {
 		selezionePanel.add(new JLabel("   Seleziona: "));
 		selezionePanel.add(sceltaDinosauro);
 
-		JButton uscitaPartita = new JButton("Uscita Partita");
 		prossimoDinosauro = new JButton("Prossimo dinosauro");
 
 		conferma = new JButton("Conferma");
@@ -323,7 +330,6 @@ public class Gui {
 		panelAzioni.add(cresci);
 		panelAzioni.add(deponi);
 		panelAzioni.add(new JLabel());
-		panelAzioni.add(uscitaPartita);
 		panelAzioni.add(prossimoDinosauro);
 		panelAzioni.add(new JLabel());
 		panelAzioni.add(conferma);
@@ -377,24 +383,7 @@ public class Gui {
 					}
 				}
 		);
-
-		uscitaPartita.addItemListener(
-				new ItemListener() {
-					public void itemStateChanged(ItemEvent event) {
-						try {
-							getClientGui().uscitaPartita();
-							if(getClientGui().getRispostaServer().equals("@ok")) {
-								frame.dispose();
-							}
-						} catch (IOException ecc) {
-							JOptionPane.showMessageDialog(null,"IOException");
-						} catch (InterruptedException ecc) {
-							JOptionPane.showMessageDialog(null,"InterruptedException");
-						}						
-					}
-				}
-		);
-
+		
 		cresci.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 

@@ -25,7 +25,7 @@ import javax.swing.JTextField;
  */
 public class LoginGui { 
 
-	private static final String ERRORE = "Devi inserire la password e il nome utente";
+	private static final String ERRORE = "Devi inserire password e nome utente e senza virgole";
 
 	private Gui gui;
 	private static JFrame frameGiocatore = new JFrame("Aggiunta giocatore");
@@ -116,7 +116,7 @@ public class LoginGui {
 		login.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+						if(!(user.getText().isEmpty() || password.getText().isEmpty() || user.getText().contains(",") || password.getText().contains(","))) {
 							try {
 								gui.getClientGui().eseguiLogin(user.getText(), password.getText());
 								continua.setEnabled(true);
@@ -136,7 +136,7 @@ public class LoginGui {
 		accedi.addActionListener( 
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+						if(!(user.getText().isEmpty() || password.getText().isEmpty() || user.getText().contains(",") || password.getText().contains(","))) {
 							try {
 								System.out.println(user.getText() +"," +  password.getText());
 								gui.getClientGui().accessoPartita(user.getText(), password.getText());			
@@ -158,7 +158,7 @@ public class LoginGui {
 		creaRazza.addActionListener( 
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!(user.getText().isEmpty() || password.getText().isEmpty() || specie.getText().isEmpty())) {
+						if(!(user.getText().isEmpty() || password.getText().isEmpty() || user.getText().contains(",") || password.getText().contains(",") || specie.getText().isEmpty())) {
 							try {
 								gui.getClientGui().creaRazza(user.getText(), password.getText(),specie.getText(),tipo);
 							} catch (IOException ecc) {
@@ -175,7 +175,7 @@ public class LoginGui {
 		registrati.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						if(!(user.getText().isEmpty() || password.getText().isEmpty())) {
+						if(!(user.getText().isEmpty() || password.getText().isEmpty() || user.getText().contains(",") || password.getText().contains(","))) {
 							try {
 								gui.getClientGui().creaUtente(user.getText(), password.getText());
 							} catch (IOException ecc) {
