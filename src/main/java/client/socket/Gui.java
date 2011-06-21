@@ -104,8 +104,8 @@ public class Gui {
 	public void ottieniIlTurno() {
 		conferma.setEnabled(true);
 		passa.setEnabled(true);
+		mg.aggiornaStato(this.getIdDinosauro(indiceDino));
 		this.avviaTimer();
-
 	}
 
 	private void aggiornaListaDinosauri() throws IOException, InterruptedException {
@@ -124,8 +124,9 @@ public class Gui {
 
 			this.aggiornaListaDinosauri();
 			System.out.println(this.listaDinosauri);
+			String idDinosauro = this.listaDinosauri.split(",")[1];
 
-			this.getClientGui().statoDinosauro("11");
+			this.getClientGui().statoDinosauro(idDinosauro);
 			int rigaDino = Integer.parseInt(this.getClientGui().getRichiesta().split(",")[4].replace("{", ""));
 			int colonnaDino = Integer.parseInt(this.getClientGui().getRichiesta().split(",")[5].replace("}", ""));
 			this.inizializzaGrafica();
@@ -237,7 +238,17 @@ public class Gui {
 	 * @return Un JPanel contenente il riassunto della situazione del Giocatore e del suo Dinosauro selezionato con indiceDino.
 	 */
 	private JPanel creaRiassuntoDati() {
-		datiPanel = datiGui.creaDati("11");
+		String idDinosauro=null;
+		try {
+			this.aggiornaListaDinosauri();
+			idDinosauro = this.listaDinosauri.split(",")[1];
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		datiPanel = datiGui.creaDati(idDinosauro);
 		infoPanel = new JPanel();
 		infoPanel.setLayout(new GridLayout(2,1));
 		infoPanel.add(datiPanel);
@@ -435,6 +446,8 @@ public class Gui {
 								String idDinosauro = getIdDinosauro(indiceDino);
 								System.out.println("Iddinosauro " + idDinosauro + "," + "indiceDino" + indiceDino);
 								getClientGui().deponiUovo(idDinosauro);
+
+								
 								//								String risposta = getClientGui().getRichiesta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
 								//								idDinosauro = risposta.replace("@ok,", "");
 								//								if(risposta.contains("@ok")) {
@@ -513,9 +526,6 @@ public class Gui {
 		} else {
 			//il turno finisce per forza e viene inviato al server il messaggio
 
-			//FIXME
-			//non tenerlo nella versione definitiva perche' dovra' essere fatto quando un metodi ricevera' un messaggio dal server 
-			//che indica l'assegnazione del turno
 			this.indiceDino = 0;
 			for(int i=0;i<maxIndiceDinosauri;i++) {
 				this.movimento[i] = false;
