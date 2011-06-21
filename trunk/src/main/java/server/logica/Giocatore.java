@@ -11,9 +11,6 @@ import server.modellodati.Carnivoro;
 import server.modellodati.Dinosauro;
 import server.modellodati.Erbivoro;
 
-
-
-
 /**
  * Classe Giocatore, costituita da tutti gli attributi che 
  * lo identificano della partita.
@@ -47,7 +44,7 @@ public class Giocatore {
 	 * Costruttore che crea ed inizializza il Giocatore.
 	 * @param turnoNascita int che rappresenta il tuno di nascita del Giocatore.
 	 * @param nomeSpecie String che rappresenta il nome della specie.
-	 * @param tipoSpecie String che rappresenta il tipo della specie. Puo' essere "carnivoro" o "erbivoro".
+	 * @param tipoSpecie String che rappresenta il tipo della specie. Puo' essere "c" o "e".
 	 */
 	public Giocatore(int turnoNascita, String nomeSpecie, String tipoSpecie) {
 		
@@ -232,8 +229,8 @@ public class Giocatore {
 
 	/**
 	 * Metodo per rimuovere un Dinosauro dalla lista associata al Giocatore passando anche la Cella.
-	 * L'utilita' e' che lo posso usare per rimuovere Dinosauri presenti in celle di partenza durante
-	 * un'azione di movimento.
+	 * Il vantaggio rispetto al metodo rimuoviDinosauro(Dinosauro dinosauro) e' che lo posso usare per rimuovere Dinosauri
+	 * presenti in celle di partenza durante un'azione di movimento.
 	 * @param dinosauro riferimento al Dinosauro che deve essere rimosso.
 	 * @param cella riferimento alla Cella su cui si trova il Dinosauro
 	 */

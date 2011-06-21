@@ -1,14 +1,11 @@
 package server.logica;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
 import server.modellodati.Carnivoro;
 import server.modellodati.Dinosauro;
 import server.modellodati.Erbivoro;
-
 
 
 /**
@@ -193,7 +190,7 @@ public class Partita {
 
 			}
 		}
-		return coordinate; //FIXME se arrivo qui e' perche' nella mappa non c'e' spazio (impossibile arrivarci)
+		return coordinate; //se arrivo qui e' perche' nella mappa non c'e' spazio (impossibile arrivarci)
 	}
 	
 	

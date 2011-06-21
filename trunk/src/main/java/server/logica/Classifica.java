@@ -197,14 +197,10 @@ public class Classifica {
 	}
 
 
+	/**
+	 * @return Una List di Tuple rappresentanti la classifica dei Giocatori.
+	 */
 	public List<Tupla> getClassificaGiocatori() {
 		return classificaGiocatori;
 	}
-
-
-	public void setClassificaGiocatori(List<Tupla> classificaGiocatori) {
-		this.classificaGiocatori = classificaGiocatori;
-	}
-
-
 }

@@ -81,7 +81,6 @@ public class GestoreClient extends Thread {
 
 	/**
 	 * Metodo che invia in broadcast un messaggio
-	 * @return
 	 */
 	public void cambioTurno() {
 		String broadcast = null; //messaggio da inviare
