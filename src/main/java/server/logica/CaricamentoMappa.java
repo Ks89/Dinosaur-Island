@@ -39,7 +39,6 @@ public class CaricamentoMappa {
 		BufferedReader br = null;
 		Reader reader = null;
 		try {  	
-			//fr = new FileReader("mappaTestAcquaUovo.txt");
 			reader = new InputStreamReader(this.getClass().getResourceAsStream("/"+nomeFile));
 			br = new BufferedReader(reader);
 			String riga = br.readLine();
@@ -57,7 +56,7 @@ public class CaricamentoMappa {
 
 		}	
 		catch(IOException ioException) {
-			System.err.println("Errore lettura file.1");
+			System.err.println("Errore lettura file");
 		} finally {
 			try {
 				if(reader!=null) {
@@ -68,7 +67,7 @@ public class CaricamentoMappa {
 					br.close();
 				}
 			} catch (IOException e) {
-				System.err.println("Errore chiusura file2");
+				System.err.println("Errore chiusura file");
 				e.printStackTrace();
 			}
 		}

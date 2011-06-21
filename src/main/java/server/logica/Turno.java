@@ -380,11 +380,7 @@ public class Turno {
 					} else {
 						if(e.getCausa()==MovimentoException.Causa.DESTINAZIONEERRATA) {
 							throw new MovimentoException(MovimentoException.Causa.DESTINAZIONEERRATA);
-						}// else {
-//							if(e.getCausa()==MovimentoException.Causa.NESSUNVINCITORE) {
-//								throw new MovimentoException(MovimentoException.Causa.NESSUNVINCITORE);
-//							}
-//						}
+						}
 					}
 				}	
 				if(destinazione.getOccupante()!=null) {
@@ -505,7 +501,7 @@ public class Turno {
 			}
 			destinazione.setDinosauro(mosso);
 
-			//XXX l'if sotto e' importantissimo!!! Esso controlla se il dinosauro sta mangiando
+			//l'if sotto e' importantissimo!!! Esso controlla se il dinosauro sta mangiando
 			//l'occupante dopo un'azione di movimento o se invece il dinosauro ha prima combattuto
 			//con un altro dino e poi nella sua destinazione ha mangiato l'occupante sulla sua stessa
 			//cella, quindi con coordinate di partenza e arrivo uguali

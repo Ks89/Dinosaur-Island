@@ -8,6 +8,7 @@ import server.ServerMain;
 import server.logica.CaricamentoMappa;
 import server.logica.Cella;
 import server.logica.Classifica;
+import server.logica.GenerazioneMappa;
 import server.logica.Isola;
 import server.logica.Partita;
 import server.logica.Turno;
@@ -30,11 +31,11 @@ public class ServerMain {
 	 */
 	public ServerMain(int porta) {
 		this.porta = porta;
-//		GenerazioneMappa gm = new GenerazioneMappa();
+		GenerazioneMappa gm = new GenerazioneMappa();
 		CaricamentoMappa cm = new CaricamentoMappa();
-		
-		Cella[][] mappaCelle = cm.caricaDaFile("mappaTestAcquaUovo.txt");
-//		Cella[][] mappaCelle = cm.caricaMappa(gm.creaMappaCasuale());
+		Cella[][] mappaCelle = cm.caricaMappa(gm.creaMappaCasuale());
+
+//		Cella[][] mappaCelle = cm.caricaDaFile("mappaTestAcquaUovo.txt");
 		this.partita = new Partita(new Isola(mappaCelle));
 		Turno t = new Turno(partita);
 		partita.setTurnoCorrente(t);
