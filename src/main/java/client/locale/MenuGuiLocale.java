@@ -44,7 +44,7 @@ public class MenuGuiLocale {
 				{
 					public void actionPerformed(ActionEvent event)
 					{//mostra un messaggio quando l'untente sceglie about...
-						JOptionPane.showMessageDialog(null,"Isola Dei Dinosauri BETA1\nCreato da Stefano Cappa e Luca Besana\n(C) 2011","About",JOptionPane.PLAIN_MESSAGE);
+						JOptionPane.showMessageDialog(null,"Isola Dei Dinosauri\nCreato da Stefano Cappa e Luca Besana\n(C) 2011","About",JOptionPane.PLAIN_MESSAGE);
 					}
 				}
 		);

@@ -31,25 +31,10 @@ import server.logica.Turno;
 import server.logica.Utente;
 import server.modellodati.Dinosauro;
 
-
-
-
-
 /**
  *	Classe principale che si occupa di creare la grafica dell'applicazione (lato client).
  */
 public class GuiLocale {
-
-	/*
-	 *  fare + immagini coi dinosauri con sovraimpresso nel png il livello con tutte le combinazioni
-	 *  ridimensionare un pelo le celle e le immagini nelle celle per far si che l'area di spostamento del carnivoro sia visibile
-	 *  se muovo un dinosauro appena nato dall'uovo il panel dati non si aggiorna
-	 *  sarebbe bello che se il dinosauro va su una cella con u vegetale ed e' erbivoro. Facendo la crescita automaticamente mangia
-	 * 		l'occupante e assorbe l'energia senza dover fare altre azioni di movimento ecc...
-	 *  il menu a tendina non agiorna subito il panel laterale indicando il dinosauro
-	 *  quando depongo e il nascituro va su una cella con carogna o vegetale la cella viene settata con solo il dinosauro
-	 * 		perche' non ho fatto tutti gli if del caso
-	 */
 
 	private static final int MAX = 40;
 	private static final int MAXDINO = 5;
@@ -65,13 +50,12 @@ public class GuiLocale {
 	private CaricamentoMappa cm;
 	private JPanel datiPanel;
 	private JPanel infoPanel;
-	//	private JTextField selezioneField;
-	//	private JButton confermaSelezione;
+
 	private JComboBox sceltaDinosauro = new JComboBox();
 	private int indiceDino; 
 	private int turnoNascita;
 
-	private Icon carnivoroIcona /*= new ImageIcon(this.getClass().getResource("/carnivoro.png"))*/;
+	private Icon carnivoroIcona = new ImageIcon(this.getClass().getResource("/carnivoro.png"));
 	private Icon erbivoroIcona = new ImageIcon(this.getClass().getResource("/erbivoro.png"));
 	private Icon terraIcona = new ImageIcon(this.getClass().getResource("/terra.jpg"));
 
@@ -124,6 +108,10 @@ public class GuiLocale {
 		mg.setScrollBar(dino.getRiga(), dino.getColonna());
 	}
 
+	/**
+	 * Metodo per inizializzare la scelta del Dinosauro
+	 * @param giocatore riferimento al Giocatore.
+	 */
 	public void inizializzaSceltaDino(Giocatore giocatore) {
 		String[] listaDino = new String[MAXDINO];
 		sceltaDinosauro.removeAllItems();
@@ -330,20 +318,9 @@ public class GuiLocale {
 
 		
 		try {
-			boolean stato = partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
+			partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
 			//Salvataggio dello stato del giocatore ad ogni movimento
-			if(stato) {
-				System.out.println("Tutto ok");
-			} else {
-				System.out.println("Problema");
-			}
 		} catch (MovimentoException e){
-//			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCATO) {
-//				JOptionPane.showMessageDialog(null, "Vince attaccante!");
-//			}
-//			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCANTE) {
-//				JOptionPane.showMessageDialog(null, "Vince attaccato!");
-//			}
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {
 				JOptionPane.showMessageDialog(null, "Il Dinosauro e' morto!");
 			}

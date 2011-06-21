@@ -29,16 +29,25 @@ public class Client {
 	private Gui gui;
 
 
+	/**
+	 * Costruttore della classe Client.
+	 * @param host String che rappresenta l'indirizzo IP del server.
+	 * @param porta int che rappresenta la porta di comunicazione col server.
+	 * @param portaTurno int che rappresente la porta di comunicazione per i messaggi in broadcast col server.
+	 */
 	public Client (String host, int porta, int portaTurno) {
 		this.host = host;
 		this.porta = porta;
 		this.portaTurno = portaTurno;
 	}
-	
+
+	/**
+	 * @param gui Riferimento alla classe Gui.
+	 */
 	public void setGui(Gui gui) {
 		this.gui = gui;
 	}
-	
+
 	/**
 	 * @return Una string rappresentanta la risposta del Server.
 	 */
@@ -48,7 +57,7 @@ public class Client {
 
 	/**
 	 * Metodo per inizializzare il Client.
-	 * @throws UnknownHostException
+	 * @throws UnknownHostException Eccezione sollevata se l'host non e' riconosciuto.
 	 * @throws IOException
 	 */
 	public void inizializzaClient() throws UnknownHostException, IOException {
@@ -61,30 +70,36 @@ public class Client {
 
 	/**
 	 * Metodo per ottenere la risposta dal Server.
-	 * @return
+	 * @return Una String contenente la risposta dal server.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
 	public String getRispostaServer() throws IOException, InterruptedException{
 		risposta = bufferedReader.readLine();
-		if (risposta != null) {
-			System.out.println("Risposta server: " + risposta);
-		}
+//		if (risposta != null) {
+//			System.out.println("Risposta server: " + risposta);
+//		}
 		return risposta;
 	}
-	
-	public String getRispostaServerTurno() throws IOException, InterruptedException{
+
+	/**
+	 * Metodo per ottenere i "@cambioTurno" dal server.
+	 * @return Una String contenente il messaggio di cambioturno dal server.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public String getBroadcastServerTurno() throws IOException, InterruptedException{
 		rispostaTurno = bufferedReaderTurno.readLine();
-		if (rispostaTurno != null) {
-			System.out.println("Risposta broadcast: " + rispostaTurno);
-		}
+//		if (rispostaTurno != null) {
+//			System.out.println("Risposta broadcast: " + rispostaTurno);
+//		}
 		return rispostaTurno;
 	}
 
 	/**
 	 * Metodo per registrarsi.
-	 * @param nomeUtente
-	 * @param password
+	 * @param nomeUtente String che rappresenta il nome dell'utente.
+	 * @param password String che rappresenta la password.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -96,8 +111,8 @@ public class Client {
 
 	/**
 	 * Metodo per eseguire il login.
-	 * @param nomeUtente
-	 * @param password
+	 * @param nomeUtente String che rappresenta il nome dell'utente.
+	 * @param password String che rappresenta la password.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -109,18 +124,20 @@ public class Client {
 
 	/**
 	 * Metodo per creare la razza.
-	 * @param nomeUtente
-	 * @param password
-	 * @param nome
-	 * @param tipo
+	 * @param nomeUtente String che rappresenta il nome dell'utente.
+	 * @param password String che rappresenta la password.
+	 * @param nome String che rappresenta il nome della specie.
+	 * @param tipo String che rappresenta il tipo della razza, puo' essere "c" oppure "e".
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
 	public void creaRazza(String nomeUtente, String password,String nome, String tipo) throws IOException, InterruptedException{
-		bufferedWriter.flush();
-		this.token = nomeUtente + "-" + password;
-		richiesta = "@creaRazza,token=" + this.token + ",nome=" + nome + ",tipo=" + tipo;
-		this.inviaAlServer();
+		if(tipo.equals("c") || tipo.equals("e")) {
+			bufferedWriter.flush();
+			this.token = nomeUtente + "-" + password;
+			richiesta = "@creaRazza,token=" + this.token + ",nome=" + nome + ",tipo=" + tipo;
+			this.inviaAlServer();
+		}
 	}
 
 	/**
@@ -169,7 +186,7 @@ public class Client {
 
 	/**
 	 * Metodo per ottenere lo stato del Dinosauro.
-	 * @param idDino
+	 * @param idDino String che rappresenta l'id del Dinosauro.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -181,8 +198,8 @@ public class Client {
 
 	/**
 	 * Metodo per accedere in Partita.
-	 * @param nomeUtente
-	 * @param password
+	 * @param nomeUtente String che rappresenta il nome dell'utente.
+	 * @param password String che rappresenta la password.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -195,7 +212,7 @@ public class Client {
 
 	/**
 	 * Metodo per ottenere la vista locale.
-	 * @param idDino
+	 * @param idDino String che rappresenta l'id del Dinosauro.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -207,7 +224,7 @@ public class Client {
 
 	/**
 	 * Metodo per far crescere un Dinosauro.
-	 * @param idDino
+	 * @param idDino String che rappresenta l'id del Dinosauro.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -219,7 +236,7 @@ public class Client {
 
 	/**
 	 * Metodo per deporre un uovo.
-	 * @param idDino
+	 * @param idDino String che rappresenta l'id del Dinosauro.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -231,9 +248,9 @@ public class Client {
 
 	/**
 	 * Metodo per eseguire un movimento.
-	 * @param idDino
-	 * @param riga
-	 * @param colonna
+	 * @param idDino String che rappresenta l'id del Dinosauro.
+	 * @param riga int che indica la riga di destinazione.
+	 * @param colonna int che indica la colonna di destinazione.
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -277,16 +294,19 @@ public class Client {
 		this.inviaAlServer();
 	}
 
-	//ricevi il cambio turno
+	/**
+	 * Metodo che riceve il cambioTurno dal server.
+	 * @param nomeUtente String che rappresenta il nome dell'utente.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public void cambioTurno(String nomeUtente) throws IOException, InterruptedException{
 		if(this.rispostaTurno.contains("@cambioTurno")) {
 			String utente = this.rispostaTurno.split(",")[1];
 			//controllo se il nomeUtente delo giocatore sul client e' uguale a quello mandato dal server
 			//in tal caso vuol dire che ho ottenuto il turno
 			if(utente.equals(nomeUtente)) {
-//				this.avviaPrimoTimer();
 			}
-			//ricevo il cambio turno
 		}
 	}
 
@@ -303,11 +323,17 @@ public class Client {
 		bufferedWriter.flush();
 		this.getRispostaServer();	
 	}
-	
+
+	/**
+	 * @return Un String che rappresenta il nome dell'utente.
+	 */
 	public String getNomeUtente() {
 		return nomeUtente;
 	}
 
+	/**
+	 * @param nomeUtente String per impostare il nome dell'utente.
+	 */
 	public void setNomeUtente(String nomeUtente) {
 		this.nomeUtente = nomeUtente;
 	}

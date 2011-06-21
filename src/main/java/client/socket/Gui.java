@@ -243,9 +243,9 @@ public class Gui {
 			this.aggiornaListaDinosauri();
 			idDinosauro = this.listaDinosauri.split(",")[1];
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ecc) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
 		
 		datiPanel = datiGui.creaDati(idDinosauro);
@@ -309,12 +309,8 @@ public class Gui {
 		cresci = new JButton("Cresci");
 		deponi = new JButton("Deponi");
 
-		//TODO
-		//		this.ottieniClassifica();
-
 		JPanel selezionePanel = new JPanel(new GridLayout(1,2));
 		selezionePanel.add(new JLabel("   Seleziona: "));
-		//		this.inizializzaSceltaDino();
 		selezionePanel.add(sceltaDinosauro);
 
 		JButton uscitaPartita = new JButton("Uscita Partita");
@@ -346,10 +342,10 @@ public class Gui {
 							passa.setEnabled(false);
 							avvioSecondoTimer();
 							aggiornaListaDinosauri();
-						} catch (IOException e2) {
-							e2.printStackTrace();
-						} catch (InterruptedException e2) {
-							e2.printStackTrace();
+						} catch (IOException ec) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ec) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
 					}
 				}
@@ -362,10 +358,10 @@ public class Gui {
 						try {
 							getClientGui().passaTurno();
 							disattivaAzioniGui();
-						} catch (IOException e2) {
-							e2.printStackTrace();
-						} catch (InterruptedException e2) {
-							e2.printStackTrace();
+						} catch (IOException ec) {
+							JOptionPane.showMessageDialog(null,"IOException");
+						} catch (InterruptedException ec) {
+							JOptionPane.showMessageDialog(null,"InterruptedException");
 						}
 						conferma.setEnabled(false);
 						passa.setEnabled(false);
@@ -447,33 +443,6 @@ public class Gui {
 								System.out.println("Iddinosauro " + idDinosauro + "," + "indiceDino" + indiceDino);
 								getClientGui().deponiUovo(idDinosauro);
 
-								
-								//								String risposta = getClientGui().getRichiesta(); //ottengo la risposta che contiene ok e l'id del Dinosauro
-								//								idDinosauro = risposta.replace("@ok,", "");
-								//								if(risposta.contains("@ok")) {
-								//									mg.resetToolTip();
-								//									getClientGui().statoDinosauro(idDinosauro);
-								//									System.out.println("out" + getClientGui().getRichiesta());
-								//									getClientGui().vistaLocale(idDinosauro);
-								//									mg.applicaVisiblita(getClientGui().getRichiesta());
-								//									//aggiorno il panel col riassunto dello stato del dinosauro
-								//									datiGui.aggiornaDati(idDinosauro);
-								//
-								//									//TODO per reinizializzae la lista dei dinosauri
-								//									getClientGui().listaDinosauri();
-								//									listaDinosauri = getClientGui().getRichiesta();
-								//									System.out.println(listaDinosauri);
-								//									prossimoDinosauro();
-								//
-								//								} else {
-								//									if(risposta.contains("@raggiuntaDimensioneMax")) {
-								//										JOptionPane.showMessageDialog(null, "Raggiunta dimensione massima");
-								//									} else {
-								//										if(risposta.contains("@mortePerInedia")) {
-								//											JOptionPane.showMessageDialog(null, "Il dinosauro e' morto perche' senza energia");
-								//										}
-								//									}
-								//								}
 								azione[0] = true;
 							} catch (IOException ecc) {
 								JOptionPane.showMessageDialog(null,"IOException");
@@ -539,9 +508,9 @@ public class Gui {
 				this.getClientGui().passaTurno();
 				timer.cancel();
 			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,"IOException");
+			} catch (InterruptedException ecc) {
+				JOptionPane.showMessageDialog(null,"InterruptedException");
 			}
 		}
 	}
@@ -608,13 +577,4 @@ public class Gui {
 	public boolean[] getMovimento() {
 		return movimento;
 	}
-	//	
-	//	public LoginGui getLoginGui() {
-	//		return loginGui;
-	//	}
-	//
-	//	public void setLoginGui(LoginGui loginGui) {
-	//		this.loginGui = loginGui;
-	//	}
-
 }
