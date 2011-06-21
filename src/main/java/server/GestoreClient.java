@@ -273,7 +273,6 @@ public class GestoreClient extends Thread {
 			BufferedReader br;
 			br = new BufferedReader(fileReader);
 			String rigaFile = br.readLine();
-			rigaFile = br.readLine();
 			while(rigaFile!=null) {
 				if(rigaFile.split(carSplit)[posSplit].equals(nomeUtente)) {
 					password = rigaFile.split(carSplit)[posSplit+1];
@@ -495,6 +494,7 @@ public class GestoreClient extends Thread {
 	 */
 	private String uscitaPartita(String richiesta) {
 		String domanda = null;
+		System.out.println("richiesta uscita: " + richiesta);
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		int k=0;
@@ -637,7 +637,7 @@ public class GestoreClient extends Thread {
 	 */
 	private String listaDinosauri(String richiesta) {
 		String domanda = null;
-		String listaDino=new String();
+		String listaDino = new String();
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		

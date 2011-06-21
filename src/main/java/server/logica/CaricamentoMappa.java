@@ -68,7 +68,6 @@ public class CaricamentoMappa {
 				}
 			} catch (IOException e) {
 				System.err.println("Errore chiusura file");
-				e.printStackTrace();
 			}
 		}
 		return mappa.clone();

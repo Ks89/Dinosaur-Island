@@ -61,8 +61,9 @@ public class MenuGui {
 				{
 					public void actionPerformed(ActionEvent event)
 					{
-						//esegue il logout
+//						esegue il logout
 						try {
+//							gui.getClientGui().uscitaPartita();
 							gui.getClientGui().logout();
 						} catch (IOException e) {
 							JOptionPane.showMessageDialog(null,"IOException");
