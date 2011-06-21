@@ -1,5 +1,7 @@
 package isoladinosauri;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,11 +10,12 @@ import java.util.StringTokenizer;
 
 import org.junit.Test;
 
-import server.logica.PosizionaVegetazione;
+import server.logica.CaricamentoMappa;
+import server.logica.Cella;
 
-public class PosizionaVegetazioneTest {
+public class CaricamentoMappaTest {
+
 	private static final int MAX = 40;
-	
 	private String[][] caricaDaFileString(String nomeFile) {
 		BufferedReader br = null;
 		Reader reader = null;
@@ -54,13 +57,16 @@ public class PosizionaVegetazioneTest {
 	}
 	
 	/**
-	 * Test method for {@link server.logica.PosizionaVegetazione#posizionaVegetazione(java.lang.String[][])}.
+	 * Test method for {@link server.logica.CaricamentoMappa#caricaMappa(java.lang.String[][])}.
 	 */
 	@Test
-	public void testPosizionaVegetazione() {
-		String[][] mappa = this.caricaDaFileString("mappaAcquosa.txt");
-		PosizionaVegetazione pv = new PosizionaVegetazione();
-		pv.posizionaVegetazione(mappa);
+	public void testCaricaMappa() {
+		CaricamentoMappa cm = new CaricamentoMappa();
+		
+		String[][] mappa = caricaDaFileString("mappaTestAcquaUovo.txt");
+		Cella[][] mappaCelle = cm.caricaMappa(mappa);
+		assertEquals(40, mappaCelle.length);
+		assertEquals(40, mappaCelle[0].length);
 	}
 
 }

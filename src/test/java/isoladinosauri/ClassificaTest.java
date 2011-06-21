@@ -82,4 +82,24 @@ public class ClassificaTest {
 		assertEquals(0, p.getGiocatori().size());
 		c.aggiornaClassificaStati();
 	}
+	
+	/**
+	 * Test method for {@link server.logica.Classifica#ottieniClassifica()}.
+	 */
+	@Test
+	public void testOttieniClassifica() {
+		Partita p = inizializzaPartita();
+		Turno t = new Turno(p);
+		p.setTurnoCorrente(t);
+		//creo un nuovo giocatore con un dinosauro (carnivoro)
+		Giocatore g = new Giocatore(1,"trex","c");
+		Utente u = new Utente("nomeUtente","pass");
+		g.setUtente(u);
+		g.aggiungiInPartita(p);
+		assertEquals(1, p.getGiocatori().size());
+		Classifica c = new Classifica(p);
+		c.aggiungiTuplaClassifica(g);
+		c.aggiornaClassificaStati();
+		String classifica = c.ottieniClassifica();
+	}
 }
