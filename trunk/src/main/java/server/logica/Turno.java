@@ -533,10 +533,10 @@ public class Turno {
 	private boolean combatti(Dinosauro dinosauro, int riga, int colonna) throws MovimentoException {
 		Cella[][] mappa = this.partita.getIsola().getMappa();
 		Cella destinazione = mappa[riga][colonna];
-		int vecchiaRiga = dinosauro.getRiga();
-		int vecchiaColonna = dinosauro.getColonna();
+//		int vecchiaRiga = dinosauro.getRiga();
+//		int vecchiaColonna = dinosauro.getColonna();
 
-		System.out.println("coordinate partenza: " + vecchiaRiga + "," + vecchiaColonna + "coord arrivo: " + riga + "," + colonna);
+//		System.out.println("coordinate partenza: " + vecchiaRiga + "," + vecchiaColonna + "coord arrivo: " + riga + "," + colonna);
 
 		if(partita.identificaDinosauro(dinosauro).equals(partita.identificaDinosauro(destinazione.getDinosauro()))) {
 			System.out.println("Non puoi combattere con un tuo Dinosauro");
@@ -699,7 +699,7 @@ public class Turno {
 				stato=true;
 			}
 		} while(!stato);
-		System.out.println("Nuovo elemento in: " + nuovaRiga + "," + nuovaColonna);
+//		System.out.println("Nuovo elemento in: " + nuovaRiga + "," + nuovaColonna);
 	}
 
 	/**

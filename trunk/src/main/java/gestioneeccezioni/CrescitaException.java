@@ -38,7 +38,7 @@ public class CrescitaException extends Exception {
 	}
 	
 	/**
-	 * @return Tipo enumerativo che rappresenta la causa che ha soolevato l'eccezione.
+	 * @return Tipo enumerativo che rappresenta la causa che ha sollevato l'eccezione.
 	 */
 	public Causa getCausa() {
 		return causa;

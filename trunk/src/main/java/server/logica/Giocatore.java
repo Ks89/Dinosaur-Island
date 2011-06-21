@@ -307,7 +307,7 @@ public class Giocatore {
 			//sommati a quello delle uova (perche' in futuro saranno anch'essi dino) sia <5
 			if((this.getDinosauri().size() + this.getUova().size()) < MAXDINO ) {
 				String idDinosauro = this.generaIdDinosauro();
-				System.out.println("ID Dinosauro: " + idDinosauro);
+//				System.out.println("ID Dinosauro: " + idDinosauro);
 				this.aggiungiUovo(dinosauro.getRiga(),dinosauro.getColonna(),idDinosauro);
 				return idDinosauro;
 			} else {

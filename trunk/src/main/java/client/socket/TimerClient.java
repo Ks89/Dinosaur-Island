@@ -1,16 +1,21 @@
 package client.socket;
-//import java.text.DateFormat;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
+
 import java.io.IOException;
 import java.util.TimerTask;
 
+import javax.swing.JOptionPane;
 
+/**
+ * Classe per la gestione del Timer sul Client.
+ */
 public class TimerClient extends TimerTask {
-//	private DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 
 	private Gui gui;
 	
+	/**
+	 * Costruttore della classe TimerClient per impostare il riferimanto a Gui.
+	 * @param gui riferimanto alla classe Gui.
+	 */
 	public TimerClient(Gui gui) {
 		this.gui = gui;
 	}
@@ -18,11 +23,10 @@ public class TimerClient extends TimerTask {
 	public void run() {	
 		try {
 			this.gui.getClientGui().passaTurno();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} catch (IOException ec) {
+			JOptionPane.showMessageDialog(null,"IOException");
+		} catch (InterruptedException ec) {
+			JOptionPane.showMessageDialog(null,"InterruptedException");
 		}
-//		System.out.println(formatter.format(new Date()));
 	}
  }
