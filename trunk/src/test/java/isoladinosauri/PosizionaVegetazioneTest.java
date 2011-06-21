@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.StringTokenizer;
-
 import org.junit.Test;
-
 import server.logica.PosizionaVegetazione;
 
 public class PosizionaVegetazioneTest {
@@ -18,7 +16,6 @@ public class PosizionaVegetazioneTest {
 		Reader reader = null;
 		String[][] mappa = new String[MAX][MAX];
 		try {  	
-			//fr = new FileReader("mappaTestAcquaUovo.txt");
 			reader = new InputStreamReader(this.getClass().getResourceAsStream("/"+nomeFile));
 			br = new BufferedReader(reader);
 			String riga = br.readLine();

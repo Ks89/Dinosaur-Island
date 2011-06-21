@@ -1,12 +1,6 @@
-/**
- * 
- */
 package isoladinosauri;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import server.logica.GenerazioneMappa;
 
 public class GenerazioneMappaTest {

@@ -1,9 +1,7 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import server.logica.CaricamentoMappa;
 import server.logica.Cella;
 import server.logica.Giocatore;
@@ -13,8 +11,6 @@ import server.logica.Turno;
 import server.logica.Utente;
 import server.modellodati.Carnivoro;
 import server.modellodati.Dinosauro;
-
-
 import gestioneeccezioni.DeposizioneException;
 
 public class GiocatoreTest {

@@ -1,9 +1,7 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import server.logica.CaricamentoMappa;
 import server.logica.Cella;
 import server.logica.Giocatore;
@@ -14,8 +12,6 @@ import server.logica.Utente;
 import server.modellodati.Carogna;
 import server.modellodati.Dinosauro;
 import server.modellodati.Vegetale;
-
-
 import gestioneeccezioni.DeposizioneException;
 import gestioneeccezioni.MovimentoException;
 
@@ -121,7 +117,6 @@ public class TurnoTest {
 		}
 		
 		//spostamento su terra semplice con morte x energia insufficiente
-//		dG1 = inizializzaDinosauro(p,dG1,10,1,1);
 		dG1.setEnergia(10);
 		try {
 			t.spostaDinosauro(dG1, 2, 1);
@@ -142,7 +137,6 @@ public class TurnoTest {
 		}
 		
 		//spostamento su vegetazione con carnivoro con morte per insufficiente energia
-//		dG1 = inizializzaDinosauro(p,dG1,10,2,1);
 		dG1.setEnergia(10);
 		try {
 			t.spostaDinosauro(dG1, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
@@ -197,7 +191,6 @@ public class TurnoTest {
 			fail("eccezione movimento");
 		}
 		
-		
 		//spostamento su carogna con carnivoro con poca energia quindi la mangia (non tutta)
 		dG1 = inizializzaDinosauro(p,dG1,100,38,37);
 		dG1.setEnergia(50);
@@ -211,13 +204,13 @@ public class TurnoTest {
 			fail("eccezione movimento");
 		}
 		
-		
 		// creo un altro giocatore g8 con un dinosauro (erbivoro):
 		Giocatore g8 = new Giocatore(1,"stego8","e");
 		Utente u8 = new Utente("nomeUtente8","pass");
 		g8.setUtente(u8);
 		g8.aggiungiInPartita(p);
 		Dinosauro dG8 = g8.getDinosauri().get(0);
+		
 		//spostamento su vegetazione con erbivoro con max energia quindi non la mangia
 		dG8 = inizializzaDinosauro(p,dG8,2000,1,2); // lo posiziono in (1,2) dove c'e' terra semplice
 		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
@@ -299,7 +292,6 @@ public class TurnoTest {
 		dG8 = inizializzaDinosauro(p,dG8,4000,38,37);
 		g8.aggiungiDinosauro(dG8);
 		
-		
 		// creo un altro giocatore g2 con un dinosauro (erbivoro):
 		Giocatore g2 = new Giocatore(1,"stego2","e");
 		Utente u2 = new Utente("nomeUtente2","pass");
@@ -342,8 +334,6 @@ public class TurnoTest {
 		Dinosauro dG3 = g3.getDinosauri().get(0);
 		
 		dG3 = inizializzaDinosauro(p,dG3,5000,1,2); // lo posiziono in (1,2) dove c'e' terra semplice
-//		dG1 = inizializzaDinosauro(p,dG1,2000,2,1); // posiziono il dinosauro carnivoro attaccato del giocatore pippo in (2,1)
-
 		// spostamento di un erbivoro su un carnivoro piu' debole di lui presente in (1,1)
 		try {
 			t.spostaDinosauro(dG3, 1, 1);
@@ -361,8 +351,8 @@ public class TurnoTest {
 		g4.aggiungiInPartita(p);
 		Dinosauro dG4 = g4.getDinosauri().get(0);
 		
-		dG3.setEnergiaMax(2000);
-		dG3.setEnergia(2000);
+		dG3.setEnergiaMax(200);
+		dG3.setEnergia(200);
 		
 		//combattimenti tra carnivori:
 		
@@ -379,8 +369,9 @@ public class TurnoTest {
 		//rimetto in vita il dino riassegnandolo a g4
 		dG4 = inizializzaDinosauro(p,dG4,4000,1,2);
 		g4.aggiungiDinosauro(dG4);
+		dG4.setEnergia(3000);
 		
-		//spostamento di un carnivoro piu' forte su un carnivoro piu' debole
+		//spostamento di un carnivoro piu' forte su un carnivoro piu' debole + mangiata della vittima
 		try {
 			t.spostaDinosauro(dG4, 1, 1);
 			fail("non ha generato eccezione per sconfitta attaccato (carnivoro)");
@@ -397,10 +388,10 @@ public class TurnoTest {
 		g5.aggiungiInPartita(p);
 		Dinosauro dG5 = g5.getDinosauri().get(0);
 		
-		dG5 = inizializzaDinosauro(p,dG5,2000,1,2);
+		dG5 = inizializzaDinosauro(p,dG5,500,1,2);
 		dG4.setEnergiaMax(4000);
-		dG4.setEnergia(4000);
-		//spostamento di un carnivoro piu' debole su un carnivoro piu' forte
+		dG4.setEnergia(3000);
+		//spostamento di un carnivoro piu' debole su un carnivoro piu' forte + mangiata della vittima
 		try {
 			t.spostaDinosauro(dG5, 1, 1);
 			fail("non ha generato eccezione per sconfitta attaccante (carnivoro)");
@@ -441,8 +432,7 @@ public class TurnoTest {
 				System.out.println("ok generata eccezione per morte dell'attaccante (erbivoro)");
 			}
 		}
-		
-		
+			
 		// creo un altro giocatore g6 con un dinosauro (erbivoro):
 		Giocatore g6 = new Giocatore(1,"stego6","e");
 		Utente u6 = new Utente("nomeUtente6","pass");
@@ -481,8 +471,8 @@ public class TurnoTest {
 		p.nascitaDinosauro(1);
 		Dinosauro dinoNato = g7.getDinosauri().get(1);
 		assertEquals(idDinoNato, dinoNato.getId());
-		System.out.println("coord dG7="+dG7.getRiga()+","+dG7.getColonna());
-		System.out.println("coord dinoNato="+dinoNato.getRiga()+","+dinoNato.getColonna());
+//		System.out.println("coord dG7="+dG7.getRiga()+","+dG7.getColonna());
+//		System.out.println("coord dinoNato="+dinoNato.getRiga()+","+dinoNato.getColonna());
 		//faccio spostare due dinosauri dello stesso giocatore uno sopra l'altro x fare generare l'eccezione
 		try {
 			t.spostaDinosauro(dG7, dinoNato.getRiga(), dinoNato.getColonna());
@@ -505,5 +495,4 @@ public class TurnoTest {
 		p.getIsola().getMappa()[2][2].setOccupante(c);
 		t.ricreaCarogne(p.getIsola().getMappa());
 	}
-
 }

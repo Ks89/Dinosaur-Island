@@ -1,7 +1,6 @@
 package isoladinosauri;
 
 import org.junit.Test;
-
 import server.logica.CaricamentoMappa;
 import server.logica.Cella;
 import server.logica.Isola;
@@ -19,5 +18,4 @@ public class IsolaTest {
 		Isola i = new Isola(mappaCelle);
 		i.cresciEConsuma();
 	}
-
 }

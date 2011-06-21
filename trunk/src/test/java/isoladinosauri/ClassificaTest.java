@@ -2,9 +2,7 @@ package isoladinosauri;
 
 import static org.junit.Assert.*;
 import gestioneeccezioni.CrescitaException;
-
 import org.junit.Test;
-
 import server.logica.CaricamentoMappa;
 import server.logica.Cella;
 import server.logica.Classifica;
@@ -14,7 +12,6 @@ import server.logica.Partita;
 import server.logica.Turno;
 import server.logica.Utente;
 import server.modellodati.Dinosauro;
-
 
 public class ClassificaTest {
 

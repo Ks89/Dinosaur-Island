@@ -1,10 +1,6 @@
-/**
- * 
- */
 package isoladinosauri.modellodati;
 
 import org.junit.Test;
-
 import server.modellodati.Vegetale;
 
 public class VegetaleTest {
