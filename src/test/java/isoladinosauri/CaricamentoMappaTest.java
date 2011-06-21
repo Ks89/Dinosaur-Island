@@ -1,15 +1,12 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.StringTokenizer;
-
 import org.junit.Test;
-
 import server.logica.CaricamentoMappa;
 import server.logica.Cella;
 
@@ -68,5 +65,4 @@ public class CaricamentoMappaTest {
 		assertEquals(40, mappaCelle.length);
 		assertEquals(40, mappaCelle[0].length);
 	}
-
 }

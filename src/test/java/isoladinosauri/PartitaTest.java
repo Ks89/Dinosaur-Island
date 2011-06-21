@@ -1,9 +1,7 @@
 package isoladinosauri;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import server.logica.CaricamentoMappa;
 import server.logica.Cella;
 import server.logica.Giocatore;
@@ -12,8 +10,6 @@ import server.logica.Partita;
 import server.logica.Turno;
 import server.logica.Utente;
 import server.modellodati.Dinosauro;
-
-
 import gestioneeccezioni.DeposizioneException;
 
 public class PartitaTest {
@@ -122,6 +118,5 @@ public class PartitaTest {
 		} catch (DeposizioneException e1) {
 			System.out.println("ok generata eccezione morte per energia insufficiente");
 		}
-		
 	}
 }

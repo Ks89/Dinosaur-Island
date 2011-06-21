@@ -1,7 +1,6 @@
 package isoladinosauri.modellodati;
 
 import org.junit.Test;
-
 import server.modellodati.Carogna;
 
 public class CarognaTest {
