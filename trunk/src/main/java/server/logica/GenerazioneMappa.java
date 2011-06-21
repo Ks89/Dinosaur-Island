@@ -31,26 +31,26 @@ public class GenerazioneMappa {
 		String mappa[][] = this.inserisciAcqua();
 		this.inserisciCarogne();
 		this.inserisciTerra();
-		this.contaCarogne();
+//		this.contaCarogne();
 		PosizionaVegetazione tv = new PosizionaVegetazione();
 		tv.posizionaVegetazione(mappa);
 		return mappa;
 	}
 
-	/**
-	 * Metodo per contare il numero di carogne all'interno della mappa di gioco.
-	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
-	 */
-	private void contaCarogne() {
-		int cont=0;
-		for(int i=0;i<MAX;i++) {
-			for(int j=0;j<MAX;j++) {
-				if(mappa[i][j].equals("c")) {
-					cont++;
-				}
-			}
-		}
-	}
+//	/**
+//	 * Metodo per contare il numero di carogne all'interno della mappa di gioco.
+//	 * @param mappa array bidimensionale di String che rappresenta la mappa di gioco generate in modo casuale.
+//	 */
+//	private void contaCarogne() {
+//		int cont=0;
+//		for(int i=0;i<MAX;i++) {
+//			for(int j=0;j<MAX;j++) {
+//				if(mappa[i][j].equals("c")) {
+//					cont++;
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * Metodo per inserire le Carogne all'interno della mappa generata in modo casuale.

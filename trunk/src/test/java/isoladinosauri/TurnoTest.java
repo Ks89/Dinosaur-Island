@@ -70,28 +70,27 @@ public class TurnoTest {
 		g.setUtente(u);
 		g.aggiungiInPartita(p);
 		Dinosauro d = g.getDinosauri().get(0);
-		d.setRiga(1);
-		d.setColonna(2);
+		d = inizializzaDinosauro(p,d,4000,1,2);
 		try {
 			t.spostaDinosauro(d, 1, 1);
 		} catch (MovimentoException e) {
 			fail("eccezione");
 		}
-		t.ottieniStradaPercorsa(d.getRiga(), d.getColonna(), 1, 1);
+		t.ottieniStradaPercorsa(1, 2, 1, 1);
 		// creo un altro giocatore con un dinosauro (erbivoro):
 		Giocatore g2 = new Giocatore(1,"stego2","e");
 		Utente u2 = new Utente("nomeUtente2","pass");
 		g2.setUtente(u2);
 		g2.aggiungiInPartita(p);
 		Dinosauro dG2 = g2.getDinosauri().get(0);
-		dG2.setRiga(1);
-		dG2.setColonna(2);
+		dG2 = inizializzaDinosauro(p,dG2,4000,1,2);
 		try {
 			t.spostaDinosauro(dG2, 2, 3);
 		} catch (MovimentoException e) {
 			fail("eccezione");
 		}
-		t.ottieniStradaPercorsa(dG2.getRiga(), dG2.getColonna(), 2, 3);
+		t.ottieniStradaPercorsa(1, 2, 2, 3);
+		
 		//faccio ottenere un null x una strada non accettabile
 		assertNull(t.ottieniStradaPercorsa(1, 1, 5, 5));
 		
@@ -112,7 +111,7 @@ public class TurnoTest {
 		g1.aggiungiInPartita(p);
 		Dinosauro dG1 = g1.getDinosauri().get(0);
 		
-		// genera eccezione per spostamento in acqua (0,0)
+		// genera eccezione per spostamento in acqua (1,4)
 		dG1 = inizializzaDinosauro(p,dG1,4000,1,1);
 		try {
 			t.spostaDinosauro(dG1, 1, 4); // in (1,4) c'e' acqua (origine in alto a sx)
@@ -122,7 +121,8 @@ public class TurnoTest {
 		}
 		
 		//spostamento su terra semplice con morte x energia insufficiente
-		dG1 = inizializzaDinosauro(p,dG1,10,1,1);
+//		dG1 = inizializzaDinosauro(p,dG1,10,1,1);
+		dG1.setEnergia(10);
 		try {
 			t.spostaDinosauro(dG1, 2, 1);
 			fail("non ha generato eccezione morte per energia insufficiente ");
@@ -142,7 +142,8 @@ public class TurnoTest {
 		}
 		
 		//spostamento su vegetazione con carnivoro con morte per insufficiente energia
-		dG1 = inizializzaDinosauro(p,dG1,10,2,1);
+//		dG1 = inizializzaDinosauro(p,dG1,10,2,1);
+		dG1.setEnergia(10);
 		try {
 			t.spostaDinosauro(dG1, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
 			fail("non ha generato eccezione per morte causata da insufficiente energia");
@@ -159,9 +160,7 @@ public class TurnoTest {
 		} catch (MovimentoException e) {
 			fail("eccezione movimento");
 		}
-		
-		
-		
+			
 		
 		//spostamento su carogna con carnivoro con piena energia quindi non la mangia
 		dG1 = inizializzaDinosauro(p,dG1,4000,38,37);
@@ -170,6 +169,9 @@ public class TurnoTest {
 		} catch (MovimentoException e) {
 			fail("eccezione movimento");
 		}
+		Carogna carogna0 = new Carogna();
+		p.getIsola().getMappa()[38][38].setDinosauro(null);
+		p.getIsola().getMappa()[38][38].setOccupante(carogna0);
 		
 		//spostamento su carogna con carnivoro con energia insufficiente causando morte
 		dG1 = inizializzaDinosauro(p,dG1,10,38,37);
@@ -180,15 +182,29 @@ public class TurnoTest {
 			System.out.println("ok generata eccezione per morte causata da insufficiente energia");
 		}
 		//rimetto in vita il dino riassegnandolo a g1
-		dG1 = inizializzaDinosauro(p,dG1,4000,38,38);
+		dG1 = inizializzaDinosauro(p,dG1,1000,37,38);
 		g1.aggiungiDinosauro(dG1);
-		
-		//spostamento su carogna con carnivoro con poca energia quindi la mangia
-		dG1 = inizializzaDinosauro(p,dG1,100,38,37);
+	
+		//spostamento su carogna con carnivoro con poca energia e in condizione di mangiarla tutta
+		dG1.setEnergia(100);
 		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
-		Carogna carogna = new Carogna();
+		Carogna carogna1 = new Carogna();
 		p.getIsola().getMappa()[38][38].setDinosauro(null);
-		p.getIsola().getMappa()[38][38].setOccupante(carogna);
+		p.getIsola().getMappa()[38][38].setOccupante(carogna1);
+		try {
+			t.spostaDinosauro(dG1, 38, 38); // in (38,38) c'e' una carogna (origine in alto a sx)
+		} catch (MovimentoException e) {
+			fail("eccezione movimento");
+		}
+		
+		
+		//spostamento su carogna con carnivoro con poca energia quindi la mangia (non tutta)
+		dG1 = inizializzaDinosauro(p,dG1,100,38,37);
+		dG1.setEnergia(50);
+		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
+		Carogna carogna2 = new Carogna();
+		p.getIsola().getMappa()[38][38].setDinosauro(null);
+		p.getIsola().getMappa()[38][38].setOccupante(carogna2);
 		try {
 			t.spostaDinosauro(dG1, 38, 38); // in (38,38) c'e' una carogna (origine in alto a sx)
 		} catch (MovimentoException e) {
@@ -214,8 +230,9 @@ public class TurnoTest {
 			fail("eccezione movimento");
 		}
 		
-		//spostamento su vegetazione con erbivoro con poca energia quindi la mangia
-		dG8 = inizializzaDinosauro(p,dG8,100,1,2);
+		//spostamento su vegetazione con erbivoro con poca energia e in condizione di mangiarla tutta
+		dG8 = inizializzaDinosauro(p,dG8,1000,1,2);
+		dG8.setEnergia(100);
 		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
 		Vegetale vegetale1 = new Vegetale();
 		p.getIsola().getMappa()[1][3].setDinosauro(null);
@@ -226,48 +243,60 @@ public class TurnoTest {
 			fail("eccezione movimento");
 		}
 		
-		//spostamento su vegetazione con erbivoro con energia insufficiente quindi muore
-		dG8 = inizializzaDinosauro(p,dG8,10,1,2);
+		//spostamento su vegetazione con erbivoro con poca energia quindi la mangia (non tutta)
+		dG8 = inizializzaDinosauro(p,dG8,100,1,2);
+		dG8.setEnergia(50);
 		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
 		Vegetale vegetale2 = new Vegetale();
 		p.getIsola().getMappa()[1][3].setDinosauro(null);
 		p.getIsola().getMappa()[1][3].setOccupante(vegetale2);
 		try {
 			t.spostaDinosauro(dG8, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
-			fail("non ha generato eccezione per morte causata da insufficiente energia");
 		} catch (MovimentoException e) {
-			System.out.println("ok generata eccezione per morte causata da insufficiente energia");
+			fail("eccezione movimento");
 		}
-		//rimetto in vita il dino riassegnandolo a g8
-		dG8 = inizializzaDinosauro(p,dG8,4000,1,3);
-		g8.aggiungiDinosauro(dG8);
 		
-		//spostamento su carogna con erbivoro quindi non la mangia
-		dG8 = inizializzaDinosauro(p,dG8,4000,1,2);
-		//rimetto nella mappa una vegetazione sovrascrivendola al dino mosso in precedenza
+		//spostamento su vegetazione con erbivoro con energia insufficiente quindi muore
+		dG8 = inizializzaDinosauro(p,dG8,10,1,2);
+		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
 		Vegetale vegetale3 = new Vegetale();
 		p.getIsola().getMappa()[1][3].setDinosauro(null);
 		p.getIsola().getMappa()[1][3].setOccupante(vegetale3);
 		try {
 			t.spostaDinosauro(dG8, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
-		} catch (MovimentoException e) {
-			fail("eccezione movimento");
-		}
-		
-		//spostamento su carogna con erbivoro con insufficiente energia quindi muore
-		dG8 = inizializzaDinosauro(p,dG8,10,1,2);
-		//rimetto nella mappa una vegetazione sovrascrivendola al dino mosso in precedenza
-		Vegetale vegetale4 = new Vegetale();
-		p.getIsola().getMappa()[1][3].setDinosauro(null);
-		p.getIsola().getMappa()[1][3].setOccupante(vegetale4);
-		try {
-			t.spostaDinosauro(dG8, 1, 3); // in (1,3) c'e' vegetazione (origine in alto a sx)
 			fail("non ha generato eccezione per morte causata da insufficiente energia");
 		} catch (MovimentoException e) {
 			System.out.println("ok generata eccezione per morte causata da insufficiente energia");
 		}
 		//rimetto in vita il dino riassegnandolo a g8
-		dG8 = inizializzaDinosauro(p,dG8,4000,1,3);
+		dG8 = inizializzaDinosauro(p,dG8,4000,38,37);
+		g8.aggiungiDinosauro(dG8);
+		
+		//spostamento su carogna con erbivoro quindi non la mangia
+		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
+		Carogna carogna = new Carogna();
+		p.getIsola().getMappa()[38][38].setDinosauro(null);
+		p.getIsola().getMappa()[38][38].setOccupante(carogna);
+		try {
+			t.spostaDinosauro(dG8, 38, 38); // in (38,38) c'e' vegetazione (origine in alto a sx)
+		} catch (MovimentoException e) {
+			fail("eccezione movimento");
+		}
+		
+		//spostamento su carogna con erbivoro con insufficiente energia quindi muore
+		dG8 = inizializzaDinosauro(p,dG8,10,38,37);
+		//rimetto nella mappa una carogna sovrascrivendola al dino mosso in precedenza
+		Carogna carogna3 = new Carogna();
+		p.getIsola().getMappa()[38][38].setDinosauro(null);
+		p.getIsola().getMappa()[38][38].setOccupante(carogna3);
+		try {
+			t.spostaDinosauro(dG8, 38, 38); // in (1,3) c'e' carogna (origine in alto a sx)
+			fail("non ha generato eccezione per morte causata da insufficiente energia");
+		} catch (MovimentoException e) {
+			System.out.println("ok generata eccezione per morte causata da insufficiente energia");
+		}
+		//rimetto in vita il dino riassegnandolo a g8
+		dG8 = inizializzaDinosauro(p,dG8,4000,38,37);
 		g8.aggiungiDinosauro(dG8);
 		
 		
@@ -278,15 +307,7 @@ public class TurnoTest {
 		g2.aggiungiInPartita(p);
 		Dinosauro dG2 = g2.getDinosauri().get(0);
 		
-		dG1 = inizializzaDinosauro(p,dG1,4000,2,1); // posiziono il dinosauro carnivoro del giocatore pippo in (2,1)
-		//sposto il carnivoro in (1,1) e gli assegno 4000 di energia
-		try {
-			t.spostaDinosauro(dG1, 1, 1);
-			dG1.setEnergiaMax(4000);
-			dG1.setEnergia(4000);
-		} catch (MovimentoException e1) {
-			fail("eccezione movimento");
-		}
+		dG1 = inizializzaDinosauro(p,dG1,2000,1,1);
 		
 		// spostamento di un erbivoro su un carnivoro con energia insufficiente quindi muore
 		dG2 = inizializzaDinosauro(p,dG2,10,1,2); // lo posiziono in (1,2) dove c'e' terra semplice
@@ -299,7 +320,7 @@ public class TurnoTest {
 			}
 		}
 		//rimetto in vita il dino riassegnandolo a g2
-		dG2 = inizializzaDinosauro(p,dG2,4000,1,2);
+		dG2 = inizializzaDinosauro(p,dG2,1000,1,2);
 		g2.aggiungiDinosauro(dG2);
 		
 		// spostamento di un erbivoro su un carnivoro piu' forte di lui presente in (1,1)
@@ -321,7 +342,7 @@ public class TurnoTest {
 		Dinosauro dG3 = g3.getDinosauri().get(0);
 		
 		dG3 = inizializzaDinosauro(p,dG3,5000,1,2); // lo posiziono in (1,2) dove c'e' terra semplice
-		dG1 = inizializzaDinosauro(p,dG1,2000,2,1); // posiziono il dinosauro carnivoro attaccato del giocatore pippo in (2,1)
+//		dG1 = inizializzaDinosauro(p,dG1,2000,2,1); // posiziono il dinosauro carnivoro attaccato del giocatore pippo in (2,1)
 
 		// spostamento di un erbivoro su un carnivoro piu' debole di lui presente in (1,1)
 		try {
@@ -388,6 +409,39 @@ public class TurnoTest {
 				System.out.println("ok generata eccezione per morte dell'attaccante (carnivoro)");
 			}
 		}
+		
+		//rimetto in vita il dino riassegnandolo a g3
+		dG3 = inizializzaDinosauro(p,dG3,100,1,2); //erbivoro
+		g3.aggiungiDinosauro(dG3);
+		//rimetto in vita il dino riassegnandolo a g5
+		dG5 = inizializzaDinosauro(p,dG5,2000,3,1); //carnivoro
+		g5.aggiungiDinosauro(dG5);
+		dG5.setEnergia(1500);
+		
+		//spostamento di un carnivoro su un erbivoro: il carnivoro vince e mangia la vittima
+		try {
+			t.spostaDinosauro(dG5, 1, 2);
+			fail("non ha generato eccezione per morte dell'attaccato (erbivoro)");
+		} catch (MovimentoException e) {
+			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCATO) { //muore dG3
+				System.out.println("ok generata eccezione per morte dell'attaccato (erbivoro)");
+			}
+		}
+		
+		//rimetto in vita il dino riassegnandolo a g3
+		dG3 = inizializzaDinosauro(p,dG3,200,3,1); //erbivoro
+		g3.aggiungiDinosauro(dG3);
+		dG5.setEnergia(1500);
+		//spostamento di un erbivoro su un carnivoro piu' forte: l'erbivoro perde e viene mangiato
+		try {
+			t.spostaDinosauro(dG3, 1, 2);
+			fail("non ha generato eccezione per morte dell'attaccante (erbivoro)");
+		} catch (MovimentoException e) {
+			if(e.getCausa()==MovimentoException.Causa.SCONFITTAATTACCANTE) { //muore dG3
+				System.out.println("ok generata eccezione per morte dell'attaccante (erbivoro)");
+			}
+		}
+		
 		
 		// creo un altro giocatore g6 con un dinosauro (erbivoro):
 		Giocatore g6 = new Giocatore(1,"stego6","e");
