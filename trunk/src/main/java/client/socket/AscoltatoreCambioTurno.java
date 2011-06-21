@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 /**
  *	Classe che si occupa di ascoltare il server per intercettare i messaggi di CambioTurno.
  *  Funziona su un thread a parte ed utilizza un socket differente da quello per la comunicazione.
- *  La porta è ovviamente differente.
+ *  La porta e' ovviamente differente.
  */
 public class AscoltatoreCambioTurno extends Thread {
 
