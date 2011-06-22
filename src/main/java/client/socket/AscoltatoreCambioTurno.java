@@ -28,10 +28,7 @@ public class AscoltatoreCambioTurno extends Thread {
 		while(true) {
 			try {
 				String messaggioServer = this.gui.getClientGui().getBroadcastServerTurno();
-				System.out.println("risposta broadcast: " + messaggioServer);
-				
 				if(messaggioServer.contains("@cambioTurno") ) {
-					System.out.println("User da confrontare in ascoltatorecambioturno: " + this.gui.getClientGui().getNomeUtente());
 					if(messaggioServer.split(",")[1].equals(this.gui.getClientGui().getNomeUtente())) {
 						this.gui.ottieniIlTurno();
 					}

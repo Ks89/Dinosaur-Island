@@ -93,7 +93,6 @@ public class MenuGui {
 							risposta = risposta.replace("{", "");
 							risposta = risposta.replace("},", "\n");
 							risposta = risposta.replace("}", "");
-							System.out.println("classifica: " + risposta);
 							JOptionPane.showMessageDialog(null, risposta);
 						} catch (IOException e) {
 							JOptionPane.showMessageDialog(null,"IOException");
