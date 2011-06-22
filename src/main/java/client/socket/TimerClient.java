@@ -20,6 +20,9 @@ public class TimerClient extends TimerTask {
 		this.gui = gui;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.util.TimerTask#run()
+	 */
 	public void run() {	
 		try {
 			this.gui.getClientGui().passaTurno();

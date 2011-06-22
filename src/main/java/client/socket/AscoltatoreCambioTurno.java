@@ -21,6 +21,9 @@ public class AscoltatoreCambioTurno extends Thread {
 		this.gui = gui;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
 		while(true) {
 			try {

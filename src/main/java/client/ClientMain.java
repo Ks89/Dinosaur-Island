@@ -122,6 +122,9 @@ public class ClientMain {
 		return b;
 	}
 
+	/**
+	 * Metodo per mostrare il layour corretto del cardLayout in base all'azione eseguita.
+	 */
 	private static ActionListener actionHandler = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			cardLayout.show(contentPane, e.getActionCommand());

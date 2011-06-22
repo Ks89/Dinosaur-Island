@@ -203,6 +203,11 @@ public class GestoreClient extends Thread {
 	}
 
 
+	/**
+	 * Metodo che verifica se il Dinosaro passato come paramentro e' l'ultimo del Giocatore a cui e' assegnato il turno.
+	 * @param dinosauro ridefimento al Dinosauro.
+	 * @return Un boolean che puo' essere 'true' per dire che e' l'ultimo o 'false' per dire l'opposto.
+	 */
 	private boolean verificaUltimoDinosauro (Dinosauro dinosauro) {
 		for(int i=0;i<this.partita.getGiocatori().size();i++) {
 			for(int j=0;j<this.partita.getGiocatori().get(i).getDinosauri().size();j++) {

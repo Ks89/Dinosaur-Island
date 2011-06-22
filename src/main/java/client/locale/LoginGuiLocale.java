@@ -119,6 +119,9 @@ public class LoginGuiLocale {
 		);
 	}
 	
+	/**
+	 * Classe per gestire gli eventi sui RadioButton (erbivoro e carnivoro).
+	 */
 	private class RadioButtonHandler implements ItemListener
 	{
 		public void itemStateChanged(ItemEvent event)

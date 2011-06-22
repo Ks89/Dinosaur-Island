@@ -13,18 +13,34 @@ public class MovimentoException extends Exception {
 	public static enum Causa {MORTE,DESTINAZIONEERRATA,NESSUNVINCITORE,SCONFITTAATTACCANTE,SCONFITTAATTACCATO,ERRORE}; 
 	private Causa causa;
 
+	/**
+	 * Richiama la superclasse.
+	 */
 	public MovimentoException() {
 		super();
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param message
+	 * @param cause
+	 */
 	public MovimentoException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param message
+	 */
 	public MovimentoException(String message) {
 		super(message);
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param cause
+	 */
 	public MovimentoException(Throwable cause) {
 		super(cause);
 	}

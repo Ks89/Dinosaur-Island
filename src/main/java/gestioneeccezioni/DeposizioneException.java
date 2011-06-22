@@ -13,18 +13,34 @@ public class DeposizioneException extends Exception {
 	public static enum Causa {MORTE,SQUADRACOMPLETA}; 
 	private Causa causa;
 
+	/**
+	 * Richiama la superclasse.
+	 */
 	public DeposizioneException() {
 		super();
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param message
+	 * @param cause
+	 */
 	public DeposizioneException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param message
+	 */
 	public DeposizioneException(String message) {
 		super(message);
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param cause
+	 */
 	public DeposizioneException(Throwable cause) {
 		super(cause);
 	}

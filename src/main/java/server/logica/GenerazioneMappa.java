@@ -19,6 +19,9 @@ public class GenerazioneMappa {
 	private String[][] mappa;
 	private int numeroraggiungibili;
 
+	/**
+	 * Costruttore di GenerazioneMappa che inzializza la mappa di String.
+	 */
 	public GenerazioneMappa() {
 		mappa = new String[MAX][MAX];
 	}
