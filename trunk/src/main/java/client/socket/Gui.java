@@ -58,11 +58,17 @@ public class Gui {
 		this.maxIndiceDinosauri = 1;
 	}
 
-	//metodo per far avere il timer a Client
+	/**
+	 * Metodo per ottenere un riferimento al Timer.
+	 * @return Un Timer rappresentante il conteggio del tempo per i turni.
+	 */
 	public Timer getTimer() {
 		return timer;
 	}
 
+	/**
+	 * Metodo per disattivare le azioni nell'inferfaccia grafica.
+	 */
 	public void disattivaAzioniGui() {
 		this.cresci.setEnabled(false);
 		this.deponi.setEnabled(false);
@@ -70,10 +76,11 @@ public class Gui {
 		this.conferma.setEnabled(false);
 		this.passa.setEnabled(false);
 		this.mg.disattivaAzioniMappa();
-		//invio 
-
 	}
 
+	/**
+	 * Metodo per disattivare le azioni nell'inferfaccia grafica.
+	 */
 	public void attivaAzioniGui() {
 		this.timer.cancel();
 		this.cresci.setEnabled(true);
@@ -84,6 +91,9 @@ public class Gui {
 		this.avviaTimer();
 	}
 
+	/**
+	 * Metodo per avviare il timer di 2 minuti.
+	 */
 	private void avvioSecondoTimer() {
 		//credo un nuovo timer da 2 minuti
 		timer = new Timer();
@@ -92,6 +102,9 @@ public class Gui {
 	}
 
 
+	/**
+	 * Metodo per avviare il primo timer di 30 secondi.
+	 */
 	private void avviaTimer() {
 		TimerTask task = new TimerClient(this);
 		timer = new Timer();
@@ -99,6 +112,9 @@ public class Gui {
 	}
 
 
+	/**
+	 * Metodo richiamato dall'AscoltatoreCambioTurno per ottenere il turno dal server e rinizializzare la grafica.
+	 */
 	public void ottieniIlTurno() {
 		conferma.setEnabled(true);
 		passa.setEnabled(true);
@@ -116,6 +132,12 @@ public class Gui {
 		}
 	}
 
+	/**
+	 * Metodo per aggiornare la lista dei Dinsaorui e memorizzare in una variabile locale "listaDinosauri" 
+	 * che viene usata da altri metodi.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	private void aggiornaListaDinosauri() throws IOException, InterruptedException {
 		this.getClientGui().listaDinosauri();
 		this.listaDinosauri = this.getClientGui().getRichiesta();
@@ -146,6 +168,12 @@ public class Gui {
 		}
 	}
 
+	/**
+	 * Metodo per impostare la mappa.
+	 * @return Una String rappresentante la vista locale.
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public String impostaMappa() throws IOException, InterruptedException {
 		this.getClientGui().vistaLocale(this.getIdDinosauro(indiceDino));
 		String answer = this.getClientGui().getRichiesta();
@@ -155,6 +183,10 @@ public class Gui {
 		return answer;
 	}
 
+	/**
+	 * Metodo per ottenere lo stato del Dinosauro.
+	 * @return Una String rappresentante lo stato del Dinosauro.
+	 */
 	public String ottieniStatoDinosauro() {
 		String idDinosauro = this.getIdDinosauro(this.getIndiceDino());
 		try {
@@ -264,6 +296,11 @@ public class Gui {
 		return infoPanel;
 	}
 
+	/**
+	 * Metodo per caricare la Mappa di gioco nel client, ricevendola dal server (quella generale).
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public void caricaMappa() throws IOException, InterruptedException {
 		this.getClientGui().mappaGenerale();
 		String risposta = this.getClientGui().getRichiesta();
@@ -294,6 +331,9 @@ public class Gui {
 		}
 	}
 
+	/**
+	 * Metodo per ottenere la classifica dal server.
+	 */
 	public void ottieniClassifica() {
 		try {
 			this.getClientGui().classifica();
@@ -448,6 +488,11 @@ public class Gui {
 		return panelAzioni;
 	}
 
+	/**
+	 * Metodo per ottenere l'id del Dinsoauro.
+	 * @param indiceDino int rappresentanta il numero del Dinosauro per cui si vuole avere l'ID.
+	 * @return Una String rappresentante l'id del Dinosauro.
+	 */
 	public String getIdDinosauro(int indiceDino) {
 		String risposta = this.listaDinosauri;
 		System.out.println("Lista dinosauri: " + risposta);
@@ -456,6 +501,11 @@ public class Gui {
 		return dinosauri[indiceDino];
 	}
 
+	/**
+	 * Metodo che reimposta le varibili azione e movimento per gestire i limiti sulle operazioni
+	 * svolta dal giocatore quando ottiene il turno. Cioe' puo' eseguire solo un movimento e/o
+	 * una azione di depozione o crescita.
+	 */
 	public void resetAzioniEMovimenti() {
 		//ottengo la lista dei dinosauri del giocatore
 		for(int i=0;i<5;i++) {
@@ -464,6 +514,10 @@ public class Gui {
 		}
 	}
 
+	/**
+	 * Metodo per selezionare il Dinosauro successivo. Se e' gia' l'ultimo procede con invio del messaggio PassaTurno
+	 * al server e a reimpostare la gui del client.
+	 */
 	private void prossimoDinosauro(){
 
 		//metodo per cambiare dinosauro e automaticamente setta a true (cioe' azione  e movimento eseguito) i 2 array
@@ -504,6 +558,10 @@ public class Gui {
 		}
 	}
 
+	/**
+	 * Metodo per verificare il turno, cioe' se movimento e azione sono true viene richiamato automaticamete prossimoDinosauro.
+	 * @param indiceDino
+	 */
 	public void verificaTurno(int indiceDino) {
 		if(this.movimento[indiceDino] && this.azione[indiceDino]) {
 			this.prossimoDinosauro();

@@ -99,12 +99,12 @@ public class GuiLocale {
 		
 		
 		//Caricamento dello stato giocatore salvato, se presente
-		SalvataggioGiocatore pers = StatoGiocatoreDB.caricaGiocatore(user);
-		if (pers == null) {
+		SalvataggioGiocatore estrattoDaDatabase = StatoGiocatoreDB.caricaGiocatore(user);
+		if (estrattoDaDatabase == null) {
 		    giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);    
 		    giocatore.setUtente(new Utente(user, password));
 		} else {
-		    giocatore = (Giocatore)pers.getOggetto();
+		    giocatore = (Giocatore)estrattoDaDatabase.getOggetto();
 		    giocatore.getUtente().getPassword();
 		}
 		
