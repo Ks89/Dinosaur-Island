@@ -158,6 +158,13 @@ public class StatoGiocatoreDB {
 	//
 	//    }
 
+	/**
+	 * Metodo per caricare un Giocatore. Fornendogli il nome utente, si occupa di estrarre la "tupla". Essa e' composta
+	 * da una chiave e un oggetto (vedic lasse SalvataggioGiocatore). Da essa e' sufficiente usare i metodi get per ottenere
+	 * i valori desiderati.
+	 * @param utente String rappresentante il nome utente del Giocatore da estrarre dal database.
+	 * @return Un oggetto SalvataggioGiocatore da cui si puo' estrarre la chiave (nome utente) e l'oggetto Giocatore stesso.
+	 */
 	public static synchronized SalvataggioGiocatore caricaGiocatore(final String utente) {
 		if (server == null) {
 			avviaDBServer();

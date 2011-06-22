@@ -47,6 +47,9 @@ public class MappaGui {
 	}
 
 
+	/**
+	 * Metodo per disattivare le azioni della Mappa.
+	 */
 	public void disattivaAzioniMappa() {
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
@@ -55,6 +58,9 @@ public class MappaGui {
 		}
 	}
 
+	/**
+	 * Metodo per attivare le azioni della Mappa.
+	 */
 	public void attivaAzioniMappa() {
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
@@ -285,6 +291,14 @@ public class MappaGui {
 		}
 	}
 
+	/**
+	 * Metodo per ottenere le coordinate della raggiungibilita'.
+	 * @return Un array di interi: 
+	 * [0] - rigaInzio, 
+	 * [1] - colonnaInizio, 
+	 * [2] - rigaFine, 
+	 * [3] - colonnaFine.
+	 */
 	private int[] ottieniCordinateRagg () {
 		String risposta = gui.ottieniStatoDinosauro();
 
@@ -420,7 +434,6 @@ public class MappaGui {
 		}
 
 	}
-
 
 
 	/**
