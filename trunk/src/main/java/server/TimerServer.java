@@ -17,6 +17,9 @@ public class TimerServer extends TimerTask {
 		this.ch = ch;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.util.TimerTask#run()
+	 */
 	public void run() {	
 		//invio il messaggio in broadcast
 		this.ch.cambioTurno();

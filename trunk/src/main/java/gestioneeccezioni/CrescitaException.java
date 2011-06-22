@@ -13,18 +13,34 @@ public class CrescitaException extends Exception {
 	public static enum Causa {MORTE,DIMENSIONEMASSIMA}; 
 	private Causa causa;
 
+	/**
+	 * Richiama la superclasse.
+	 */
 	public CrescitaException() {
 		super();
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param message
+	 * @param cause
+	 */
 	public CrescitaException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param message
+	 */
 	public CrescitaException(String message) {
 		super(message);
 	}
 
+	/**
+	 * Richiama la superclasse.
+	 * @param cause
+	 */
 	public CrescitaException(Throwable cause) {
 		super(cause);
 	}
