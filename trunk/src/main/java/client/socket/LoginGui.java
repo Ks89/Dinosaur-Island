@@ -138,7 +138,6 @@ public class LoginGui {
 					public void actionPerformed(ActionEvent e) { 
 						if(!(user.getText().isEmpty() || password.getText().isEmpty() || user.getText().contains(",") || password.getText().contains(","))) {
 							try {
-								System.out.println(user.getText() +"," +  password.getText());
 								gui.getClientGui().accessoPartita(user.getText(), password.getText());			
 								frameGiocatore.dispose();	
 								gui.preparaDati(user.getText(), password.getText());

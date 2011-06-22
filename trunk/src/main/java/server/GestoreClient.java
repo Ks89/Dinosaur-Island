@@ -87,13 +87,11 @@ public class GestoreClient extends Thread {
 		//se l'ultimo dinosauro ha compiuto una mossa o azione eseguo il cambio turno
 		//questo metodo e' chiamato automaticamente dopo 2 minuti grazie al timer, nel caso in cui il client
 		//non faccia piu' nulla
-		System.out.println(eseguitaMossa + "," + eseguitaAzione);
 		if(eseguitaMossa && eseguitaAzione) {
 			if(indiceGiocatore + 1 < this.partita.getGiocatori().size()){
 				this.indiceGiocatore++; //passo al Giocatore dopo
 			} else {
 				this.indiceGiocatore=0;
-				System.out.println("Fine giro giocatori");
 			}
 			broadcast = "@cambioTurno," + this.partita.getGiocatori().get(indiceGiocatore).getUtente().getNomeUtente(); 
 			this.partita.nascitaDinosauro(1);
@@ -103,7 +101,6 @@ public class GestoreClient extends Thread {
 			this.partita.getTurnoCorrente().ricreaCarogne(this.partita.getIsola().getMappa());
 			this.avviaTimerAzioni();
 		}
-		System.out.println("Domanda generate: " + broadcast);
 		this.inviacambioTurno(broadcast);
 	}
 
@@ -131,7 +128,6 @@ public class GestoreClient extends Thread {
 	private String confermaTurno(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		System.out.println(richiesta);
 		String domanda = null;
 
 		// verifico se l'utente e' loggato
@@ -166,7 +162,6 @@ public class GestoreClient extends Thread {
 	private String passaTurno(String richiesta) {
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
-		System.out.println(richiesta);
 		String domanda = null;
 
 		// verifico se l'utente e' loggato
@@ -499,7 +494,6 @@ public class GestoreClient extends Thread {
 	 */
 	private String uscitaPartita(String richiesta) {
 		String domanda = null;
-		System.out.println("richiesta uscita: " + richiesta);
 		String token = richiesta.split(",")[1].split("=")[1];
 		String nomeUtente = token.split("-")[0];
 		int k=0;
@@ -953,7 +947,6 @@ public class GestoreClient extends Thread {
 		String destinazione = richiesta.split("=")[3].replace("{","").replace("}", ""); //espressa come "X,Y"
 		int riga = Integer.parseInt(destinazione.split(",")[0]);
 		int colonna = Integer.parseInt(destinazione.split(",")[1]); 
-		System.out.println("riga, colonna " + riga + "," + colonna);
 
 		// verifico se l'utente e' loggato
 		boolean loggato = this.gestioneGiocatori.controlloSeLoggato(token);

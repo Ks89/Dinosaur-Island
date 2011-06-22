@@ -153,7 +153,6 @@ public class Gui {
 			this.caricaMappa();
 
 			this.aggiornaListaDinosauri();
-			System.out.println(this.listaDinosauri);
 			String idDinosauro = this.listaDinosauri.split(",")[1];
 
 			this.getClientGui().statoDinosauro(idDinosauro);
@@ -312,21 +311,12 @@ public class Gui {
 			String mappa = risposta.replace("@mappaGenerale"+","+"{"+maxRighe+","+maxColonne+"}"+",", "");
 			mappa = mappa.replace("[", "");
 			mappa = mappa.replace("]", "");
-			System.out.println(mappa);
 			String[] riga = mappa.split(";");
 
 			for(int i=maxRighe-1;i>=0;i--) {
-				System.out.println(riga[i]);
 				for(int j=0;j<maxColonne;j++) {
 					this.mappaRicevuta[i][j] = (riga[i].charAt(j)) + "";
 				}
-			}
-
-			for(int i=0;i<MAX;i++) {
-				for(int j=0;j<MAX;j++) {
-					System.out.print(this.mappaRicevuta[i][j] + " ");
-				}
-				System.out.println();
 			}
 		}
 	}
@@ -337,8 +327,7 @@ public class Gui {
 	public void ottieniClassifica() {
 		try {
 			this.getClientGui().classifica();
-			String risposta = this.getClientGui().getRichiesta();
-			System.out.println("classifica: " + risposta);
+			this.getClientGui().getRichiesta();
 		} catch (IOException ecc) {
 			JOptionPane.showMessageDialog(null,"IOException");
 		} catch (InterruptedException ecc) {
@@ -418,7 +407,6 @@ public class Gui {
 		prossimoDinosauro.addActionListener(
 				new ActionListener() {
 					public void actionPerformed(ActionEvent e) { 
-						System.out.println("Ho cliccato su prossimo dinosauri");
 						prossimoDinosauro();
 					}
 				}
@@ -469,7 +457,6 @@ public class Gui {
 						if(!azione[getIndiceDino()]) { 
 							try {
 								String idDinosauro = getIdDinosauro(indiceDino);
-								System.out.println("Iddinosauro " + idDinosauro + "," + "indiceDino" + indiceDino);
 								getClientGui().deponiUovo(idDinosauro);
 
 								azione[0] = true;
@@ -495,7 +482,6 @@ public class Gui {
 	 */
 	public String getIdDinosauro(int indiceDino) {
 		String risposta = this.listaDinosauri;
-		System.out.println("Lista dinosauri: " + risposta);
 		risposta = risposta.replace("@listaDinosauri,", "");
 		String[] dinosauri = risposta.split(",");
 		return dinosauri[indiceDino];
@@ -522,7 +508,6 @@ public class Gui {
 
 		//metodo per cambiare dinosauro e automaticamente setta a true (cioe' azione  e movimento eseguito) i 2 array
 		String[] dinosauri = this.listaDinosauri.replace("@listaDinosauri,","").split(",");
-		System.out.println("lista dinosauri: " + this.listaDinosauri);
 		this.maxIndiceDinosauri = dinosauri.length;
 
 		mg.resetToolTip();
@@ -531,9 +516,7 @@ public class Gui {
 			this.movimento[this.indiceDino] = true;
 			this.azione[this.indiceDino] = true;
 			this.indiceDino++;
-			System.out.println(this.indiceDino);
 			String idDino = this.getIdDinosauro(indiceDino);
-			System.out.println("id dino con quell'indice: " + idDino);
 			mg.aggiornaStato(idDino);
 		} else {
 			//il turno finisce per forza e viene inviato al server il messaggio

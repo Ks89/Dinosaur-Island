@@ -152,24 +152,12 @@ public class MappaGui {
 
 		String visibilita = answer.replace("@vistaLocale"+","+"{"+rigaOrigine+","+colonnaOrigine+"}"+","+"{"+numeroRighe+","+numeroColonne+"}"+",", "");
 
-		System.out.println("visibilita: " + visibilita);
-
 		String[] riga = visibilita.split(";");
 
 		for(int i=0;i<numeroRighe;i++) {
-			System.out.println(riga[i]);
 			for(int j=0;j<numeroColonne;j++) {
 				mappaVisibilita[i][j] = riga[i].split("]")[j].replace("[", "");
 			}
-		}
-		System.out.println();
-		System.out.println();
-		System.out.println("Mappa risultante");
-		for(int i=0;i<numeroRighe;i++) {
-			for(int j=0;j<numeroColonne;j++) {
-				System.out.print(mappaVisibilita[i][j] + "    ");
-			}
-			System.out.println();
 		}
 		return mappaVisibilita;
 	}
@@ -196,8 +184,6 @@ public class MappaGui {
 		int rigaFine = rigaOrigine + Integer.parseInt(datiVisibilita[3].replace("{", "")) - 1;
 		int colonnaFine = colonnaOrigine + Integer.parseInt(datiVisibilita[4].replace("}", "")) - 1;
 
-		System.out.println(rigaOrigine + "," + colonnaOrigine + "," + rigaFine + "," + colonnaFine);
-
 		for(int i=rigaFine;i>=rigaOrigine;i--) {
 			for(int j=colonnaOrigine;j<=colonnaFine;j++) {
 
@@ -222,7 +208,6 @@ public class MappaGui {
 							mappaRicevuta[i][j] = cella;
 						} else {
 							if(cella.contains("d")) {
-								System.out.println(" - " + mappaVisibilita[i-rigaOrigine][j-colonnaOrigine]);
 								try {
 									String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
 									gui.getClientGui().statoDinosauro(idDinosauro);
@@ -400,7 +385,6 @@ public class MappaGui {
 				if((rigaClic>=coordinate[0] && rigaClic<=coordinate[2]) && (colonnaClic>=coordinate[1] && colonnaClic<=coordinate[3]))  {
 					resetToolTip();
 
-					System.out.println("cliccati" + rigaClic + "," + colonnaClic);
 					String idDinosauro = gui.getIdDinosauro(gui.getIndiceDino());
 					if(!gui.getMovimento()[gui.getIndiceDino()]) {
 						try {	

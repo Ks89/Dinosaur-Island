@@ -76,9 +76,6 @@ public class Client {
 	 */
 	public String getRispostaServer() throws IOException, InterruptedException{
 		risposta = bufferedReader.readLine();
-//		if (risposta != null) {
-//			System.out.println("Risposta server: " + risposta);
-//		}
 		return risposta;
 	}
 
@@ -90,9 +87,6 @@ public class Client {
 	 */
 	public String getBroadcastServerTurno() throws IOException, InterruptedException{
 		rispostaTurno = bufferedReaderTurno.readLine();
-//		if (rispostaTurno != null) {
-//			System.out.println("Risposta broadcast: " + rispostaTurno);
-//		}
 		return rispostaTurno;
 	}
 

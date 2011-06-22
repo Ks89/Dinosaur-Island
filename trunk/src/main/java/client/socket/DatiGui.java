@@ -46,7 +46,6 @@ public class DatiGui {
 	 * @param indiceDino int che rappresenta il numero del Dinosauro selezionato.
 	 */
 	public void aggiornaDati(String idDinosauro) {
-		System.out.println("ID DINOSAURO AGGIORNA DATI: " + idDinosauro);
 		try {
 			this.gui.getClientGui().statoDinosauro(idDinosauro);
 		} catch (IOException ecc) {
@@ -56,8 +55,6 @@ public class DatiGui {
 		}
 				
 		String risp = this.gui.getClientGui().getRichiesta();
-
-		System.out.println("stato Dinosauro: " + risp);
 
 		String[] rispostaSplittata = risp.split(",");
 		int rigaDino = Integer.parseInt(risp.split(",")[4].replace("{", ""));
