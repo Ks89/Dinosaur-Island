@@ -95,7 +95,7 @@ public class TurnoTest {
 	/**
 	 * Test method for {@link server.logica.Turno#spostaDinosauro(server.modellodati.Dinosauro, int, int)}.
 	 */
-	@Test //TODO: da finire!!
+	@Test
 	public void testSpostaDinosauro() {
 		Partita p = inizializzaPartita();
 		Turno t = new Turno(p);

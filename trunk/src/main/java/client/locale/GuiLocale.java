@@ -30,6 +30,8 @@ import server.logica.Partita;
 import server.logica.Turno;
 import server.logica.Utente;
 import server.modellodati.Dinosauro;
+import server.salvataggio.SalvataggioGiocatore;
+import server.salvataggio.StatoGiocatoreDB;
 
 /**
  *	Classe principale che si occupa di creare la grafica dell'applicazione (lato client).
@@ -95,14 +97,20 @@ public class GuiLocale {
 			tipoDinosauro = "erbivoro";
 		}
 		
-	
+		
+		//Caricamento dello stato giocatore salvato, se presente
+		SalvataggioGiocatore pers = StatoGiocatoreDB.caricaGiocatore(user);
+		if (pers == null) {
 		    giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);    
 		    giocatore.setUtente(new Utente(user, password));
-
+		} else {
+		    giocatore = (Giocatore)pers.getOggetto();
+		    giocatore.getUtente().getPassword();
+		}
 		
-		giocatore = new Giocatore(turnoPartita, specie, tipoDinosauro);
+		
 		giocatore.aggiungiInPartita(partita);
-		dino = giocatore.getDinosauri().get(indiceDino);
+        dino = giocatore.getDinosauri().get(indiceDino);
 		datiGui = new DatiGuiLocale();
 		this.inizializzaGrafica();
 		mg.setScrollBar(dino.getRiga(), dino.getColonna());
@@ -219,6 +227,7 @@ public class GuiLocale {
 							t.illuminaMappa(partita.getGiocatori().get(0), dino.getRiga(), dino.getColonna(), raggio);
 							mg.applicaVisiblita(giocatore, t);
 							datiGui.aggiornaDati(indiceDino, giocatore);
+					        StatoGiocatoreDB.salva(giocatore.getUtente().getNomeUtente(), giocatore);
 						} catch (CrescitaException ce){
 							if(ce.getCausa()==CrescitaException.Causa.MORTE) {
 								partita.getGiocatori().get(0).rimuoviDinosauro(dino);
@@ -245,6 +254,7 @@ public class GuiLocale {
 							partita.nascitaDinosauro(turnoNascita);
 							inizializzaSceltaDino(giocatore);
 							mg.rinizializzaMappa(carnivoroIcona, erbivoroIcona);
+					        StatoGiocatoreDB.salva(giocatore.getUtente().getNomeUtente(), giocatore);
 						} catch (DeposizioneException de){
 							if(de.getCausa()==DeposizioneException.Causa.MORTE) {
 								mappaGui[dino.getRiga()][dino.getColonna()].setIcon(terraIcona);
@@ -319,6 +329,8 @@ public class GuiLocale {
 		
 		try {
 			partita.getTurnoCorrente().spostaDinosauro(dino, rigaCliccata, colonnaCliccata);
+	        StatoGiocatoreDB.salva(giocatore.getUtente().getNomeUtente(), giocatore);
+
 			//Salvataggio dello stato del giocatore ad ogni movimento
 		} catch (MovimentoException e){
 			if(e.getCausa()==MovimentoException.Causa.MORTE) {

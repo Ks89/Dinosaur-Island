@@ -651,9 +651,6 @@ public class GestoreClient extends Thread {
 					listaDino = listaDino.concat(",").concat(giocatore.getDinosauri().get(k).getId());
 				}
 			}
-			else {
-				//TODO: ?? dalle specifiche: ''..altrimenti non si e' in partita, e cio' e' definito dal simbolo +'' ??
-			}
 			domanda = "@listaDinosauri"+listaDino;
 		}
 		else if(!loggato) {
@@ -802,7 +799,6 @@ public class GestoreClient extends Thread {
 					int dimensione = dinosauro.getEnergiaMax()/1000;
 					if(proprioDino) {
 						int energia = dinosauro.getEnergia();
-						//FIXME: turni vissuti
 						int turni = dinosauro.getEtaDinosauro();
 						domanda = "@statoDinosauro"+","+user+","+razza+","+tipo+","+"{"+riga+","+colonna+"}"+","+dimensione+","+energia+","+turni;
 					} else {
