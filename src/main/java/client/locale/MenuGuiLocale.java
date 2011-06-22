@@ -11,6 +11,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import server.salvataggio.StatoGiocatoreDB;
+
 /**
  * 	Classe che si occupa di creare il Menu del programma all'interno del JFrame.
  */
@@ -58,6 +60,8 @@ public class MenuGuiLocale {
 				{
 					public void actionPerformed(ActionEvent event)
 					{
+						//ferma il server di db4o per salvare i giocatori
+					    StatoGiocatoreDB.stopDBServer();
 						frame.dispose();
 					}
 				}

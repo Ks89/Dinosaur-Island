@@ -132,8 +132,9 @@ public class MappaGui {
 	}
 
 	/**
-	 * @param answer
-	 * @return
+	 * Metodo per creare la mappa della visibilita'.
+	 * @param answer String che rappresenta la mappa visiblita' ricevuta dal server.
+	 * @return Un array 2d si String che rappresenta la mappa della visibilita'.
 	 */
 	public String[][] creaMappaVisibilita (String answer) {
 		String[] datiVisibilita = answer.split(",");
@@ -237,6 +238,8 @@ public class MappaGui {
 
 		for(int i=0;i<MAX;i++) {
 			for(int j=0;j<MAX;j++) {
+			
+				
 				mappaGui[i][j].setPreferredSize(new Dimension(158,103));
 				mappaGui[i][j].setMinimumSize(new Dimension(158,103));
 				mappaGui[i][j].setMaximumSize(new Dimension(158,103));
