@@ -3,6 +3,8 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 import server.ServerMain;
 import server.logica.CaricamentoMappa;
@@ -12,6 +14,7 @@ import server.logica.GenerazioneMappa;
 import server.logica.Isola;
 import server.logica.Partita;
 import server.logica.Turno;
+import server.rmi.Implementazione;
 
 
 /**
@@ -20,6 +23,7 @@ import server.logica.Turno;
 public class ServerMain {
 
 	private int porta;
+	private int portaRmi;
 	private Partita partita;
 	private GestioneGiocatori gestioneGiocatori;
 	private Classifica classifica;
@@ -29,8 +33,9 @@ public class ServerMain {
 	 * Costruttore della classe ServerMultiClient che inizializza la mappa, la Partita, la Classifica ed il Turno.
 	 * @param porta int che rappresenta la porta di comunicazione.
 	 */
-	public ServerMain(int porta) {
+	public ServerMain(int porta, int portaRmi) {
 		this.porta = porta;
+		this.portaRmi = portaRmi;
 		GenerazioneMappa gm = new GenerazioneMappa();
 		CaricamentoMappa cm = new CaricamentoMappa();
 		Cella[][] mappaCelle = cm.caricaMappa(gm.creaMappaCasuale());
@@ -48,7 +53,21 @@ public class ServerMain {
 	 * Metodo per la gestione delle connessioni.
 	 * @throws IOException Eccezione duvuta ad un errore nell'apertura di una nuova connessione con un Client.
 	 */
-	public void runServer() throws IOException {
+	public void runServer() throws IOException {	
+		
+		//RMI
+		//LocateRegistry viene usato per creare un riferimento al registro remoto su un host.
+		//createRegistry crea ed esporta un'istaza del registro sul client (specificando la porta)
+		//registry e' un'interfaccia remota usata in rmi
+	    Registry reg = LocateRegistry.createRegistry(portaRmi);
+	    reg.rebind("isola-rmi", new Implementazione()); 
+	    //rebind: sostiuisce il legame per il nome specificato nel registro col riferimento remoto.
+	    //La classe con l'implementazione viene registrata sul server RMI
+	    System.out.println("RMI avviato su porta " + portaRmi);
+	    
+	    
+	    
+		//socket
 		ServerSocket serverSocket = new ServerSocket(porta);
 		ServerSocket serverSocketTurno = new ServerSocket(5678);
 		System.out.println("Server avviato. In attesa di connessioni...");
@@ -70,7 +89,7 @@ public class ServerMain {
 	 * Metodo che avvia il Server.
 	 */
 	public static void main(String[] args) {
-		ServerMain serverMultiClient = new ServerMain(1234);
+		ServerMain serverMultiClient = new ServerMain(1234,1099);
 		try {
 			serverMultiClient.runServer();
 		} catch (IOException e) {

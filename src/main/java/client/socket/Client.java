@@ -1,8 +1,14 @@
 package client.socket;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+
+import comune.InterfacciaRmi;
 
 import client.socket.Client;
 
@@ -39,6 +45,23 @@ public class Client {
 		this.host = host;
 		this.porta = porta;
 		this.portaTurno = portaTurno;
+
+		///////////esempio di chiamata da client a RMI Server//////////////
+		try {
+			//Ottengo l'oggetto remoto (il client vede solo l'interfaccia)
+			//Per ora host e porta sono scritti direttamente nel codice
+			InterfacciaRmi interfaccia = (InterfacciaRmi)Naming.lookup("rmi://localhost:1099/isola-rmi"); 
+
+			//Eseguo i metodi sull'interfaccia, come se fosse locale, in realta' viene chiamato il server
+			System.out.println("somma: " + interfaccia.somma(5, 2));
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
