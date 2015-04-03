@@ -19,7 +19,7 @@ Start the Server before the Clients. Read the instructions in the realeased zip.
 
 ## License
 
-Copyright 2011-2015 Stefano Cappa for Politecnico di Milano
+Copyright 2011-2015 Stefano Cappa (for Politecnico di Milano)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
