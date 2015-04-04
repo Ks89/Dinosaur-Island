@@ -8,9 +8,8 @@ I know, it's horrible, i was young ;)
 - **Java 8 or above**
 
 
-## Images
+## Functionalities
 
-![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/1-home.png)
 ![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/2-user.png)
 ![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/3-create-speces.png)
 ![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/4-dino.png)
@@ -19,16 +18,17 @@ I know, it's horrible, i was young ;)
 ![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/7-dino-nascita.png)
 ![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/8-dino-nato.png)
 
-
-
 ## Usage
-
+There are two different modes: Local (you can play, but alone) and Server (multi-player). <br>
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/1-home.png)
+ <br>
+ <br>
 ### Local
 -Start the Client and play!
-
+ <br>
 ### Server
 -Start the Server before the Clients. Read the instructions in the realeased zip.
-
+ <br>
 
 ## License
 
