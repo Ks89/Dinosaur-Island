@@ -38,13 +38,13 @@ I know, it's horrible, i was young ;)
 ## Usage
 
 There are two different modes: Local (you can play, but alone) and Server (multi-player). 
-<br>
+<br><br>
 ![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/1-home.png)
 <br>
-### Local
+##### Local
 -Start the Client and play!
  <br>
-### Server
+##### Server
 -Start the Server before the Clients. Read the instructions in the released zip.
  <br>
 
