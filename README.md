@@ -10,6 +10,16 @@ I know, it's horrible, i was young ;)
 
 ## Images
 
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/1-home.png)
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/2-user.png)
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/3-create-speces.png)
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/4-dino.png)
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/5-dino-crescita.png)
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/6-dino-cresciuto.png)
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/7-dino-nascita.png)
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/8-dino-nato.png)
+
+
 
 ## Usage
 
