@@ -8,13 +8,16 @@ I know, it's horrible, i was young ;)
 - **Java 8 or above**
 
 
+## Images
+
+
 ## Usage
 
 ### Local
-Start the Client and play!
+-Start the Client and play!
 
 ### Server
-Start the Server before the Clients. Read the instructions in the realeased zip.
+-Start the Server before the Clients. Read the instructions in the realeased zip.
 
 
 ## License
