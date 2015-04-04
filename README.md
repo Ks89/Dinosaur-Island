@@ -7,6 +7,8 @@ I know, it's horrible, i was young ;)
 ## Requirement
 - **Java 8 or above**
 
+## News
+- *04/05/2015* - **Dinosaur Island** BETA1 public release [DOWNLOAD](https://github.com/Ks89/Dinosaur-Island/releases/download/v.BETA1/Dinosaur_Island.zip)
 
 ## Usage
 
