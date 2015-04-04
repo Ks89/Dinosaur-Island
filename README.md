@@ -8,6 +8,20 @@ I know, it's horrible, i was young ;)
 - **Java 8 or above**
 
 
+## Usage
+
+There are two different modes: Local (you can play, but alone) and Server (multi-player). 
+<br><br>
+![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/1-home.png)
+<br>
+##### Local
+-Start the Client and play!
+ <br>
+##### Server
+-Start the Server before the Clients. Read the instructions in the released zip.
+ <br>
+
+
 ## Functionalities
 
 - Add a user and create a new species of dinosaur. Finally, you can play!
@@ -34,19 +48,6 @@ I know, it's horrible, i was young ;)
 
 ![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/10-dino-morto.png)
 
-
-## Usage
-
-There are two different modes: Local (you can play, but alone) and Server (multi-player). 
-<br><br>
-![alt tag](http://www.stefanocappa.it/publicfiles/Github_repositories_images/DinosaurIsland/1-home.png)
-<br>
-##### Local
--Start the Client and play!
- <br>
-##### Server
--Start the Server before the Clients. Read the instructions in the released zip.
- <br>
 
 ## Installation
 
