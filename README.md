@@ -5,7 +5,8 @@ I know, it's horrible, i was young ;)
 
 
 ## Requirement
-- **Java 8 or above**
+- **Java 8 or above** (because i updated library and dependencies)
+- **DB4O** (this project is dead, but i included in this repository the original jar to compile this software, because there no db4o jar's on Maven repositories)
 
 ## News
 - *04/05/2015* - **Dinosaur Island** BETA1 public release [DOWNLOAD](https://github.com/Ks89/Dinosaur-Island/releases/download/v.BETA1/Dinosaur_Island.zip)
